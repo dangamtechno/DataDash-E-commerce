@@ -11,9 +11,10 @@ if ($conn->connect_error) {
 
 // Insert user
 function insertUser($first_name, $last_name, $username, $email, $password, $phone = null) {
+    $password_hash = password_hash($password, PASSWORD_DEFAULT); // Hash the password
     $query = "INSERT INTO users (first_name, last_name, username, email, password_hash, phone) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssssss", $first_name, $last_name, $username, $email, $password, $phone);
+    $stmt->bind_param("ssssss", $first_name, $last_name, $username, $email, $password_hash, $phone);
     $stmt->execute();
     return $conn->insert_id;
 }
