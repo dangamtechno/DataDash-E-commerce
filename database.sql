@@ -12,19 +12,40 @@ Phone VARCHAR(20),
 registration_date DATETIME
 );
 
-CREATE TABLE Categories (
-category_id INT PRIMARY KEY,
-name VARCHAR(255)
+
+CREATE TABLE category (
+  id int NOT NULL AUTO_INCREMENT,
+  status tinyint(1) NOT NULL DEFAULT 0,
+  Name varchar(45) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY name_UNIQUE (Name)
+);
+CREATE TABLE banner (
+  id int NOT NULL AUTO_INCREMENT,
+  name varchar(45) NOT NULL,
+  description varchar(255) NOT NULL,
+  image varchar(255) NOT NULL,
+  status tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+);
+CREATE TABLE product (
+  id int NOT NULL AUTO_INCREMENT,
+  category_id int NOT NULL,
+  name varchar(45) NOT NULL,
+  description varchar(255) DEFAULT NULL,
+  price float DEFAULT NULL,
+  image varchar(255) DEFAULT NULL,
+  status tinyint NOT NULL DEFAULT 0,
+  Date_added datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY name_UNIQUE (name),
+  KEY fk_1_idx (category_id),
+  CONSTRAINT fk_1 FOREIGN KEY (category_id) REFERENCES category (id) ON UPDATE CASCADE
 );
 
-CREATE TABLE Products (
-product_id INT PRIMARY KEY,
-name VARCHAR(255),
-description TEXT,
-price DECIMAL(10, 2),
-category_id INT,
-FOREIGN KEY (category_id) REFERENCES Categories(category_id)
-);
+
+
+
 
 CREATE TABLE Orders (
 order_id INT PRIMARY KEY,
@@ -41,7 +62,7 @@ product_id INT,
 quantity INT NOT NULL,
 unit_price DECIMAL(10, 2) NOT NULL,
 FOREIGN KEY (order_id) REFERENCES Orders(order_id),
-FOREIGN KEY (product_id) REFERENCES Products(product_id)
+FOREIGN KEY (product_id) REFERENCES Product(product_id)
 );
 
 CREATE TABLE Cart (
@@ -50,7 +71,7 @@ user_id INT,
 product_id INT,
 quantity INT,
 FOREIGN KEY (user_id) REFERENCES Users(user_id),
-FOREIGN KEY (product_id) REFERENCES Products(product_id)
+FOREIGN KEY (product_id) REFERENCES Product(id)
 );
 
 CREATE TABLE Addresses (
@@ -82,7 +103,7 @@ rating DECIMAL(2, 1),
 review_text TEXT,
 review_date DATETIME,
 FOREIGN KEY (user_id) REFERENCES Users(user_id),
-FOREIGN KEY (product_id) REFERENCES Products(product_id)
+FOREIGN KEY (product_id) REFERENCES Product(id)
 );
 
 CREATE TABLE Ratings (
@@ -91,7 +112,7 @@ user_id INT,
 product_id INT,
 rating_value DECIMAL(2, 1),
 FOREIGN KEY (user_id) REFERENCES Users(user_id),
-FOREIGN KEY (product_id) REFERENCES Products(product_id)
+FOREIGN KEY (product_id) REFERENCES Product(id)
 );
 
 CREATE TABLE Coupons (
@@ -106,7 +127,7 @@ wishlist_id INT PRIMARY KEY,
 user_id INT,
 product_id INT,
 FOREIGN KEY (user_id) REFERENCES Users(user_id),
-FOREIGN KEY (product_id) REFERENCES Products(product_id)
+FOREIGN KEY (product_id) REFERENCES Product(id)
 );
 
 CREATE TABLE Messages (
@@ -173,7 +194,7 @@ inventory_id INT PRIMARY KEY,
 product_id INT,
 quantity INT,
 last_updated_date DATETIME,
-FOREIGN KEY (product_id) REFERENCES Products(product_id)
+FOREIGN KEY (product_id) REFERENCES Product(id)
 );
 
 CREATE TABLE Transactions (
@@ -209,7 +230,7 @@ user_id INT,
 recommended_product_id INT,
 recommendation_score DECIMAL(5, 2),
 FOREIGN KEY (user_id) REFERENCES Users(user_id),
-FOREIGN KEY (recommended_product_id) REFERENCES Products(product_id)
+FOREIGN KEY (recommended_product_id) REFERENCES Product(id)
 );
 
 CREATE TABLE Custom_Fields (
