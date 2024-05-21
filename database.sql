@@ -255,3 +255,23 @@ CREATE TABLE order_history (
   current_status VARCHAR(50) DEFAULT NULL,
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+CREATE TRIGGER create_cart_after_user_registration
+AFTER INSERT ON users
+FOR EACH ROW
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM cart WHERE user_id = NEW.user_id) THEN
+        INSERT INTO cart (user_id)
+        VALUES (NEW.user_id);
+    END IF;
+END;
+
+CREATE TRIGGER create_order_history_after_first_order
+AFTER INSERT ON orders
+FOR EACH ROW
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM order_history WHERE user_id = NEW.user_id) THEN
+        INSERT INTO order_history (order_id, user_id, order_date, total_amount, status, current_status)
+        VALUES (NEW.order_id, NEW.user_id, NEW.order_date, NEW.total_amount, 'new', 'new');
+    END IF;
+END;
