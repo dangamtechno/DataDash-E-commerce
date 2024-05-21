@@ -45,7 +45,7 @@ echo "<table>";
 echo "<tr><th>Product</th><th>Quantity</th><th>Price</th><th>Total</th><th>Action</th></tr>";
 $total = 0;
 foreach ($cart as $product_id => $quantity) {
-    $product = $conn->query("SELECT * FROM Products WHERE product_id = '$product_id'")->fetch_assoc();
+    $product = $conn->query("SELECT * FROM product WHERE id = '$product_id'")->fetch_assoc();
     $price = $product['price'];
     $total += $price * $quantity;
     echo "<tr>";
