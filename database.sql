@@ -67,7 +67,7 @@ FOREIGN KEY (product_id) REFERENCES Product(id)
 
 CREATE TABLE Cart (
 cart_id INT PRIMARY KEY,
-user_id INT,
+user_id INT NOT NULL,
 product_id INT,
 quantity INT,
 FOREIGN KEY (user_id) REFERENCES Users(user_id),
