@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded',requestCategories);
 document.addEventListener('DOMContentLoaded',requestBanner);
 document.addEventListener('DOMContentLoaded',requestFeaturedProducts);
+document.addEventListener('DOMContentLoaded',requestNewArrivals);
 
 
 function callCarousal(){
@@ -29,42 +30,24 @@ function requestFeaturedProducts(){
     { method:"GET",}
      ).then( (res)=>res.json() )
     .then((data)=>{
-        const featurdProducts= data.featuredProducts;
-       //if nonn empty enter branch
-        if(featurdProducts){
-        const featuredSection = document.querySelector('.featured-products');
-        const catalog = document.createElement("div");
-        catalog.className = "catalog";
-
-        featurdProducts.forEach((prod)=>{
-           const card = document.createElement('div');
-           card.className = "card";
-           const imgDiv = document.createElement('div');
-           imgDiv.className = "card-img";
-           const descDiv = document.createElement('div');
-           descDiv.className = "card-desc";
-           card.appendChild(imgDiv);
-           card.appendChild(descDiv);
-           const img = document.createElement('img');
-           img.src = `http://localhost:8081${prod.image}`;
-           imgDiv.appendChild(img);
-           const name = document.createElement("p");
-           name.textContent=prod.name;
-           const price = document.createElement("p");
-           price.textContent = `${prod.price}$`
-           name.className = "product-name";
-           price.className="product-price";
-           descDiv.appendChild(name);
-           descDiv.appendChild(price);
-           catalog.appendChild(card);
-           
-        })
-        featuredSection.appendChild(catalog);
-       }
+       const featuredProducts= data.featuredProducts;
+       featuredSection = document.querySelector('.featured-products');
+       populateCatalog(featuredProducts,featuredSection);
     })
     .catch((err) => console.log(err));
 }
-
+function requestNewArrivals(){
+    fetch("http://localhost:8081/user/backend/newArrivals.php",
+    { method:"GET",}
+     ).then( (res)=>res.json() )
+    .then((data)=>{
+       const featurdProducts= data.new_items;
+       console.log(featurdProducts)
+       newSection = document.querySelector('.new-products');
+       populateCatalog(featurdProducts,newSection);
+    })
+    .catch((err) => console.log(err));
+}
 
 
 
@@ -123,6 +106,39 @@ function requestCategories(){
         }
     })
     .catch((err) => console.log(err));
+}
+
+function populateCatalog(products,section){
+ //if nonn empty enter branch
+ if(products){
+    const catalog = document.createElement("div");
+    catalog.className = "catalog";
+
+    products.forEach((prod)=>{
+       const card = document.createElement('div');
+       card.className = "card";
+       const imgDiv = document.createElement('div');
+       imgDiv.className = "card-img";
+       const descDiv = document.createElement('div');
+       descDiv.className = "card-desc";
+       card.appendChild(imgDiv);
+       card.appendChild(descDiv);
+       const img = document.createElement('img');
+       img.src = `http://localhost:8081${prod.image}`;
+       imgDiv.appendChild(img);
+       const name = document.createElement("p");
+       name.textContent=prod.name;
+       const price = document.createElement("p");
+       price.textContent = `${prod.price}$`
+       name.className = "product-name";
+       price.className="product-price";
+       descDiv.appendChild(name);
+       descDiv.appendChild(price);
+       catalog.appendChild(card);
+       
+    })
+    section.appendChild(catalog);    
+   }
 }
 
 function getCategoryProducts(){
