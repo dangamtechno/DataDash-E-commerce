@@ -9,34 +9,37 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Get cart from session
-$cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : array();
+// Get cart from database
+$cart = array();
+$user_id = $_SESSION['user_id']; // assuming you have a user_id in the session
+$result = $conn->query("SELECT product_id, quantity FROM cart WHERE user_id = '$user_id'");
+while ($row = $result->fetch_assoc()) {
+    $cart[$row['product_id']] = $row['quantity'];
+}
 
 // Add to cart
 if (isset($_POST['add'])) {
     $product_id = $_POST['add'];
     $quantity = $_POST['quantity'];
     if (isset($cart[$product_id])) {
-        $cart[$product_id] += $quantity;
+        $new_quantity = $cart[$product_id] + $quantity;
+        $conn->query("UPDATE cart SET quantity = '$new_quantity' WHERE user_id = '$user_id' AND product_id = '$product_id'");
     } else {
-        $cart[$product_id] = $quantity;
+        $conn->query("INSERT INTO cart (user_id, product_id, quantity) VALUES ('$user_id', '$product_id', '$quantity')");
     }
-    $_SESSION['cart'] = $cart;
 }
 
 // Update cart
 if (isset($_POST['update'])) {
     $product_id = $_POST['update'];
     $quantity = $_POST['quantity'];
-    $cart[$product_id] = $quantity;
-    $_SESSION['cart'] = $cart;
+    $conn->query("UPDATE cart SET quantity = '$quantity' WHERE user_id = '$user_id' AND product_id = '$product_id'");
 }
 
 // Remove from cart
 if (isset($_POST['remove'])) {
     $product_id = $_POST['remove'];
-    unset($cart[$product_id]);
-    $_SESSION['cart'] = $cart;
+    $conn->query("DELETE FROM cart WHERE user_id = '$user_id' AND product_id = '$product_id'");
 }
 
 // Display cart
@@ -45,7 +48,7 @@ echo "<table>";
 echo "<tr><th>Product</th><th>Quantity</th><th>Price</th><th>Total</th><th>Action</th></tr>";
 $total = 0;
 foreach ($cart as $product_id => $quantity) {
-    $product = $conn->query("SELECT * FROM Products WHERE product_id = '$product_id'")->fetch_assoc();
+    $product = $conn->query("SELECT * FROM product WHERE id = '$product_id'")->fetch_assoc();
     $price = $product['price'];
     $total += $price * $quantity;
     echo "<tr>";

@@ -1,80 +1,77 @@
 CREATE DATABASE datadash;
 USE datadash;
 
-CREATE TABLE Users (
+CREATE TABLE users (
 user_id INT PRIMARY KEY,
 first_name VARCHAR(255),
 last_name VARCHAR(255),
 username VARCHAR(255) NOT NULL,
 email VARCHAR(255) NOT NULL,
 password_hash VARCHAR(255),
-Phone VARCHAR(20),
+phone VARCHAR(20),
 registration_date DATETIME
 );
 
-
 CREATE TABLE category (
-  id int NOT NULL AUTO_INCREMENT,
-  status tinyint(1) NOT NULL DEFAULT 0,
-  Name varchar(45) NOT NULL,
+  id INT NOT NULL AUTO_INCREMENT,
+  status TINYINT(1) NOT NULL DEFAULT 0,
+  name VARCHAR(45) NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY name_UNIQUE (Name)
+  UNIQUE KEY name_unique (name)
 );
+
 CREATE TABLE banner (
-  id int NOT NULL AUTO_INCREMENT,
-  name varchar(45) NOT NULL,
-  description varchar(255) NOT NULL,
-  image varchar(255) NOT NULL,
-  status tinyint NOT NULL DEFAULT 0,
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(45) NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  status TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (id)
 );
+
 CREATE TABLE product (
-  id int NOT NULL AUTO_INCREMENT,
-  category_id int NOT NULL,
-  name varchar(45) NOT NULL,
-  description varchar(255) DEFAULT NULL,
-  price float DEFAULT NULL,
-  image varchar(255) DEFAULT NULL,
-  status tinyint NOT NULL DEFAULT 0,
-  Date_added datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  id INT NOT NULL AUTO_INCREMENT,
+  category_id INT NOT NULL,
+  name VARCHAR(45) NOT NULL,
+  description VARCHAR(255) DEFAULT NULL,
+  price FLOAT DEFAULT NULL,
+  image VARCHAR(255) DEFAULT NULL,
+  status TINYINT NOT NULL DEFAULT 0,
+  date_added DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY name_UNIQUE (name),
+  UNIQUE KEY name_unique (name),
   KEY fk_1_idx (category_id),
   CONSTRAINT fk_1 FOREIGN KEY (category_id) REFERENCES category (id) ON UPDATE CASCADE
 );
 
-
-
-
-
-CREATE TABLE Orders (
+CREATE TABLE orders (
 order_id INT PRIMARY KEY,
 user_id INT,
 order_date DATETIME,
 total_amount DECIMAL(10, 2),
-FOREIGN KEY (user_id) REFERENCES Users(user_id)
+FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE Order_Details (
+CREATE TABLE order_details (
 order_detail_id INT PRIMARY KEY,
 order_id INT,
 product_id INT,
 quantity INT NOT NULL,
 unit_price DECIMAL(10, 2) NOT NULL,
-FOREIGN KEY (order_id) REFERENCES Orders(order_id),
-FOREIGN KEY (product_id) REFERENCES Product(id)
+FOREIGN KEY (order_id) REFERENCES orders(order_id),
+FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
-CREATE TABLE Cart (
+CREATE TABLE cart (
 cart_id INT PRIMARY KEY,
 user_id INT NOT NULL,
 product_id INT,
 quantity INT,
-FOREIGN KEY (user_id) REFERENCES Users(user_id),
-FOREIGN KEY (product_id) REFERENCES Product(id)
+FOREIGN KEY (user_id) REFERENCES users(user_id),
+FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
-CREATE TABLE Addresses (
+CREATE TABLE addresses (
 address_id INT PRIMARY KEY,
 user_id INT,
 address_type VARCHAR(50),
@@ -83,100 +80,100 @@ city VARCHAR(100),
 state VARCHAR(100),
 postal_code VARCHAR(20),
 country VARCHAR(100),
-FOREIGN KEY (user_id) REFERENCES Users(user_id)
+FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE Payment_Methods (
+CREATE TABLE payment_methods (
 payment_method_id INT PRIMARY KEY,
 user_id INT,
 method_type VARCHAR(50),
 card_number VARCHAR(20),
 expiration_date DATE,
-FOREIGN KEY (user_id) REFERENCES Users(user_id)
+FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE Reviews (
+CREATE TABLE reviews (
 review_id INT PRIMARY KEY,
 user_id INT,
 product_id INT,
 rating DECIMAL(2, 1),
 review_text TEXT,
 review_date DATETIME,
-FOREIGN KEY (user_id) REFERENCES Users(user_id),
-FOREIGN KEY (product_id) REFERENCES Product(id)
+FOREIGN KEY (user_id) REFERENCES users(user_id),
+FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
-CREATE TABLE Ratings (
+CREATE TABLE ratings (
 rating_id INT PRIMARY KEY,
 user_id INT,
 product_id INT,
 rating_value DECIMAL(2, 1),
-FOREIGN KEY (user_id) REFERENCES Users(user_id),
-FOREIGN KEY (product_id) REFERENCES Product(id)
+FOREIGN KEY (user_id) REFERENCES users(user_id),
+FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
-CREATE TABLE Coupons (
+CREATE TABLE coupons (
 coupon_id INT PRIMARY KEY,
 coupon_code VARCHAR(50),
 discount_amount DECIMAL(10, 2),
 expiration_date DATE
 );
 
-CREATE TABLE Wishlists (
+CREATE TABLE wishlists (
 wishlist_id INT PRIMARY KEY,
 user_id INT,
 product_id INT,
-FOREIGN KEY (user_id) REFERENCES Users(user_id),
-FOREIGN KEY (product_id) REFERENCES Product(id)
+FOREIGN KEY (user_id) REFERENCES users(user_id),
+FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
-CREATE TABLE Messages (
+CREATE TABLE messages (
 message_id INT PRIMARY KEY,
 sender_id INT,
 receiver_id INT,
 message_content TEXT NOT NULL,
 message_date DATETIME,
-FOREIGN KEY (sender_id) REFERENCES Users(user_id),
-FOREIGN KEY (receiver_id) REFERENCES Users(user_id)
+FOREIGN KEY (sender_id) REFERENCES users(user_id),
+FOREIGN KEY (receiver_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE Notifications (
+CREATE TABLE notifications (
 notification_id INT PRIMARY KEY,
 user_id INT,
 notification_content TEXT NOT NULL,
 notification_date DATETIME,
-FOREIGN KEY (user_id) REFERENCES Users(user_id)
+FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE Shipping_Methods (
+CREATE TABLE shipping_methods (
 shipping_method_id INT PRIMARY KEY,
 method_name VARCHAR(100),
 estimated_delivery_time INT
 );
 
-CREATE TABLE Taxes (
+CREATE TABLE taxes (
 tax_id INT PRIMARY KEY,
 country VARCHAR(100),
 state VARCHAR(100),
 tax_rate DECIMAL(5, 2)
 );
 
-CREATE TABLE Discounts (
+CREATE TABLE discounts (
 discount_id INT PRIMARY KEY,
 discount_name VARCHAR(100),
 discount_type VARCHAR(50),
 discount_value DECIMAL(10, 2)
 );
 
-CREATE TABLE Returns (
+CREATE TABLE returns (
 return_id INT PRIMARY KEY,
 order_id INT,
 return_reason TEXT,
 return_date DATETIME,
-FOREIGN KEY (order_id) REFERENCES Orders(order_id)
+FOREIGN KEY (order_id) REFERENCES orders(order_id)
 );
 
-CREATE TABLE Suppliers (
+CREATE TABLE suppliers (
 supplier_id INT PRIMARY KEY,
 supplier_name VARCHAR(255),
 contact_name VARCHAR(255),
@@ -184,58 +181,97 @@ contact_email VARCHAR(255),
 contact_phone VARCHAR(20)
 );
 
-CREATE TABLE Brands (
+CREATE TABLE brands (
 brand_id INT PRIMARY KEY,
 brand_name VARCHAR(255)
 );
 
-CREATE TABLE Inventory (
+CREATE TABLE inventory (
 inventory_id INT PRIMARY KEY,
 product_id INT,
 quantity INT,
 last_updated_date DATETIME,
-FOREIGN KEY (product_id) REFERENCES Product(id)
+FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
-CREATE TABLE Transactions (
+CREATE TABLE transactions (
 transaction_id INT PRIMARY KEY,
 order_id INT,
 transaction_date DATETIME,
 amount DECIMAL(10, 2),
 payment_method_id INT,
-FOREIGN KEY (order_id) REFERENCES Orders(order_id),
-FOREIGN KEY (payment_method_id) REFERENCES Payment_Methods(payment_method_id)
+FOREIGN KEY (order_id) REFERENCES orders(order_id),
+FOREIGN KEY (payment_method_id) REFERENCES payment_methods(payment_method_id)
 );
 
-CREATE TABLE Analytics (
+CREATE TABLE analytics (
 analytics_id INT PRIMARY KEY,
 user_id INT,
 page_visited VARCHAR(255),
 timestamp DATETIME,
-FOREIGN KEY (user_id) REFERENCES Users(user_id)
+FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE Subscriptions (
+CREATE TABLE subscriptions (
 subscription_id INT PRIMARY KEY,
 user_id INT,
 subscription_type VARCHAR(100),
 start_date DATE,
 end_date DATE,
-FOREIGN KEY (user_id) REFERENCES Users(user_id)
+FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE Recommendations (
+CREATE TABLE recommendations (
 recommendation_id INT PRIMARY KEY,
 user_id INT,
 recommended_product_id INT,
 recommendation_score DECIMAL(5, 2),
-FOREIGN KEY (user_id) REFERENCES Users(user_id),
-FOREIGN KEY (recommended_product_id) REFERENCES Product(id)
+FOREIGN KEY (user_id) REFERENCES users(user_id),
+FOREIGN KEY (recommended_product_id) REFERENCES product(id)
 );
 
-CREATE TABLE Custom_Fields (
+CREATE TABLE custom_fields (
 custom_field_id INT PRIMARY KEY,
 field_name VARCHAR(255),
 field_type VARCHAR(50),
 field_value TEXT
 );
+
+CREATE TABLE cart_product (
+  cart_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL,
+  PRIMARY KEY (cart_id, product_id),
+  FOREIGN KEY (cart_id) REFERENCES cart(cart_id),
+  FOREIGN KEY (product_id) REFERENCES product(id)
+);
+
+CREATE TABLE order_history (
+  order_id INT PRIMARY KEY,
+  user_id INT NOT NULL,
+  order_date DATETIME NOT NULL,
+  total_amount DECIMAL(10, 2) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  current_status VARCHAR(50) DEFAULT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TRIGGER create_cart_after_user_registration
+AFTER INSERT ON users
+FOR EACH ROW
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM cart WHERE user_id = NEW.user_id) THEN
+        INSERT INTO cart (user_id)
+        VALUES (NEW.user_id);
+    END IF;
+END;
+
+CREATE TRIGGER create_order_history_after_first_order
+AFTER INSERT ON orders
+FOR EACH ROW
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM order_history WHERE user_id = NEW.user_id) THEN
+        INSERT INTO order_history (order_id, user_id, order_date, total_amount, status, current_status)
+        VALUES (NEW.order_id, NEW.user_id, NEW.order_date, NEW.total_amount, 'new', 'new');
+    END IF;
+END;
