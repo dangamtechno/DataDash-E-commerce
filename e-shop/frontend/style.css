@@ -15,6 +15,54 @@ body {
 .hidden{
     display: none;
 }
+/*catalog*/
+h2{
+    padding: 10px;
+    text-align: center;
+    text-transform: capitalize;
+    margin: 1.5rem 0;
+}
+.catalog{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    margin: auto;
+    width: 80vw;
+}
+.card{
+    display: grid;
+    grid-row: 3fr 1fr;
+    margin: 10% 10%;
+    justify-content: center;
+    align-items: center;
+    background-color:peachpuff;
+    padding:5px 5px;
+    border-radius: 5px;
+}
+.card:hover{
+    box-shadow: 0 0 20px 10px var(--primaryColor);
+    color: magenta;
+}
+.card-img img{
+    max-width: 100%;
+    object-fit: contain;
+    padding: 0px 15px;
+    border-radius: 5px;
+}
+.card-desc{
+    padding: 15px 15px;
+}
+.card-desc p{
+    text-align: center;
+    font-weight: bold;
+    font-size: large;
+    padding: 10px 0;
+}
+.featured-products{
+    background-color: salmon;
+}
+/*catalog end*/
+/**/
+/**/
 /*Header*/
 header{
     position: fixed;
@@ -142,6 +190,8 @@ main{
     font-size: larger;
 }
 /*banner section end*/
+
+
 /*footer*/ 
 footer li{
     transform: all 2s ease-in-out;
