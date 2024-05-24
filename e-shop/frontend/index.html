@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="global.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.5,minimum-scale=1.0">
-    <script src="https://kit.fontawesome.com/d0ce752c6a.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/d0ce752c6a.js"
+     crossorigin="anonymous">
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-    <link rel="stylesheet" href="style.css">
-
-    <style>
-        .fas, .fab, .username {
-            color: white;
-        }
-    </style>
-
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link rel = "stylesheet" href="style.css">
+    
     <title>Document</title>
 </head>
 <body>
@@ -22,13 +20,13 @@
         <div class="heading">
             <div class="left-heading">
                 <div class="logo">
-                    <a href="index.html">
-                        <img id="logo" src="DataDash.png"/>
+                    <a href ="/user/frontend/index.html">
+                    <img id="logo" src="DataDash.png"/>
                     </a>
                 </div>
                 <div class="search-bar">
                     <form class="search">
-                        <input type="search" name="search" placeholder="search...">
+                        <input type="search" name ="search" placeholder="search...">
                         <input type="submit" name="submit" value="submit">
                     </form>
                 </div>
@@ -36,38 +34,36 @@
             <div class="right-heading">
                 <div class="login-status">
                     <div class="login" title="login">
-                        <a href="Loginpage.html">
-                            <i class="fas fa-sign-in-alt fa-2x"></i>
-                        </a>
+                        <i class="fas fa-sign-in-alt fa-2x">
+                            <a href="Loginpage.html"></a>
+                        </i>
                     </div>
                     <div class="register" title="register">
-                        <a href="CreateAccount.html">
-                            <i class="fas fa-user-times fa-2x"></i>
-                        </a>
+                            <i class="fas fa-user-times fa-2x">
+                                 <a href="CreateAccount.html"></a>
+                                </i>
                     </div>
                     <div class="logout" title="log out">
-                        <a href="/logout">
-                            <i class="fas fa-sign-out-alt fa-2x"></i>
-                        </a>
+                            <i class="fas fa-sign-out-alt fa-2x">
+                                 <a href="/logout"></a>
+                                </i>
                     </div>
                     <div class="logged-user">
-                        <a href="/account">
-                            <i class="fas fa-user-check fa-2x"></i>
-                            <span class="username">username</span>
-                        </a>
-                    </div>
-                    <div class="cart">
-                        <a href="cart.html">
-                            <i class="fas fa-shopping-cart fa-2x"></i>
-                        </a>
-                    </div>
+                        <i class="fas fa-user-check fa-2x"></i>
+                        <span class="username"> <a href="/account"></a></span>
+                </div>
+                <div class="cart">
+                        <i class="fas fa-shopping-cart fa-2x">
+                              <a href="cart.html"></a>
+                        </i>
                 </div>
             </div>
         </div>
-        <div class="navigation"></div>
+    </div>
+    <div class="navigation"></div>
     </header>
     <main>
-        <section class="banner">
+        <section class = "banner">        
             <div class="swiper">
                 <div class="swiper-wrapper"></div>
                 <div class="swiper-pagination"></div>
@@ -75,44 +71,50 @@
                 <div class="swiper-button-next"></div>
             </div>
         </section>
-        <section class="featured-products">
+        <section class = "featured-products">
             <h2>Featured Products</h2>
         </section>
         <section class="new-products">
             <h2>New Products</h2>
+
         </section>
+
+
+
     </main>
     <footer>
-        <div class="social-media">
+    <div class="social-media">
+        <ul>
+        <li><i class="fab fa-facebook fa-1.5x"></i></i></li>
+        <li><i class="fab fa-instagram fa-1.5x"></i></li>
+        <li><i class="fab fa-youtube fa-1.5x"></i></li>
+        <li><i class="fab fa-twitter fa-1.5x"></i></li>
+        <li><i class="fab fa-pinterest fa-1.5x"></i></li>
+        </ul>
+    </div>
+    <div class="general-info">
+        <div class="help">
+            <h3>Help</h3>
+        <ul>
+            <li>Frequently asked Questions</li>
+            <li>Delivery Information</li>
+            <li>Returns</li>
+            <li>Customer Service</li>
+        </ul>
+        </div>
+        <div class="location"></div>
+        <div class="legal">
+            <h3>Privacy & legal</h3>
             <ul>
-                <li><i class="fab fa-facebook fa-1.5x"></i></li>
-                <li><i class="fab fa-instagram fa-1.5x"></i></li>
-                <li><i class="fab fa-youtube fa-1.5x"></i></li>
-                <li><i class="fab fa-twitter fa-1.5x"></i></li>
-                <li><i class="fab fa-pinterest fa-1.5x"></i></li>
+                <li>Cookies & Privacy</li>
+                <li>Terms & Conditions</li>
             </ul>
+
+
         </div>
-        <div class="general-info">
-            <div class="help">
-                <h3>Help</h3>
-                <ul>
-                    <li>Frequently asked Questions</li>
-                    <li>Delivery Information</li>
-                    <li>Returns</li>
-                    <li>Customer Service</li>
-                </ul>
-            </div>
-            <div class="location"></div>
-            <div class="legal">
-                <h3>Privacy & legal</h3>
-                <ul>
-                    <li>Cookies & Privacy</li>
-                    <li>Terms & Conditions</li>
-                </ul>
-            </div>
-        </div>
+    </div>
     </footer>
-    <script src="global.js"></script>
-    <script src="login.js"></script>
+   <script src = "global.js"></script> 
+   <script src = "login.js"></script>
 </body>
 </html>
