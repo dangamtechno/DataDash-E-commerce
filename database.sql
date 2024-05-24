@@ -256,6 +256,8 @@ CREATE TABLE order_history (
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+DELIMITER //
+
 CREATE TRIGGER create_cart_after_user_registration
 AFTER INSERT ON users
 FOR EACH ROW
@@ -264,7 +266,7 @@ BEGIN
         INSERT INTO cart (user_id)
         VALUES (NEW.user_id);
     END IF;
-END;
+END//
 
 CREATE TRIGGER create_order_history_after_first_order
 AFTER INSERT ON orders
@@ -274,4 +276,6 @@ BEGIN
         INSERT INTO order_history (order_id, user_id, order_date, total_amount, status, current_status)
         VALUES (NEW.order_id, NEW.user_id, NEW.order_date, NEW.total_amount, 'new', 'new');
     END IF;
-END;
+END//
+
+DELIMITER ;
