@@ -1,6 +1,6 @@
 const loginContainer = document.querySelector('.login-container');
-const registerButton = document.querySelector('.create-account');
-const loggedUser = document.querySelector('.logged-user');
+const registerButton = document.querySelector('.register');
+const loggedUser = document.querySelector('.login-status');
 
 showHideIcon(registerButton, false);
 
