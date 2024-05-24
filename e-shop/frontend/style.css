@@ -255,3 +255,68 @@ footer li:hover{
 .general-info ul li{
     margin-bottom: 15px;
 }
+
+
+/* Login Page Styles */
+.login-container {
+  max-width: 300px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px; /* added */
+  box-sizing: border-box; /* added */
+}
+
+.login-container h1 {
+  margin-top: 0;
+  font-weight: bold; /* added */
+  color: #333; /* added */
+}
+
+.create-account {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%; /* added */
+  font-size: 1.2rem; /* added */
+}
+
+.create-account:hover {
+  background-color: #3e8e41;
+}
+
+.login-form {
+  display: flex; /* added */
+  flex-direction: column; /* added */
+  align-items: center; /* added */
+  padding: 20px; /* added */
+}
+
+.login-form input[type="email"], input[type="password"] {
+  padding: 10px; /* added */
+  margin: 10px 0; /* added */
+  border: 1px solid #ccc; /* added */
+  border-radius: 5px; /* added */
+  width: 100%; /* added */
+  font-size: 1.2rem; /* added */
+}
+
+.login-form input[type="submit"] {
+  background-color: #4CAF50; /* added */
+  color: #fff; /* added */
+  padding: 10px 20px; /* added */
+  border: none; /* added */
+  border-radius: 5px; /* added */
+  cursor: pointer; /* added */
+  width: 100%; /* added */
+  font-size: 1.2rem; /* added */
+}
+
+.login-form input[type="submit"]:hover {
+  background-color: #3e8e41; /* added */
+}
