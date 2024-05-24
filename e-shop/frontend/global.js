@@ -26,37 +26,29 @@ function callCarousal(){
 }
 
 function requestFeaturedProducts(){
-    fetch("http://localhost:8081/user/backend/featuredProducts.php",
-    { method:"GET",}
-     ).then( (res)=>res.json() )
-    .then((data)=>{
-       const featuredProducts= data.featuredProducts;
-       featuredSection = document.querySelector('.featured-products');
-       populateCatalog(featuredProducts,featuredSection);
-    })
-    .catch((err) => console.log(err));
+    fetchCall("featuredProducts.php",responseFeaturedProducts)
+    function responseFeaturedProducts(data){
+        const featuredProducts= data.featuredProducts;
+        featuredSection = document.querySelector('.featured-products');
+        populateCatalog(featuredProducts,featuredSection);
+    }
 }
 function requestNewArrivals(){
-    fetch("http://localhost:8081/user/backend/newArrivals.php",
-    { method:"GET",}
-     ).then( (res)=>res.json() )
-    .then((data)=>{
-       const featurdProducts= data.new_items;
-       console.log(featurdProducts)
-       newSection = document.querySelector('.new-products');
-       populateCatalog(featurdProducts,newSection);
-    })
-    .catch((err) => console.log(err));
+    fetchCall("newArrivals.php",responseNewArrivals)
+    function responseNewArrivals(data){
+        const featurdProducts= data.new_items;
+        console.log("test: "+featurdProducts)
+        newSection = document.querySelector('.new-products');
+        populateCatalog(featurdProducts,newSection);
+    }
 }
 
 
 
 function requestBanner(){
-   fetch("http://localhost:8081/user/backend/banner.php",{method:"GET",})
-   .then((res)=>res.json())
-   .then((data)=>{
-       console.log(data);
-       if(data.banners){
+   fetchCall("banner.php",responseBanner)
+   function responseBanner(data){
+    if(data.banners){
         const banners = data.banners
         banners.forEach((banner) => {
             console.log(banner.image)
@@ -79,18 +71,13 @@ function requestBanner(){
         });
         callCarousal();
        }
-   })
-   .catch( (err) => console.log(err) );
-
+   }
 }
 
 
 function requestCategories(){
-    fetch("http://localhost:8081/user/backend/menu.php",
-    { method:"GET",}
-     ).then( (res)=>res.json() )
-    .then((data)=>{
-        console.log(data.categories);
+    fetchCall("menu.php",responseCategories)
+    function responseCategories(data){
         const nav = document.querySelector('.navigation');
         if(data.categories){
             const ul = document.createElement('ul');
@@ -98,14 +85,13 @@ function requestCategories(){
                 const li = document.createElement('li');
                 li.className = category;
                 li.textContent = category;
-                li.addEventListener('click',getCategoryProducts);
+                li.addEventListener('click',getCategoryProducts.bind(category));
                 ul.appendChild(li);
             });
             //append to dom 
             nav.append(ul);
-        }
-    })
-    .catch((err) => console.log(err));
+         }
+    }
 }
 
 function populateCatalog(products,section){
@@ -140,7 +126,33 @@ function populateCatalog(products,section){
     section.appendChild(catalog);    
    }
 }
+function fetchCall(resource, callBack, method="GET"){
+    const url ="http://localhost:8081/user/backend/";
+    fetch(url+resource,{
+       method: method,
+    })
+    .then((res) => res.json())
+    .then((data)=>{
+    //....logic goes here
+    callBack(data);
+    }).catch((err)=>console.log(err));
+}
+
 
 function getCategoryProducts(){
-    console.log("category clicked");
+    const cat = this;
+    setActiveCategory(cat);
+}
+function setActiveCategory(cat){
+    const categoryList = document.querySelectorAll(".navigation li");
+    const root = document.querySelector(":root");
+    const primaryColor = window
+    .getComputedStyle(root)
+    .getPropertyValue("--primaryColor");
+    console.log(primaryColor);
+    categoryList.forEach((category)=>{
+        if(category.classList.contains(cat)){
+        category.style.backgroundColor = primaryColor;
+        } else category.style.backgroundColor = "initial"
+    })
 }
