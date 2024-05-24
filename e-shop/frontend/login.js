@@ -1,10 +1,18 @@
-const login = document.querySelector(".login");
-const register = document.querySelector(".register");
-const logout = document.querySelector(".logout");
-const loggedUser = document.querySelector(".logged-user");
+const loginContainer = document.querySelector('.login-container');
+const registerButton = document.querySelector('.create-account');
+const loggedUser = document.querySelector('.logged-user');
 
-showHideIcon(register,false);
+showHideIcon(registerButton, false);
 
-function showHideIcon(icon,flag){
-    flag ? (icon.style.display= "none"):(icon.display= "block");
+function showHideIcon(icon, flag) {
+  if (flag) {
+    icon.style.display = 'none';
+  } else {
+    icon.style.display = 'block';
+  }
 }
+
+// Add event listener to register button
+registerButton.addEventListener('click', () => {
+  showHideIcon(registerButton, true);
+});
