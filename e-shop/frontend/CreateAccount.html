@@ -1,6 +1,11 @@
 <html>
 <head>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-size: 0.9em; /* decreased font size */
+        }
+    </style>
 </head>
 <body>
 
@@ -15,14 +20,18 @@
     <p>Input your user info and click Submit.</p>
 
     <form action="user.php" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name"><br>
+        <label for="first-name">First Name:</label>
+        <input type="text" id="first-name" name="first-name"><br>
+        <label for="last-name">Last Name:</label>
+        <input type="text" id="last-name" name="last-name"><br>
         <label for="email">Email:</label>
         <input type="text" id="email" name="email"><br>
         <label for="pass">Password:</label>
         <input type="password" id="pass" name="pass"><br>
-        <label for="pass">Address:</label>
-        <input type="text" id="address" name="address"><br>
+        <label for="confirm-pass">Confirm Password:</label>
+        <input type="password" id="confirm-pass" name="confirm-pass"><br>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone"><br><br>
         <input type="submit" value="Submit">
     </form>
 </div>

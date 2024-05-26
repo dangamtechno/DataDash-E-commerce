@@ -11,7 +11,7 @@ CREATE TABLE users (
   email VARCHAR(255) NOT NULL, -- User's email address
   password_hash VARCHAR(255), -- Hashed password
   phone VARCHAR(20), -- User's phone number
-  registration_date DATETIME -- User's registration date
+  registration_date DATETIME DEFAULT CURRENT_TIMESTAMP -- User's registration date
 );
 
 CREATE TABLE addresses (
