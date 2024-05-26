@@ -1,24 +1,33 @@
+<!DOCTYPE html>
 <html>
+<head>
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
+    <h1>Shopping Cart</h1>
+    <div class="topnav">
+        <a href="index.html">Home</a>
+        <a href="Loginpage.html">Login</a>
+        <a href="Cart.html" class="active">Shopping Cart</a>
+    </div>
+    <div class="cart-container">
+        <table class="cart-table">
+            <tr>
+                <th>Index</th>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+            <!-- cart items will be displayed here -->
+        </table>
+        <div class="cart-total">
+            Total: $<span id="cart-total">0.00</span>
+        </div>
+        <button class="checkout-button">Checkout</button>
+    </div>
 
-<h1>Shopping Cart</h1>
-	<div class="topnav">
-		<a href="Homepage.html">Home</a>
-		<a href="Loginpage.html">Login</a>
-		<a href="#cart">Shopping Cart</a>
-	</div>
-	
-<table>
-	<tr>
-		<th>Index</th>
-		<th>Product Name</th>
-		<th>Price</th>
-	</tr>
-	<tr>
-		<td>1</td>
-		<td>Headphones</td>
-		<td>$50<td>
-	</tr>
-</table>
+    <script src="Cart.js"></script>
 </body>
 </html>
