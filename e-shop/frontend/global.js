@@ -3,6 +3,18 @@ document.addEventListener('DOMContentLoaded',requestBanner);
 document.addEventListener('DOMContentLoaded',requestFeaturedProducts);
 document.addEventListener('DOMContentLoaded',requestNewArrivals);
 
+function fillDropDownList(data){
+    list = document.getElementById("drop-down");
+    if(list){
+    data.forEach((item) =>{
+        let option = document.createElement('option');
+        option.text = item;
+        list.add(option);
+    });
+}
+}
+
+
 
 function callCarousal(){
     const swiper = new Swiper('.swiper', {
@@ -80,6 +92,9 @@ function requestCategories(){
     function responseCategories(data){
         const nav = document.querySelector('.navigation');
         if(data.categories){
+            categories = data.categories;
+            console.log(categories);
+            fillDropDownList(categories);
             const ul = document.createElement('ul');
             data.categories.forEach((category) => {
                 const li = document.createElement('li');
