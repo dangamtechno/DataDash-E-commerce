@@ -13,35 +13,38 @@ header('Access-Control-Allow-Origin: *');
    </script>
    <title>Product Search</title>
 </head>
-<div class = "heading">
-<div class="left-heading">
-                <div class="logo">
-                    <a href ="/user/frontend/index.html">
-                    <img id="logo" src="/images/logo.png"/>
-                    </a>
-                </div>
-                <div class="search-bar">
-                    <form class="search" action="http://localhost:8081/user/backend/searchCatalog.php" method="POST">
-                        <input type="search" name ="search" placeholder="search...">
-                        <select name="criteria" aria-label="label for the select" id="drop-down">
-                            <option>Product Name</option>
-                        </select>
-                        <input type="submit" name="submit-search">                        
-                    </form>
-                </div>
+<header>
+    <div class = "heading">
+       <div class="left-heading">
+            <div class="logo">
+                <a href ="/user/frontend/index.html">
+                   <img id="logo" src="/images/logo.png"/>
+                </a>
             </div>
-            <div class="right-heading">
-                <div class="login-status">
-                    <div class="login" title="login"><i class="fas fa-sign-in-alt fa-2x"></i></div>
+            <div class="search-bar">
+                <form class="search" action="http://localhost:8081/user/backend/searchCatalog.php" method="POST">
+                    <input type="search" name ="search" placeholder="search...">
+                    <select name="criteria" aria-label="label for the select" id="drop-down">
+                        <option>Product Name</option>
+                    </select>
+                    <input type="submit" name="submit-search">                        
+                </form>
+            </div>
+        </div>
+        <div class="right-heading">
+            <div class="login-status">
+                <div class="login" title="login"><i class="fas fa-sign-in-alt fa-2x"></i></div>
                     <div class="register" title="register"><i class="fas fa-user-times fa-2x"></i></div>
                     <div class="logout" title = "log out"><i class="fas fa-sign-out-alt fa-2x"></i></div>
-                    <div class="logged-user">
-                        <i class="fas fa-user-check fa-2x"></i>
-                    <span class="username">username</span></div>
-                </div>
-            <div class="cart"><i class="fas fa-shopping-cart fa-2x"></i></div>
+                        <div class="logged-user">
+                            <i class="fas fa-user-check fa-2x"></i>
+                            <span class="username">username</span>
+                        </div>
+                    </div>
+                <div class="cart"><i class="fas fa-shopping-cart fa-2x"></i></div>
+        </div>
     </div>
-</div>
+</header>
 <main>
     <div class="catalog">
         <?php
