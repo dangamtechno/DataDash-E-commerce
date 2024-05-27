@@ -19,20 +19,23 @@
     <h1>Create Account</h1>
     <p>Input your user info and click Submit.</p>
 
-    <form action="user.php" method="POST">
+    <!-- This is if the folder is named datadash -->
+    <form action="/datadash/e-shop/backend/user.php" method="POST">
         <label for="first-name">First Name:</label>
-        <input type="text" id="first-name" name="first-name"><br>
+        <input type="text" id="first-name" name="first_name"><br>
         <label for="last-name">Last Name:</label>
-        <input type="text" id="last-name" name="last-name"><br>
+        <input type="text" id="last-name" name="last_name"><br>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username"><br>
         <label for="email">Email:</label>
         <input type="text" id="email" name="email"><br>
         <label for="pass">Password:</label>
-        <input type="password" id="pass" name="pass"><br>
+        <input type="password" id="pass" name="password"><br>
         <label for="confirm-pass">Confirm Password:</label>
-        <input type="password" id="confirm-pass" name="confirm-pass"><br>
+        <input type="password" id="confirm-pass" name="confirm_password"><br>
         <label for="phone">Phone:</label>
         <input type="text" id="phone" name="phone"><br><br>
-        <input type="submit" value="Submit">
+        <input type="submit" name="insert" value="Submit">
     </form>
 </div>
 
