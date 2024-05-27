@@ -2,7 +2,10 @@
 session_start();
 
 // Connect to database
-$conn = new mysqli("localhost", "username", "password", "database_name");
+//$conn = new mysqli("localhost", "username", "password", "database_name");
+
+// Connection below is for xampp
+$conn = new mysqli("localhost", "root", "", "datadash");
 
 // Check connection
 if ($conn->connect_error) {
@@ -11,6 +14,7 @@ if ($conn->connect_error) {
 
 // Insert user
 function insertUser($first_name, $last_name, $username, $email, $password, $phone = null) {
+    global $conn; // Add this line
     $password_hash = password_hash($password, PASSWORD_DEFAULT); // Hash the password
     $query = "INSERT INTO users (first_name, last_name, username, email, password_hash, phone) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
@@ -21,6 +25,7 @@ function insertUser($first_name, $last_name, $username, $email, $password, $phon
 
 // Get user by ID
 function getUserById($user_id) {
+    global $conn; // Add this line
     $query = "SELECT * FROM users WHERE user_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $user_id);
@@ -35,9 +40,16 @@ if (isset($_POST['insert'])) {
     $username = $_POST['username'];
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
     $phone = $_POST['phone'];
-    $user_id = insertUser($first_name, $last_name, $username, $email, $password, $phone);
-    echo "User inserted with ID: $user_id";
+
+    // Check if password and confirm password fields match
+    if ($password === $confirm_password) {
+        $user_id = insertUser($first_name, $last_name, $username, $email, $password, $phone);
+        echo "User inserted with ID: $user_id";
+    } else {
+        echo "Password and confirm password fields do not match.";
+    }
 }
 
 if (isset($_GET['id'])) {
