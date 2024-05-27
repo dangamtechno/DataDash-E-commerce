@@ -1,6 +1,6 @@
 -- Create the database
-CREATE DATABASE ecommerce;
-USE ecommerce;
+CREATE DATABASE datadash;
+USE datadash;
 
 -- User-related tables
 CREATE TABLE users (
