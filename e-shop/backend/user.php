@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once 'session.php';
 
 // Connect to database
 //$conn = new mysqli("localhost", "username", "password", "database_name");
