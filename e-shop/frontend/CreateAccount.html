@@ -5,6 +5,14 @@
         body {
             font-size: 0.9em; /* decreased font size */
         }
+        input[type="email"], input[type="tel"] {
+          width: 100%; /* make the input fields full width */
+          height: 30px; /* adjust the height to match the other input fields */
+          font-size: 16px; /* adjust the font size to match the other input fields */
+          padding: 10px; /* add padding to match the other input fields */
+          border: 1px solid #ccc; /* add border to match the other input fields */
+          border-radius: 5px; /* add border-radius to match the other input fields */
+        }
     </style>
 </head>
 <body>
@@ -20,24 +28,42 @@
     <p>Input your user info and click Submit.</p>
 
     <!-- This is if the folder is named datadash -->
-    <form action="/datadash/e-shop/backend/user.php" method="POST">
+    <form action="/datadash/e-shop/backend/user.php" method="POST" id="create-account-form">
         <label for="first-name">First Name:</label>
-        <input type="text" id="first-name" name="first_name"><br>
+        <input type="text" id="first-name" name="first_name" required><br>
         <label for="last-name">Last Name:</label>
-        <input type="text" id="last-name" name="last_name"><br>
+        <input type="text" id="last-name" name="last_name" required><br>
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username"><br>
+        <input type="text" id="username" name="username" required><br>
         <label for="email">Email:</label>
-        <input type="text" id="email" name="email"><br>
+        <input type="email" id="email" name="email" required><br>
         <label for="pass">Password:</label>
-        <input type="password" id="pass" name="password"><br>
+        <input type="password" id="pass" name="password" required><br>
         <label for="confirm-pass">Confirm Password:</label>
-        <input type="password" id="confirm-pass" name="confirm_password"><br>
+        <input type="password" id="confirm-pass" name="confirm_password" required><br>
         <label for="phone">Phone:</label>
-        <input type="text" id="phone" name="phone"><br><br>
+        <input type="tel" id="phone" name="phone"><br><br>
         <input type="submit" name="insert" value="Submit">
     </form>
 </div>
+
+<script>
+    const form = document.getElementById('create-account-form');
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const password = document.getElementById('pass').value;
+        const confirmPassword = document.getElementById('confirm-pass').value;
+
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+
+        form.submit();
+    });
+</script>
 
 </body>
 </html>
