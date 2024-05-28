@@ -16,3 +16,18 @@ function showHideIcon(icon, flag) {
 registerButton.addEventListener('click', () => {
   showHideIcon(registerButton, true);
 });
+
+// Check if a session exists using AJAX
+fetch('check_session.php')
+  .then(response => response.text())
+  .then(data => {
+    if (data === 'true') {
+      // Get the user ID using AJAX
+      fetch('get_user_id.php')
+        .then(response => response.text())
+        .then(userId => {
+          loggedUser.textContent = `Logged in as ${userId}`;
+          loginContainer.style.display = 'none';
+        });
+    }
+  });
