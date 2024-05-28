@@ -1,16 +1,7 @@
-const loginContainer = document.querySelector('.login-container');
+const loginButton = document.querySelector('.login');
 const registerButton = document.querySelector('.register');
-const loggedUser = document.querySelector('.login-status');
-
-showHideIcon(registerButton, false);
-
-function showHideIcon(icon, flag) {
-  if (flag) {
-    icon.style.display = 'none';
-  } else {
-    icon.style.display = 'block';
-  }
-}
+const logoutButton = document.querySelector('.logout');
+const loggedUser = document.querySelector('.logged-user');
 
 // Add event listener to register button
 registerButton.addEventListener('click', () => {
@@ -27,7 +18,16 @@ fetch('check_session.php')
         .then(response => response.text())
         .then(userId => {
           loggedUser.textContent = `Logged in as ${userId}`;
-          loginContainer.style.display = 'none';
+          loginButton.style.display = 'none'; // Hide only the login button
+          registerButton.style.display = 'none'; // Hide only the register button
         });
     }
   });
+
+function showHideIcon(icon, flag) {
+  if (flag) {
+    icon.style.display = 'none';
+  } else {
+    icon.style.display = 'block';
+  }
+}
