@@ -1,6 +1,6 @@
 -- Create the database
-CREATE DATABASE datadash_db;
-USE datadash_db;
+CREATE DATABASE datadash;
+USE datadash;
 
 -- User-related tables
 CREATE TABLE users (
