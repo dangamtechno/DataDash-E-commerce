@@ -26,7 +26,7 @@ if ($result->num_rows > 0) {
     if (password_verify($password, $user_data['password_hash'])) {
         // Create a session and log the user in
         createSession($user_data['user_id']);
-        header("Location: ../frontend/index.html");
+        header("Location: ../../frontend/html/homepage.html");
         exit;
     } else {
         echo "Invalid password.";
@@ -36,4 +36,4 @@ if ($result->num_rows > 0) {
 }
 
 $conn->close();
-?>
+

@@ -31,4 +31,4 @@ function getSessionUserID() {
 function updateSessionUserID($new_user_id) {
     $_SESSION['user_id'] = $new_user_id;
 }
-?>
+

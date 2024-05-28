@@ -1,8 +1,10 @@
 <?php
-require_once 'session.php';
+require_once '../utils/session.php';
 
 // Connect to database
-$conn = new mysqli("localhost", "username", "password", "database_name");
+// $conn = new mysqli("localhost", "username", "password", "database_name");
+
+$conn = new mysqli("localhost", "root", "", "datadash");
 
 // Check connection
 if ($conn->connect_error) {
@@ -56,11 +58,14 @@ foreach ($cart as $product_id => $quantity) {
     echo "<td>" . $quantity . "</td>";
     echo "<td>" . $price . "</td>";
     echo "<td>" . $price * $quantity . "</td>";
-    echo "<td><form action='' method='post'><input type='hidden' name='update' value='" . $product_id . "'><input type='number' name='quantity' value='" . $quantity . "'><input type='submit' value='Update'></form><form action='' method='post'><input type='hidden' name='remove' value='" . $product_id . "'><input type='submit' value='Remove'></form></td>";
+    echo "<td><form action='' method='post'><input type='hidden' name='update' value='" . $product_id . "'><input 
+    type='number' name='quantity' value='" . $quantity . "'><input type='submit' value='Update'></form><form action='' 
+    method='post'><input type='hidden' name='remove' value='" . $product_id . "'><input type='submit' 
+    value='Remove'></form></td>";
     echo "</tr>";
 }
 echo "<tr><th colspan='3'>Total</th><th>" . $total . "</th><th></th></tr>";
 echo "</table>";
 
 $conn->close();
-?>
+

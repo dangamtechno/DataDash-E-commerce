@@ -1,7 +1,9 @@
 <?php
-require_once 'session.php';
+require_once '../utils/session.php';
 
 // Connect to database
+// $conn = new mysqli("localhost", "root", "", "datadash");
+
 $conn = new mysqli("localhost", "root", "", "datadash");
 
 // Check connection
@@ -57,4 +59,4 @@ if (isset($_GET['id'])) {
 }
 
 $conn->close();
-?>
+

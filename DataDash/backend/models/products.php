@@ -1,6 +1,8 @@
 <?php
 // Connect to database
-$conn = new mysqli("localhost", "username", "password", "database_name");
+// $conn = new mysqli("localhost", "username", "password", "database_name");
+
+$conn = new mysqli("localhost", "root", "", "datadash");
 
 // Check connection
 if ($conn->connect_error) {
@@ -17,10 +19,11 @@ while ($product = $products->fetch_assoc()) {
     echo "<td>" . $product['name'] . "</td>";
     echo "<td>" . $product['description'] . "</td>";
     echo "<td>" . $product['price'] . "</td>";
-    echo "<td><form action='cart.php' method='post'><input type='hidden' name='add' value='" . $product['product_id'] . "'><input type='number' name='quantity' value='1'><input type='submit' value='Add to Cart'></form></td>";
+    echo "<td><form action='cart.php' method='post'><input type='hidden' name='add' value='" . $product['product_id'] .
+        "'><input type='number' name='quantity' value='1'><input type='submit' value='Add to Cart'></form></td>";
     echo "</tr>";
 }
 echo "</table>";
 
 $conn->close();
-?>
+

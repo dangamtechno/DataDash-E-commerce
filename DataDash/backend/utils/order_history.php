@@ -2,7 +2,9 @@
 require_once 'session.php';
 
 // Connect to database
-$conn = new mysqli("localhost", "username", "password", "database_name");
+//$conn = new mysqli("localhost", "username", "password", "database_name");
+
+$conn = new mysqli("localhost", "root", "", "datadash");
 
 // Check connection
 if ($conn->connect_error) {
@@ -29,4 +31,4 @@ while ($row = $result->fetch_assoc()) {
 echo "</table>";
 
 $conn->close();
-?>
+
