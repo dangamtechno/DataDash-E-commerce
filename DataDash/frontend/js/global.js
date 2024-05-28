@@ -38,7 +38,7 @@ function callCarousal(){
 }
 
 function requestFeaturedProducts(){
-    fetchCall("featuredProducts.php",responseFeaturedProducts)
+    fetchCall("featured_products.php",responseFeaturedProducts)
     function responseFeaturedProducts(data){
         const featuredProducts= data.featuredProducts;
         featuredSection = document.querySelector('.featured-products');
@@ -46,7 +46,7 @@ function requestFeaturedProducts(){
     }
 }
 function requestNewArrivals(){
-    fetchCall("newArrivals.php",responseNewArrivals)
+    fetchCall("new_arrivals.php",responseNewArrivals)
     function responseNewArrivals(data){
         const featurdProducts= data.new_items;
         console.log("test: "+featurdProducts)

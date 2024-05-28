@@ -1,5 +1,7 @@
 <?php 
-require './include/db.php';
+require '../include/database_config.php';
+$conn = new mysqli("localhost", "root", "", "datadash");
+
 header('Access-Control-Allow-Origin: *');
 ?>
 <html lang="en">
@@ -7,7 +9,7 @@ header('Access-Control-Allow-Origin: *');
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel = "stylesheet" href="../frontend/style.css">
+   <link rel = "stylesheet" href="../../frontend/css/style.css">
    <script src="https://kit.fontawesome.com/d0ce752c6a.js"
         crossorigin="anonymous">
    </script>
@@ -17,13 +19,15 @@ header('Access-Control-Allow-Origin: *');
     <div class = "heading">
        <div class="left-heading">
             <div class="logo">
-                <a href ="/user/frontend/index.html">
-                   <img id="logo" src="/images/logo.png"/>
+                <a href ="../../frontend/html/homepage.html">
+                   <img id="logo" src="../../frontend/images/DataDash.png" alt=""/>
                 </a>
             </div>
             <div class="search-bar">
                 <form class="search" action="http://localhost:8081/user/backend/searchCatalog.php" method="POST">
-                    <input type="search" name ="search" placeholder="search...">
+                    <label>
+                        <input type="search" name ="search" placeholder="search...">
+                    </label>
                     <select name="criteria" aria-label="label for the select" id="drop-down">
                         <option>Product Name</option>
                     </select>
@@ -49,7 +53,6 @@ header('Access-Control-Allow-Origin: *');
     <div class="catalog">
         <?php
         if(isset($_POST['submit-search'])){
-            
             $search = mysqli_escape_string($conn,$_POST['search']);
             $sql="SELECT * FROM product join category on product.category_id = category.id WHERE product.name LIKE '%$search%'" ;
             $result = mysqli_query($conn,$sql);    

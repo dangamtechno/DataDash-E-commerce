@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <div class="topnav">
-        <a href="index.html">Home</a>
-        <a href="loginpage.html">Login</a>
+        <a href="homepage.html">Home</a>
+        <a href="login_page.html">Login</a>
         <a href="cart.html">Shopping Cart</a>
     </div>
 
@@ -17,7 +17,7 @@
         <h1>User Login</h1>
         <p>Input your user info and click Submit.</p>
 
-        <form action="../backend/login.php" method="post">
+        <form action="../../backend/utils/login.php" method="post">
             <label for="username_or_email">Username or Email:</label>
             <input type="text" id="username_or_email" name="username_or_email" required style="width: 100%; padding: 10px; margin-bottom: 20px;
              border: 1px solid #ccc;"><br>
@@ -27,11 +27,11 @@
         </form>
         <p>Or</p>
         <p>Click here to create an account:</p>
-        <a href="CreateAccount.html">
+        <a href="create_account.html">
             <button class="create-account">Create Account</button>
         </a>
     </div>
 
-    <script src="login.js"></script>
+    <script src="../js/login.js"></script>
 </body>
 </html>

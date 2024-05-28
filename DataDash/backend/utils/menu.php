@@ -1,5 +1,7 @@
 <?php
-require './include/db.php';
+require '../include/database_config.php';
+$conn = new mysqli("localhost", "root", "", "datadash");
+
 header('Access-Control-Allow-Origin: *');
 if($_SERVER['REQUEST_METHOD']==="GET"){
     $stmt = "SELECT Name FROM category WHERE status=1;";

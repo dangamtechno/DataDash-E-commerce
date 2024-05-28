@@ -1,6 +1,6 @@
 <html>
 <head>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <style>
         body {
             font-size: 0.9em; /* decreased font size */
@@ -18,8 +18,8 @@
 <body>
 
 <div class="topnav">
-    <a href="index.html">Home</a>
-    <a href="loginpage.html">Login</a>
+    <a href="homepage.html">Home</a>
+    <a href="login_page.html">Login</a>
     <a href="cart.html">Shopping Cart</a>
 </div>
 
@@ -28,7 +28,7 @@
     <p>Input your user info and click Submit.</p>
 
     <!-- This is if the folder is named datadash -->
-    <form action="/datadash/e-shop/backend/user.php" method="POST" id="create-account-form">
+    <form action="../../backend/models/user.php" method="POST" id="create-account-form">
         <label for="first-name">First Name:</label>
         <input type="text" id="first-name" name="first_name" required><br>
         <label for="last-name">Last Name:</label>
