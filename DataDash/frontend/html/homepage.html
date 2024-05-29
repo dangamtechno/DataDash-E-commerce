@@ -19,7 +19,7 @@
 </a>
 </div>
 <div class="search-bar">
-<form class="search" action="http://localhost:8081/backend/utils/search_catalog.php" method="POST">
+<form class="search" action="http://localhost:8081/user/backend/search_catalog.php" method="POST">
     <label>
         <input type="search" name="search" placeholder="search...">
     </label>
@@ -106,17 +106,19 @@
 <script src="../js/global.js"></script>
 <script src="../js/login.js"></script>
 <script>
-function logoutUser() {
-    // Check if there is a session
-    if (sessionStorage.getItem('session')) {
-        // Log the user out and redirect to login_page.html
-        sessionStorage.removeItem('session');
-        window.location.href = 'login_page.html';
-    } else {
-        // Redirect to homepage.html
-        window.location.href = 'homepage.html';
+    function logoutUser() {
+        // Check if there is a session
+        if (sessionStorage.getItem('session')) {
+            // Log the user out and redirect to login_page.html
+            sessionStorage.removeItem('session');
+            window.location.href = 'login_page.html';
+        } else {
+            // Redirect to homepage.html
+            window.location.href = 'homepage.html';
+        }
     }
-}
 </script>
+<script src="../js/homepage.js"></script>
+
 </body>
 </html>

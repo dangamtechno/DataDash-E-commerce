@@ -1,17 +1,17 @@
+<!DOCTYPE html>
 <html>
 <head>
     <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/create_account.js"></script>
     <style>
-        body {
-            font-size: 0.9em; /* decreased font size */
-        }
-        input[type="email"], input[type="tel"] {
-          width: 100%; /* make the input fields full width */
-          height: 30px; /* adjust the height to match the other input fields */
-          font-size: 16px; /* adjust the font size to match the other input fields */
-          padding: 10px; /* add padding to match the other input fields */
-          border: 1px solid #ccc; /* add border to match the other input fields */
-          border-radius: 5px; /* add border-radius to match the other input fields */
+        .create-account-container input[type="email"],
+        .create-account-container input[type="tel"] {
+          width: 100%;
+          height: 30px;
+          padding: 10px;
+          margin: 10px 0;
+          box-sizing: border-box;
+          border: 1px solid #ccc;
         }
     </style>
 </head>
@@ -27,8 +27,7 @@
     <h1>Create Account</h1>
     <p>Input your user info and click Submit.</p>
 
-    <!-- This is if the folder is named datadash -->
-    <form action="../../backend/models/user.php" method="POST" id="create-account-form">
+    <form action="../../backend/models/user.php" method="POST">
         <label for="first-name">First Name:</label>
         <input type="text" id="first-name" name="first_name" required><br>
         <label for="last-name">Last Name:</label>
@@ -46,25 +45,6 @@
         <input type="submit" name="insert" value="Submit">
     </form>
 </div>
-
-<script>
-    const form = document.getElementById('create-account-form');
-
-    form.addEventListener('submit', (event) => {
-        event.preventDefault();
-
-        const password = document.getElementById('pass').value;
-        const confirmPassword = document.getElementById('confirm-pass').value;
-
-        if (password !== confirmPassword) {
-            alert('Passwords do not match');
-            return;
-        }
-
-        form.submit();
-        window.location.href = 'homepage.html';
-    });
-</script>
 
 </body>
 </html>

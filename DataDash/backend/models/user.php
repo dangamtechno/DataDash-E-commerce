@@ -2,8 +2,6 @@
 require_once '../utils/session.php';
 
 // Connect to database
-// $conn = new mysqli("localhost", "root", "", "datadash");
-
 $conn = new mysqli("localhost", "root", "", "datadash");
 
 // Check connection
@@ -22,16 +20,6 @@ function insertUser($first_name, $last_name, $username, $email, $password, $phon
     return $conn->insert_id;
 }
 
-// Get user by ID
-function getUserById($user_id) {
-    global $conn;
-    $query = "SELECT * FROM users WHERE user_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_assoc();
-}
-
 // Call the functions
 if (isset($_POST['insert'])) {
     $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
@@ -45,18 +33,12 @@ if (isset($_POST['insert'])) {
     if ($password === $confirm_password) {
         $user_id = insertUser($first_name, $last_name, $username, $email, $password, $phone);
         createSession($user_id);
-        header("Location: welcome.php");
+        header("Location: ../../frontend/html/homepage.html");
         exit;
     } else {
         echo "Password and confirm password fields do not match.";
     }
 }
 
-if (isset($_GET['id'])) {
-    $user_id = $_GET['id'];
-    $user = getUserById($user_id);
-    echo json_encode($user);
-}
-
 $conn->close();
-
+?>
