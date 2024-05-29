@@ -142,7 +142,7 @@ function populateCatalog(products,section){
    }
 }
 function fetchCall(resource, callBack, method="GET"){
-    const url ="http://localhost:8081/user/backend/";
+    const url ="http://localhost:8081/backend/utils/";
     fetch(url+resource,{
        method: method,
     })
