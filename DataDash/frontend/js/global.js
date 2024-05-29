@@ -153,7 +153,24 @@ function fetchCall(resource, callBack, method="GET"){
 
 function getCategoryProducts(){
     const cat = this;
+    const main = document.querySelector("main");
     setActiveCategory(cat);
+    fetchCall(`products.php?category=${cat}`,responseCategoryProducts)
+    function responseCategoryProducts(data){
+       //console.log(data);
+       if(data.products){
+        let products = data.products;
+        let count = products.length;
+        console.log("Count: " + count);
+        main.innerHTML='';
+        if(count > 0) populateCatalog(products,main);
+        else{
+            alert("Empty");
+            main.innerHTML='<h2>nothing to see here</h2>';
+        }
+       }
+
+    }
 }
 function setActiveCategory(cat){
     const categoryList = document.querySelectorAll(".navigation li");
