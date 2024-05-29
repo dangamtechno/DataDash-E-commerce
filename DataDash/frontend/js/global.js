@@ -64,7 +64,7 @@ function requestBanner(){
         banners.forEach((banner) => {
             const slide = document.createElement("div");
             slide.className = "swiper-slide";
-            slide.style.backgroundImage=` url('http://localhost:8081${banner.image}')`;
+            slide.style.backgroundImage=` url('localhost/DataDash-E-commerce/DataDash/frontend/images/banner.image')`;
             slide.style.backgroundSize = "cover";
             slide.style.height="50vh";
             const h3 = document.createElement('h3');
@@ -122,7 +122,7 @@ function populateCatalog(products,section){
        card.appendChild(imgDiv);
        card.appendChild(descDiv);
        const img = document.createElement('img');
-       img.src = `http://localhost:8081${prod.image}`;
+       img.src = `'localhost/Datadash-E-commerce/DataDash/frontend/images/featured_prods.png`;
        imgDiv.appendChild(img);
        const name = document.createElement("p");
        name.textContent=prod.name;
@@ -169,7 +169,6 @@ function getCategoryProducts(){
             main.innerHTML='<h2>nothing to see here</h2>';
         }
        }
-
     }
 }
 function setActiveCategory(cat){

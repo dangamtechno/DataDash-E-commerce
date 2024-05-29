@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once '../utils/session.php';
 
 // Connect to database

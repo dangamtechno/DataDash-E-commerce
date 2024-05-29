@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require '../include/database_config.php';
 
 header('Access-Control-Allow-Origin: *');
@@ -14,5 +16,7 @@ if($_SERVER['REQUEST_METHOD']=="GET"){
     else{
        echo json_encode(['error'=> 'something went wrong']);
     }
+    $conn->close();
+
    exit();
 }

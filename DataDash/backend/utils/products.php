@@ -14,7 +14,7 @@ if($_SERVER['REQUEST_METHOD']==="GET"
     while($rowArray = $result->fetch_assoc()){
         array_push($arr,$rowArray);
     }
-    echo json_encode(['products'=> $arr]); 
+    echo json_encode(['products'=> $arr]);
    }
    else{
       echo json_encode(['error'=>'something went wrong.']);

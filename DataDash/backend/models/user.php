@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once '../utils/session.php';
 
 // Connect to database
@@ -33,7 +35,7 @@ if (isset($_POST['insert'])) {
     if ($password === $confirm_password) {
         $user_id = insertUser($first_name, $last_name, $username, $email, $password, $phone);
         createSession($user_id);
-        header("Location: ../../frontend/html/homepage.html");
+        header("Location: ../../frontend/html/homepage.php");
         exit;
     } else {
         echo "Password and confirm password fields do not match.";
@@ -41,4 +43,3 @@ if (isset($_POST['insert'])) {
 }
 
 $conn->close();
-?>

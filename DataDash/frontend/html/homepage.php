@@ -7,6 +7,8 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 <link rel="stylesheet" href="../css/style.css">
+    <?php require_once '../../backend/utils/session.php'; ?>
+
 <title>Document</title>
 </head>
 <body>
@@ -14,7 +16,7 @@
 <div class="heading">
 <div class="left-heading">
 <div class="logo">
-<a href="homepage.html">
+<a href="homepage.php">
 <img id="logo" src="../images/DataDash.png" alt=""/>
 </a>
 </div>
@@ -34,6 +36,7 @@
 <div class="login-status">
 <div class="login" title="login">
 <i class="fas fa-sign-in-alt fa-2x"></i>
+
 <a href="login_page.html">Login</a>
 </div>
 <div class="register" title="register">
@@ -70,7 +73,9 @@
 <h2>Featured Products</h2>
 </section>
 <section class="new-products">
-<h2>New Products</h2>
+    <h2>New Product</h2>
+
+
 </section>
 </main>
 <footer>
@@ -105,20 +110,5 @@
 </footer>
 <script src="../js/global.js"></script>
 <script src="../js/login.js"></script>
-<script>
-    function logoutUser() {
-        // Check if there is a session
-        if (sessionStorage.getItem('session')) {
-            // Log the user out and redirect to login_page.html
-            sessionStorage.removeItem('session');
-            window.location.href = 'login_page.html';
-        } else {
-            // Redirect to homepage.html
-            window.location.href = 'homepage.html';
-        }
-    }
-</script>
-<script src="../js/homepage.js"></script>
-
 </body>
 </html>

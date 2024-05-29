@@ -1,6 +1,10 @@
-<?php 
+<?php
+session_start();
+
 require '../include/database_config.php';
+
 header('Access-Control-Allow-Origin: *');
+
 ?>
 <html lang="en">
 
@@ -17,12 +21,12 @@ header('Access-Control-Allow-Origin: *');
     <div class = "heading">
        <div class="left-heading">
             <div class="logo">
-                <a href ="../../frontend/html/homepage.html">
+                <a href ="../../frontend/html/homepage.php">
                    <img id="logo" src="../../frontend/images/DataDash.png" alt=""/>
                 </a>
             </div>
             <div class="search-bar">
-                <form class="search" action="http://localhost:8081/user/backend/searchCatalog.php" method="POST">
+                <form class="search" action="search_catalog.php" method="POST">
                     <label>
                         <input type="search" name ="search" placeholder="search...">
                     </label>
@@ -74,6 +78,8 @@ header('Access-Control-Allow-Origin: *');
                 echo "nothing matches";
             }
         }
+        $conn->close();
+
         ?>
     </div>
 </main>   

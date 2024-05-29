@@ -1,7 +1,7 @@
 <?php
-$name = "datadash";
-$conn = new mysqli("localhost:3306","root","",$name);
-if($conn->connect_errno){
-    echo json_encode(['error'=>$conn->connect_error]);
-    exit();
+$conn = new mysqli("localhost", "root", "", "datadash");
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+$conn->close();
