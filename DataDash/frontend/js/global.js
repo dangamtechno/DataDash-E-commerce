@@ -40,7 +40,8 @@ function callCarousal(){
 function requestFeaturedProducts(){
     fetchCall("featured_products.php",responseFeaturedProducts)
     function responseFeaturedProducts(data){
-        const featuredProducts= data.featuredProducts;
+        const featuredProducts= data.featured_products;
+        console.log(featuredProducts);
         featuredSection = document.querySelector('.featured-products');
         populateCatalog(featuredProducts,featuredSection);
     }
@@ -88,6 +89,7 @@ function requestBanner(){
 
 
 function requestCategories(){
+    console.log("requestCat");
     fetchCall("menu.php",responseCategories)
     function responseCategories(data){
         const nav = document.querySelector('.navigation');
@@ -142,7 +144,7 @@ function populateCatalog(products,section){
    }
 }
 function fetchCall(resource, callBack, method="GET"){
-    const url ="http://localhost:8081/user/backend/";
+    const url ="http://localhost:8081/backend/utils/";
     fetch(url+resource,{
        method: method,
     })

@@ -1,6 +1,5 @@
 <?php 
 require '../include/database_config.php';
-$conn = new mysqli("localhost", "root", "", "datadash");
 
 header('Access-Control-Allow-Origin: *');
 ?>
@@ -24,7 +23,7 @@ header('Access-Control-Allow-Origin: *');
                 </a>
             </div>
             <div class="search-bar">
-                <form class="search" action="http://localhost:8081/user/backend/searchCatalog.php" method="POST">
+                <form class="search" action="http://localhost:8081/backend/utils/search_catalog.php" method="POST">
                     <label>
                         <input type="search" name ="search" placeholder="search...">
                     </label>
