@@ -1,13 +1,10 @@
 <?php
+require '../include/database_config.php';
+
 // Connect to database
 // $conn = new mysqli("localhost", "username", "password", "database_name");
 
-$conn = new mysqli("localhost", "root", "", "datadash");
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 // Display products
 echo "<h2>Products</h2>";

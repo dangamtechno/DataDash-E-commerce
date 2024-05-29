@@ -40,7 +40,7 @@ function callCarousal(){
 function requestFeaturedProducts(){
     fetchCall("featured_products.php",responseFeaturedProducts)
     function responseFeaturedProducts(data){
-        const featuredProducts= data.featuredProducts;
+        const featuredProducts= data.featured_products;
         featuredSection = document.querySelector('.featured-products');
         populateCatalog(featuredProducts,featuredSection);
     }
@@ -48,10 +48,9 @@ function requestFeaturedProducts(){
 function requestNewArrivals(){
     fetchCall("new_arrivals.php",responseNewArrivals)
     function responseNewArrivals(data){
-        const featurdProducts= data.new_items;
-        console.log("test: "+featurdProducts)
+        const new_items = data.new_items;
         newSection = document.querySelector('.new-products');
-        populateCatalog(featurdProducts,newSection);
+        populateCatalog(new_items,newSection);
     }
 }
 
@@ -63,8 +62,7 @@ function requestBanner(){
     if(data.banners){
         const banners = data.banners
         banners.forEach((banner) => {
-            console.log(banner.image)
-            const slide = document.createElement("div")
+            const slide = document.createElement("div");
             slide.className = "swiper-slide";
             slide.style.backgroundImage=` url('http://localhost:8081${banner.image}')`;
             slide.style.backgroundSize = "cover";
@@ -93,7 +91,6 @@ function requestCategories(){
         const nav = document.querySelector('.navigation');
         if(data.categories){
             categories = data.categories;
-            console.log(categories);
             fillDropDownList(categories);
             const ul = document.createElement('ul');
             data.categories.forEach((category) => {
