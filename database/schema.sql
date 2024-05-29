@@ -115,7 +115,7 @@ CREATE TABLE returns (
 CREATE TABLE cart (
   cart_id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL, -- User associated with the cart
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE cart_product (
