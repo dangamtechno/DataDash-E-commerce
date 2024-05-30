@@ -36,7 +36,7 @@
                 <div class="login-status">
                     <?php if (sessionExists()): ?>
                         <div class="hello-message">
-                            <span>Hello <?php echo getSessionUsername(); ?></span>
+                            <span>Hello, <?php echo getSessionUsername(); ?></span>
                         </div>
                         <div class="icons">
                             <a href="account.php"><i class="fas fa-user-check fa-2x"></i>Account</a>

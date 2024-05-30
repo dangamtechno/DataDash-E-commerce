@@ -10,12 +10,15 @@ require_once '../../backend/include/database_config.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Page</title>
     <link rel="stylesheet" href="../css/style.css">
+
     <style>
         /* Header */
         header {
-            background-color: #333;
+            background-color: #232f3e;
             color: #fff;
-            padding: 20px;
+            border-bottom: 2px solid #febd69
+            max-width: 1000px;
+            padding-top: -70px; /* Add padding to create space for the header */
         }
 
         .heading {
@@ -24,37 +27,13 @@ require_once '../../backend/include/database_config.php';
             align-items: center;
         }
 
-        .left-heading {
-            display: flex;
-            align-items: center;
-        }
-
         .logo img {
-            height: 50px;
+            height: 30px;
         }
 
         .login-status {
             margin-left: 20px;
-        }
-
-        .search-form {
-            display: flex;
-            align-items: center;
-        }
-
-        .search-form input[type="search"] {
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-        .search-form input[type="submit"] {
-            padding: 5px 10px;
-            background-color: #555;
-            color: #fff;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
+            font-size: 14px;
         }
 
         .navigation ul {
@@ -71,13 +50,13 @@ require_once '../../backend/include/database_config.php';
         .navigation a {
             color: #fff;
             text-decoration: none;
-            text-transform: uppercase;
+            font-size: 14px;
         }
 
         /* Main Content */
         main {
-            max-width: 800px;
-            margin: 0 auto;
+            max-width: 1000px;
+            margin: 20px auto;
             padding: 20px;
         }
 
@@ -88,13 +67,81 @@ require_once '../../backend/include/database_config.php';
         h2 {
             color: #333;
             margin-bottom: 10px;
+            font-size: 18px;
+            border-bottom: 2px solid #7909f1;
+            padding-bottom: 5px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        a {
+            color: #0066c0;
+            text-decoration: none;
         }
 
         /* Footer */
         footer {
-            background-color: #333;
+            background-color: #232f3e;
             color: #fff;
-            padding: 20px;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .social-media ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .social-media li {
+            margin: 0 10px;
+        }
+
+        .social-media a {
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .general-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .help,
+        .legal {
+            text-align: left;
+        }
+
+        .help ul,
+        .legal ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .help h3,
+        .legal h3 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .help a,
+        .legal a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .location {
+            flex-grow: 1;
             text-align: center;
         }
     </style>
@@ -104,7 +151,7 @@ require_once '../../backend/include/database_config.php';
         <div class="heading">
             <div class="left-heading">
                 <div class="logo">
-                    <img src="../images/DataDash.png" alt="Logo">
+                <img src="../images/DataDash.png" alt="Logo" width="75" height="500">
                 </div>
                 <div class="login-status">
                     <?php if (sessionExists()): ?>
@@ -112,148 +159,64 @@ require_once '../../backend/include/database_config.php';
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="right-heading">
-                <nav class="navigation">
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Shop</a></li>
-                <li><a href="#">Cart</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
-                <form class="search-form">
-                    <label>
-                        <input type="search" placeholder="Search">
-                    </label>
-                    <input type="submit" value="Search">
-                </form>
-            </div>
+            <nav class="navigation">
+                <ul>
+                    <li><a href="homepage.php">Home</a></li>
+                    <li><a href="shop.php">Shop</a></li>
+                    <li><a href="cart.php">Cart</a></li>
+                </ul>
+            </nav>
         </div>
-
     </header>
 
     <main>
         <?php if (sessionExists()): ?>
             <!-- User Profile -->
             <section>
-                <h2>User Profile</h2>
+                <h2>Your Account</h2>
                 <?php
-                $conn = new mysqli("localhost", "root", "", "datadash");
-                $userId = getSessionUserId();
-                $query = "SELECT * FROM users WHERE user_id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->bind_param("i", $userId);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $user = $result->fetch_assoc();
+                // Your PHP code for user profile goes here
                 ?>
-                <p>Name: <?php echo $user['first_name'] . ' ' . $user['last_name']; ?></p>
-                <p>Email: <?php echo $user['email']; ?></p>
-                <!-- Provide options to update profile picture, change password, etc. -->
             </section>
 
             <!-- Order History -->
             <section>
                 <h2>Order History</h2>
                 <?php
-                $query = "SELECT * FROM orders WHERE user_id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->bind_param("i", $userId);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                if ($result->num_rows > 0) {
-                    while ($order = $result->fetch_assoc()) {
-                        echo "<div>";
-                        echo "<p>Order ID: " . $order['id'] . "</p>";
-                        echo "<p>Order Date: " . $order['order_date'] . "</p>";
-                        echo "<p>Total: " . $order['total'] . "</p>";
-                        echo "</div>";
-                    }
-                } else {
-                    echo "<p>No orders found.</p>";
-                }
+                // Your PHP code for order history goes here
                 ?>
-                <!-- Provide options to view order details, track shipment, initiate returns/refunds -->
             </section>
 
             <!-- Saved Addresses -->
             <section>
                 <h2>Saved Addresses</h2>
                 <?php
-                $query = "SELECT * FROM addresses WHERE user_id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->bind_param("i", $userId);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                if ($result->num_rows > 0) {
-                    while ($address = $result->fetch_assoc()) {
-                        echo "<div>";
-                        echo "<p>" . $address['address_line_1'] . "</p>";
-                        echo "<p>" . $address['address_line_2'] . "</p>";
-                        echo "<p>" . $address['city'] . ", " . $address['state'] . " " . $address['zip_code'] . "</p>";
-                        echo "</div>";
-                    }
-                } else {
-                    echo "<p>No addresses found.</p>";
-                }
+                // Your PHP code for saved addresses goes here
                 ?>
-                <!-- Provide options to add, edit, or delete addresses -->
-                <!-- Set default addresses -->
             </section>
 
             <!-- Payment Methods -->
             <section>
                 <h2>Payment Methods</h2>
                 <?php
-                $query = "SELECT * FROM payment_methods WHERE user_id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->bind_param("i", $userId);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                if ($result->num_rows > 0) {
-                    while ($paymentMethod = $result->fetch_assoc()) {
-                        echo "<div>";
-                        echo "<p>Card Type: " . $paymentMethod['card_type'] . "</p>";
-                        echo "<p>Card Number: " . $paymentMethod['card_number'] . "</p>";
-                        echo "<p>Expiration Date: " . $paymentMethod['expiration_date'] . "</p>";
-                        echo "</div>";
-                    }
-                } else {
-                    echo "<p>No payment methods found.</p>";
-                }
+                // Your PHP code for payment methods goes here
                 ?>
-                <!-- Provide options to add, edit, or delete payment methods -->
-                <!-- Set default payment method -->
             </section>
 
             <!-- Wishlist -->
             <section>
                 <h2>Wishlist</h2>
                 <?php
-                $query = "SELECT p.* FROM wishlists w JOIN product p ON w.product_id = p.product_id WHERE w.user_id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->bind_param("i", $userId);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                if ($result->num_rows > 0) {
-                    while ($product = $result->fetch_assoc()) {
-                        echo "<div>";
-                        echo "<p>" . $product['name'] . "</p>";
-                        echo "<p>Price: " . $product['price'] . "</p>";
-                        echo "</div>";
-                    }
-                } else {
-                    echo "<p>No items in your wishlist.</p>";
-                }
+                // Your PHP code for wishlist goes here
                 ?>
-                <!-- Provide options to remove items or move them to the cart -->
             </section>
 
             <!-- Account Settings -->
             <section>
                 <h2>Account Settings</h2>
-                <!-- Provide options to update personal information, change password, manage marketing preferences, account security, subscriptions, etc. -->
+                <?php
+                // Your PHP code for account settings goes here
+                ?>
             </section>
 
             <!-- Logout -->
@@ -264,7 +227,32 @@ require_once '../../backend/include/database_config.php';
     </main>
 
     <footer>
-        <!-- Footer content goes here -->
+        <div class="social-media">
+            <ul>
+                <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+            </ul>
+        </div>
+        <div class="general-info">
+            <div class="help">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="location">
+                <p>123 Main Street, City, Country</p>
+            </div>
+            <div class="legal">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
     </footer>
 </body>
 </html>
