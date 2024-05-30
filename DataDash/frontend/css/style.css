@@ -455,3 +455,7 @@ footer a {
         grid-template-columns: repeat(1,1fr);
     }
   }
+
+.hello-message {
+    font-size: 1.5em; /* or any other size you prefer */
+}
