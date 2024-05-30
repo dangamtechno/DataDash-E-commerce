@@ -164,7 +164,7 @@ function populateCatalog(products,section){
      const decrement = document.createElement('button');
         decrement.textContent="decrement";
         decrement.className="cart-button";
-
+         
         decrement.addEventListener('click',()=>{
          if( x > 0){
             x-=1;
@@ -178,14 +178,14 @@ function populateCatalog(products,section){
         card.appendChild(increment);
         card.appendChild(decrement);
         card.appendChild(cart);
-        card.appendChild(wishlist)
-       catalog.appendChild(card);
-       
+        card.appendChild(wishlist)     
+        catalog.appendChild(card);
     })
     section.appendChild(catalog);    
    }
 }
 
+                     
 function addToWishlist(){
     console.log("Add to Wishlist");
 }
@@ -193,6 +193,7 @@ function addToCart(){
     console.log("Add to cart");
 }
 
+   
 function fetchCall(resource, callBack, method="GET"){
     const url ="http://localhost:8081/backend/utils/";
     fetch(url+resource,{
