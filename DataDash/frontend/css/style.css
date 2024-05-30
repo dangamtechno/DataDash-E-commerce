@@ -83,6 +83,7 @@ h2 {
     text-transform: capitalize;
     padding: 10px 0;
 }
+
 @media screen and (max-width: 500px) {
     .navigation ul li{
         margin: none;
@@ -111,13 +112,11 @@ h2 {
     font-size: larger;
     color: red;
 }
+
 .featured-products {
     background-color: salmon;
 }
-/*catalog end*/
-/**/
-/**/
-/*Header*/
+
 header {
     position: fixed;
     top: 0;

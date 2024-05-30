@@ -116,52 +116,55 @@ function populateCatalog(products,section){
     catalog.className = "catalog";
 
     products.forEach((prod)=>{
-        const card = document.createElement('div');
-        card.className = "card";
-        const imgDiv = document.createElement('div');
-        imgDiv.className = "card-img";
-        const descDiv = document.createElement('div');
-        descDiv.className = "card-desc";
-        card.appendChild(imgDiv);
-        card.appendChild(descDiv);
-        const img = document.createElement('img');
-        img.src = `http://localhost:8081${prod.image}`;
-        imgDiv.appendChild(img);
-        const name = document.createElement("p");
-        name.textContent=prod.name;
-        const price = document.createElement("p");
-        price.textContent = `${prod.price}$`
-        name.className = "product-name";
-        price.className="product-price";
-        const prodDescription = document.createElement('p');
-        prodDescription.textContent = prod.description;
-        descDiv.appendChild(name);
-        descDiv.appendChild(prodDescription);
-        descDiv.appendChild(price);
-        cart = document.createElement('button');
-        cart.textContent='Add to cart';
-        cart.className='cart-button';
-        cart.addEventListener('click',addToCart);
-        wishlist = document.createElement('button');
-        wishlist.textContent='wish List';
-        wishlist.className='cart-button';
-        wishlist.addEventListener('click',addToWishlist);
-        let x = 0;
-        const sub = document.createElement('h2');
-        const quantity = document.createElement('h2');
-        quantity.innerHTML = `quantity ${x}`;
-        quantity.id = 'quantity';
-        const increment = document.createElement('button');
-        increment.className='cart-button';
-        increment.textContent="increment";
-        increment.addEventListener('click',()=>{
+       const card = document.createElement('div');
+       card.className = "card";
+       const imgDiv = document.createElement('div');
+       imgDiv.className = "card-img";
+       const descDiv = document.createElement('div');
+       descDiv.className = "card-desc";
+       card.appendChild(imgDiv);
+       card.appendChild(descDiv);
+       const img = document.createElement('img');
+       img.src = `http://localhost:8081${prod.image}`;
+       imgDiv.appendChild(img);
+       const name = document.createElement("p");
+       name.textContent=prod.name;
+       const price = document.createElement("p");
+       price.textContent = `${prod.price}$`
+       name.className = "product-name";
+       price.className="product-price";
+       const prodDescription = document.createElement('p');
+       prodDescription.textContent = prod.description;
+       descDiv.appendChild(name);
+       descDiv.appendChild(prodDescription);
+       descDiv.appendChild(price);
+       cart = document.createElement('button');
+       cart.textContent='Add to cart';
+       cart.className='cart-button';
+       cart.addEventListener('click',addToCart);
+       wishlist = document.createElement('button');
+       wishlist.textContent='wish List';
+       wishlist.className='cart-button';
+       wishlist.addEventListener('click',addToWishlist);
+       let x = 0;
+       const sub = document.createElement('h2');
+       const quantity = document.createElement('h2');
+       quantity.innerHTML = `quantity ${x}`;
+       quantity.id = 'quantity';
+       const increment = document.createElement('button');
+       increment.className='cart-button';
+       increment.textContent="increment";
+
+       increment.addEventListener('click',()=>{
          x+=1;
          let total = x*prod.price;
          sub.innerHTML= total.toFixed(2);
+
      quantity.textContent=`quantity: ${x}`;})
      const decrement = document.createElement('button');
         decrement.textContent="decrement";
         decrement.className="cart-button";
+         
         decrement.addEventListener('click',()=>{
          if( x > 0){
             x-=1;
@@ -169,17 +172,20 @@ function populateCatalog(products,section){
             sub.innerHTML= total.toFixed(2);
             quantity.textContent=`quantity: ${x}`;
             }} ) ;
+
      card.appendChild(sub);
         card.appendChild(quantity);
         card.appendChild(increment);
         card.appendChild(decrement);
         card.appendChild(cart);
-        card.appendChild(wishlist)
+        card.appendChild(wishlist)     
         catalog.appendChild(card);
     })
     section.appendChild(catalog);    
    }
 }
+
+                     
 function addToWishlist(){
     console.log("Add to Wishlist");
 }
@@ -187,7 +193,7 @@ function addToCart(){
     console.log("Add to cart");
 }
 
-
+   
 function fetchCall(resource, callBack, method="GET"){
     const url ="http://localhost:8081/backend/utils/";
     fetch(url+resource,{
