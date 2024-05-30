@@ -39,7 +39,7 @@
                             <span>Hello <?php echo getSessionUsername(); ?></span>
                         </div>
                         <div class="icons">
-                            <a href="/account.php"><i class="fas fa-user-check fa-2x"></i>Account</a>
+                            <a href="account.php"><i class="fas fa-user-check fa-2x"></i>Account</a>
                             <a href="cart.php"><i class="fas fa-shopping-cart fa-2x"></i>Cart</a>
                             <a href="../../backend/utils/logout.php"><i class="fas fa-sign-out-alt fa-2x"></i>Logout</a>
                         </div>
