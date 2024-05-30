@@ -113,15 +113,7 @@ require_once '../../backend/include/database_config.php';
                 </div>
             </div>
             <div class="right-heading">
-                <form class="search-form">
-                    <label>
-                        <input type="search" placeholder="Search">
-                    </label>
-                    <input type="submit" value="Search">
-                </form>
-            </div>
-        </div>
-        <nav class="navigation">
+                <nav class="navigation">
             <ul>
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Shop</a></li>
@@ -130,6 +122,15 @@ require_once '../../backend/include/database_config.php';
                 <li><a href="#">Contact</a></li>
             </ul>
         </nav>
+                <form class="search-form">
+                    <label>
+                        <input type="search" placeholder="Search">
+                    </label>
+                    <input type="submit" value="Search">
+                </form>
+            </div>
+        </div>
+
     </header>
 
     <main>
