@@ -3,14 +3,21 @@
 <head>
     <title>Shopping Cart</title>
     <link rel="stylesheet" href="../css/style.css">
+    <?php require_once '../../backend/utils/session.php'; ?>
 </head>
 <body>
     <h1>Shopping Cart</h1>
     <div class="topnav">
-        <a href="homepage.php">Home</a>
-        <a href="login_page.html">Login</a>
-        <a href="cart.html" class="active">Shopping Cart</a>
-    </div>
+    <a href="homepage.php">Home</a>
+    <?php if (sessionExists()): ?>
+        <a href="../../backend/utils/logout.php">Logout</a>
+    <?php else: ?>
+        <a href="login_page.php">Login</a>
+    <?php endif; ?>
+    <?php if (sessionExists()): ?>
+        <a href="cart.php">Shopping Cart</a>
+    <?php endif; ?>
+</div>
     <div class="cart-container">
         <table class="cart-table">
             <tr>

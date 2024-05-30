@@ -21,7 +21,7 @@ header('Access-Control-Allow-Origin: *');
     <div class = "heading">
        <div class="left-heading">
             <div class="logo">
-                <a href ="../../frontend/html/homepage.php">
+                <a href ="../../frontend/pages/homepage.php">
                    <img id="logo" src="../../frontend/images/DataDash.png" alt=""/>
                 </a>
             </div>

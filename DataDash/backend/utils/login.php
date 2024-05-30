@@ -63,7 +63,7 @@ if (!empty($username_or_email) && !empty($password)) {
 
     if ($user !== null) {
         // Sign-in successful
-        header("Location: ../../frontend/html/homepage.php");
+        header("Location: ../../frontend/pages/homepage.php");
         exit;
     } else {
         echo "Invalid username/email or password.";

@@ -34,25 +34,25 @@
 </div>
 <div class="right-heading">
 <div class="login-status">
-<?php if (sessionExists()): ?>
-    <h2> Hello <?php echo getSessionUsername(); ?></h2>
-<?php else: ?>
-    <div class="login" title="login">
-        <a href="login_page.html"><i class="fas fa-sign-in-alt fa-2x"></i>Login</a>
-    </div>
-    <div class="register" title="register">
-        <a href="create_account.html"><i class="fas fa-user-times fa-2x"></i>Register</a>
-    </div>
-<?php endif; ?>
-<div class="logout" title="log out">
-    <a href="../../backend/utils/logout.php"><i class="fas fa-sign-out-alt fa-2x"></i>Logout</a>
-</div>
-<div class="logged-user">
-<a href="/account"><i class="fas fa-user-check fa-2x"></i>Account</a>
-</div>
-<div class="cart">
-<a href="cart.html"><i class="fas fa-shopping-cart fa-2x"></i>Cart</a>
-</div>
+    <?php if (sessionExists()): ?>
+        <h2> Hello <?php echo getSessionUsername(); ?></h2>
+        <div class="logout" title="log out">
+            <a href="../../backend/utils/logout.php"><i class="fas fa-sign-out-alt fa-2x"></i>Logout</a>
+        </div>
+        <div class="logged-user">
+            <a href="/account"><i class="fas fa-user-check fa-2x"></i>Account</a>
+        </div>
+        <div class="cart">
+            <a href="cart.php"><i class="fas fa-shopping-cart fa-2x"></i>Cart</a>
+        </div>
+    <?php else: ?>
+        <div class="login" title="login">
+            <a href="login_page.php"><i class="fas fa-sign-in-alt fa-2x"></i>Login</a>
+        </div>
+        <div class="register" title="register">
+            <a href="create_account.php"><i class="fas fa-user-times fa-2x"></i>Register</a>
+        </div>
+    <?php endif; ?>
 </div>
 </div>
 </div>
