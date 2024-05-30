@@ -312,7 +312,7 @@ END//
 DELIMITER ;
 
 CREATE TABLE sessions (
-  session_id INT AUTO_INCREMENT PRIMARY KEY,
+  session_id varchar(33) PRIMARY KEY,
   user_id INT NOT NULL, -- User associated with the session
   start_time DATETIME NOT NULL, -- Start time of the session
   end_time DATETIME, -- End time of the session (NULL if still active)
