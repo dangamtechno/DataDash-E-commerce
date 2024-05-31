@@ -68,7 +68,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_phone = $_POST["phone"];
 
     // Update user data in the database
-    $sql = "UPDATE users SET username='$new_username', first_name='$new_first_name', last_name='$new_last_name', password_hash='$new_hashed_password', phone='$new_phone' WHERE user_id=1"; // Replace 1 with the actual user ID
+    $sql = "UPDATE users SET username='$new_username', first_name='$new_first_name', last_name='$new_last_name',
+                 password_hash='$new_hashed_password', phone='$new_phone' WHERE user_id = (SELECT user_id FROM sessions
+                    WHERE user_id = users.user_id);";
 
     if ($conn->query($sql) === TRUE) {
         // Redirect to account.php after successful update
@@ -80,7 +82,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Get user data from the database
-$sql = "SELECT username, first_name, last_name, password_hash, phone FROM users WHERE user_id=1"; // Replace 1 with the actual user ID
+$sql = "SELECT username, first_name, last_name, password_hash, phone FROM users WHERE user_id = (SELECT user_id FROM 
+            sessions WHERE user_id = users.user_id);";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
