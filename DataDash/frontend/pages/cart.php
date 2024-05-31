@@ -32,7 +32,10 @@
         <div class="cart-total">
             Total: $<span id="cart-total">0.00</span>
         </div>
-        <button class="checkout-button">Checkout</button>
+        <form id="checkout-form" action="confirmation_page.php" method="get">
+             <input type="hidden" name="order_id" id="order_id" value="">
+             <button type="button" class="checkout-button">Checkout</button>
+        </form>
     </div>
 <footer>
         <div class="social-media">

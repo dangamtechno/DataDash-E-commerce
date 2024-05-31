@@ -66,6 +66,19 @@ function removeProductFromCart(productId) {
     updateCartTable();
 }
 
+function handleCheckout(order_id) {
+    // Assuming orderID is available or generated here
+    var orderID = 123; // Replace with actual order ID dynamically
+    
+    // Set the order ID in the hidden form field and submit the form
+    document.getElementById('order_id').value = orderID;
+    document.getElementById('checkout-form').submit();
+}
+
+// Add event listener for checkout button
+checkoutButton.addEventListener('click', handleCheckout);
+
+
 // Add event listeners for adding and removing products from the cart
 cartTable.addEventListener('click', (e) => {
     if (e.target.classList.contains('add-button')) {

@@ -459,3 +459,37 @@ footer a {
 .hello-message {
     font-size: 1.5em; /* or any other size you prefer */
 }
+
+/*confirmation_page*/
+
+.confirmation-container {
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    text-align: center;
+    color: #333;
+}
+.order-details {
+    margin-top: 20px;
+}
+.order-details table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.order-details th, .order-details td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+.order-details th {
+    background-color: #f4f4f4;
+}
+.total {
+    text-align: right;
+    font-weight: bold;
+    margin-top: 20px;
+}
