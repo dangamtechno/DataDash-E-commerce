@@ -54,8 +54,8 @@ function sendConfirmationEmail($to, $firstName, $orderDetails) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com'; 
         $mail->SMTPAuth = true;
-        $mail->Username = 'datadashservices@gmail.com'; // Replace with your SMTP username
-        $mail->Password = 'aday1234!'; // Replace with your SMTP password
+        $mail->Username = '*******@gmail.com'; //Complete
+        $mail->Password = '*******'; //Complete
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
