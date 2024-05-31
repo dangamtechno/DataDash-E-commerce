@@ -1,7 +1,7 @@
 <?php
 
 require_once '../../backend/utils/session.php';
-require_once '../../backend/utils/database.php'; 
+require_once '../../backend/utils/database.php';
 require 'vendor/autoload.php'; // Include Composer's autoload file for PHPMailer
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -52,7 +52,7 @@ function sendConfirmationEmail($to, $firstName, $orderDetails) {
     try {
         // Server settings
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com'; 
+        $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = '*******@gmail.com'; //Complete
         $mail->Password = '*******'; //Complete

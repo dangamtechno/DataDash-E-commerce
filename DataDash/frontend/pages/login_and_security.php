@@ -1,53 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Login and Security</title>
-<style>
-body {
-font-family: Arial, sans-serif;
-background-color: #f2f2f2;
-margin: 0;
-padding: 0;
-}
-.container {
-max-width: 400px;
-margin: 50px auto;
-background-color: #fff;
-padding: 20px;
-border-radius: 5px;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-h2 {
-text-align: center;
-color: #333;
-}
-input[type=text], input[type=password] {
-width: 100%;
-padding: 12px 20px;
-margin: 8px 0;
-display: inline-block;
-border: 1px solid #ccc;
-border-radius: 4px;
-box-sizing: border-box;
-}
-button {
-background-color: #4CAF50;
-color: white;
-padding: 14px 20px;
-margin: 8px 0;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-width: 100%;
-}
-button:hover {
-background-color: #45a049;
-}
-</style>
-</head>
-<body>
-<div class="container">
-<h2>Login and Security</h2>
 <?php
 // Create connection
 $conn = new mysqli("localhost", "root", "", "datadash");
@@ -100,6 +50,60 @@ if ($result->num_rows > 0) {
 $conn->close();
 ?>
 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login and Security</title>
+        <link rel="stylesheet" href="../css/style.css">
+
+<style>
+
+body {
+font-family: Arial, sans-serif;
+background-color: #f2f2f2;
+margin: 0;
+padding: 0;
+}
+.container {
+max-width: 400px;
+margin: 50px auto;
+background-color: #fff;
+padding: 20px;
+border-radius: 5px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h2 {
+text-align: center;
+color: #333;
+}
+input[type=text], input[type=password] {
+width: 100%;
+padding: 12px 20px;
+margin: 8px 0;
+display: inline-block;
+border: 1px solid #ccc;
+border-radius: 4px;
+box-sizing: border-box;
+}
+button {
+background-color: #4CAF50;
+color: white;
+padding: 14px 20px;
+margin: 8px 0;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+width: 100%;
+}
+button:hover {
+background-color: #45a049;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Login and Security</h2>
+
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <label for="username">Username</label>
 <input type="text" id="username" name="username" value="<?php echo $username; ?>" required>
@@ -120,4 +124,37 @@ $conn->close();
 </form>
 </div>
 </body>
+<footer>
+    <a href="account.php">
+    <button style="background-color: #4218d9; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Back to Account</button>
+  </a>
+        <div class="social-media">
+            <ul>
+                <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
+                <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
+                <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
+                <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
+                <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
+            </ul>
+        </div>
+        <div class="general-info">
+            <div class="help">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="location">
+                <p>123 Main Street, City, Country</p>
+            </div>
+            <div class="legal">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
 </html>
