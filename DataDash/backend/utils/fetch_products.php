@@ -1,7 +1,7 @@
 <?php
 
 require_once '../../backend/utils/session.php';
-require_once '../../backend/utils/database.php'; // Assume this file handles database connection
+require_once '../../backend/utils/database.php'; 
 require 'vendor/autoload.php'; // Include Composer's autoload file for PHPMailer
 
 use PHPMailer\PHPMailer\PHPMailer;
