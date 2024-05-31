@@ -28,7 +28,7 @@ require_once '../../backend/include/database_config.php';
         }
 
         .logo img {
-            height: 30px;
+            height: 60px;
         }
 
         .login-status {
@@ -171,52 +171,29 @@ require_once '../../backend/include/database_config.php';
 
     <main>
         <?php if (sessionExists()): ?>
-            <!-- User Profile -->
+        <!-- Login and Security -->
             <section>
-                <h2>Your Account</h2>
-                <?php
-                // Your PHP code for user profile goes here
-                ?>
+                <h2><a href="login_and_security.php">Login And Security</a></h2>
             </section>
 
             <!-- Order History -->
             <section>
-                <h2>Order History</h2>
-                <?php
-                // Your PHP code for order history goes here
-                ?>
+                <h2><a href="order_history.php">Order History</a></h2>
             </section>
 
             <!-- Saved Addresses -->
             <section>
-                <h2>Saved Addresses</h2>
-                <?php
-                // Your PHP code for saved addresses goes here
-                ?>
+                <h2><a href="saved_addresses.php">Saved Addresses</a></h2>
             </section>
 
             <!-- Payment Methods -->
             <section>
-                <h2>Payment Methods</h2>
-                <?php
-                // Your PHP code for payment methods goes here
-                ?>
+                <h2><a href="payment_methods.php">Payment Methods</a></h2>
             </section>
 
             <!-- Wishlist -->
             <section>
-                <h2>Wishlist</h2>
-                <?php
-                // Your PHP code for wishlist goes here
-                ?>
-            </section>
-
-            <!-- Account Settings -->
-            <section>
-                <h2>Account Settings</h2>
-                <?php
-                // Your PHP code for account settings goes here
-                ?>
+                <h2><a href="wishlist.php">Wishlist</a></h2>
             </section>
 
             <!-- Logout -->
@@ -229,9 +206,11 @@ require_once '../../backend/include/database_config.php';
     <footer>
         <div class="social-media">
             <ul>
-                <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
-                <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
-                <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
+                <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
+                <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
+                <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
+                <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
             </ul>
         </div>
         <div class="general-info">
