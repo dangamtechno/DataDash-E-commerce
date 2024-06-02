@@ -61,17 +61,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
         }
-    } elseif (isset($_GET['delete_id'])) {
-        // Delete address
-        $address_id = $_GET['delete_id'];
+    }
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit;
+}
 
-        $sql = "DELETE FROM addresses WHERE address_id = '$address_id' AND user_id = '$user_id'";
+// Delete address
+if (isset($_GET['delete_id'])) {
+    $address_id = $_GET['delete_id'];
 
-        if ($conn->query($sql) === TRUE) {
-            echo "<div class='success-message'>Address deleted successfully.</div>";
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
-        }
+    $sql = "DELETE FROM addresses WHERE address_id = '$address_id' AND user_id = '$user_id'";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "<div class='success-message'>Address deleted successfully.</div>";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit;
@@ -265,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <td><?php echo $row['postal_code']; ?></td>
                         <td><?php echo $row['country']; ?></td>
                         <td>
-                            <a href="?edit_id=<?php echo $row['address_id']; ?>"><i class="fas fa-edit"></i> Edit</a> |
+                            <a href="#" onclick="showEditForm(<?php echo $row['address_id']; ?>, '<?php echo $row['address_type']; ?>', '<?php echo $row['street_address']; ?>', '<?php echo $row['city']; ?>', '<?php echo $row['state']; ?>', '<?php echo $row['postal_code']; ?>', '<?php echo $row['country']; ?>'); return false;"><i class="fas fa-edit"></i> Edit</a> |
                             <a href="?delete_id=<?php echo $row['address_id']; ?>" onclick="return confirm('Are you sure you want to delete this address?')"><i class="fas fa-trash-alt"></i> Delete</a>
                         </td>
                     </tr>
@@ -300,53 +304,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="submit" value="Add Address" id="add-address-submit">
         </form>
 
-
-
         <!-- Edit Address Form -->
-        <?php if (isset($_GET['edit_id'])): ?>
-            <?php
-            $edit_id = $_GET['edit_id'];
-            $sql3 = "SELECT * FROM addresses WHERE address_id = '$edit_id' AND user_id = '$user_id'";
-            $edit_result = $conn->query($sql3);
-
-            if ($edit_result->num_rows > 0) {
-                $row = $edit_result->fetch_assoc();
-                $address_type = $row['address_type'];
-                $street_address = $row['street_address'];
-                $city = $row['city'];
-                $state = $row['state'];
-                $postal_code = $row['postal_code'];
-                $country = $row['country'];
-            } else {
-                echo "Address not found or you don't have permission to edit this address.";
-            }
-            ?>
-
+        <div id="edit-address-form" style="display: none;">
             <h3>Edit Address</h3>
-            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+            <form id="edit-address-popup-form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="update_address" value="1">
-                <input type="hidden" name="address_id" value="<?php echo $edit_id; ?>">
-                <label for="address_type">Address Type (Home, Business, etc.):</label>
-                <input type="text" name="address_type" value="<?php echo $address_type; ?>" required>
+                <input type="hidden" name="address_id" id="edit-address-id">
+                <label for="edit-address-type">Address Type (Home, Business, etc.):</label>
+                <input type="text" name="address_type" id="edit-address-type" required>
 
-                <label for="street_address">Street Address:</label>
-                <input type="text" name="street_address" value="<?php echo $street_address; ?>" required>
+                <label for="edit-street-address">Street Address:</label>
+                <input type="text" name="street_address" id="edit-street-address" required>
 
-                <label for="city">City:</label>
-                <input type="text" name="city" value="<?php echo $city; ?>" required>
+                <label for="edit-city">City:</label>
+                <input type="text" name="city" id="edit-city" required>
 
-                <label for="state">State:</label>
-                <input type="text" name="state" value="<?php echo $state; ?>" required>
+                <label for="edit-state">State:</label>
+                <input type="text" name="state" id="edit-state" required>
 
-                <label for="postal_code">Postal Code:</label>
-                <input type="text" name="postal_code" value="<?php echo $postal_code; ?>" required>
+                <label for="edit-postal-code">Postal Code:</label>
+                <input type="text" name="postal_code" id="edit-postal-code" required>
 
-                <label for="country">Country:</label>
-                <input type="text" name="country" value="<?php echo $country; ?>" required>
+                <label for="edit-country">Country:</label>
+                <input type="text" name="country" id="edit-country" required>
 
                 <input type="submit" value="Update Address">
+                <button type="button" onclick="hideEditForm()">Cancel</button>
             </form>
-        <?php endif; ?>
+        </div>
     </div>
 
     <?php
@@ -387,5 +372,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </footer>
+    <script src="../js/saved_addresses.js"></script>
 </body>
 </html>
