@@ -31,6 +31,7 @@ CREATE TABLE payment_methods (
   user_id INT NOT NULL, -- User associated with the payment method
   method_type VARCHAR(50) NOT NULL, -- Type of payment method (e.g., credit card, PayPal)
   card_number VARCHAR(20), -- Credit card number
+  cvs_number VARCHAR(20), -- CVS number
   expiration_date DATE, -- Credit card expiration date
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
