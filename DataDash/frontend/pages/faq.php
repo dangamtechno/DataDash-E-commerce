@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/style.css">
 	<title>Frequently Asked Questions</title>
 	<style>
 		body {
@@ -19,6 +20,15 @@
 		p {
 			line-height: 1.5;
 			margin-bottom: 10px;
+		}
+        .back-to-home {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #333;
+			color: #fff;
+			text-decoration: none;
+			border-radius: 5px;
+			margin-top: 20px;
 		}
 	</style>
 </head>
@@ -57,6 +67,7 @@
 
 	<h3>Can I track my order?</h3>
 	<p>Absolutely! Once your order has been shipped, you'll receive a tracking number via email. You can use this tracking number to monitor the progress of your shipment on the carrier's website.</p>
+	<a href="homepage.php" class="back-to-home">Back to Homepage</a>
 
 <footer>
     <div class="social-media">
