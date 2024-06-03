@@ -13,18 +13,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_username = $_POST["username"];
     $new_first_name = $_POST["first_name"];
     $new_last_name = $_POST["last_name"];
-    $new_password = $_POST["password"]; // Get the plain-text password
-    $new_hashed_password = password_hash($new_password, PASSWORD_DEFAULT); // Hash the password
     $new_phone = $_POST["phone"];
 
     // Update user data in the database
     $sql = "UPDATE users SET username='$new_username', first_name='$new_first_name', last_name='$new_last_name',
-                 password_hash='$new_hashed_password', phone='$new_phone' WHERE user_id = (SELECT user_id FROM sessions
-                    WHERE user_id = users.user_id);";
+                  phone='$new_phone' WHERE user_id = (SELECT user_id FROM sessions WHERE user_id = users.user_id);";
 
     if ($conn->query($sql) === TRUE) {
         // Redirect to account.php after successful update
-        header("Location: account.php");
+        header("Location: login_and_security.php");
         exit();
     } else {
         echo "Error updating user data: " . $conn->error;
@@ -41,7 +38,6 @@ if ($result->num_rows > 0) {
     $username = $row["username"];
     $first_name = $row["first_name"];
     $last_name = $row["last_name"];
-    $password_hash = $row["password_hash"];
     $phone = $row["phone"];
 } else {
     echo "No user data found.";
@@ -114,13 +110,16 @@ background-color: #45a049;
 <label for="lastname">Last Name</label>
 <input type="text" id="last_name" name="last_name" value="<?php echo $last_name; ?>" required>
 
-<label for="password">Password</label>
-<input type="password" id="password" name="password" value="<?php echo $password_hash; ?>" required>
-
 <label for="phone">Phone Number</label>
 <input type="text" id="phone" name="phone" value="<?php echo $phone; ?>">
 
 <button type="submit">Update</button>
+
+<br><br><br>
+<a href="reset_password.php">
+    <button type="button" style="background-color: blue; color: white;">Reset Password</button>
+</a>
+
 </form>
 </div>
 </body>
