@@ -1,5 +1,6 @@
 <footer>
-    <div class="social-media">
+
+<div class="social-media">
         <ul>
             <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
             <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
