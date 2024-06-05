@@ -47,6 +47,8 @@
         <input type="password" id="pass" name="password" required><br>
         <label for="confirm-pass">Confirm Password:</label>
         <input type="password" id="confirm-pass" name="confirm_password" required><br>
+        <label for="fav-movie">Favorite Movie:</label>
+        <input type="text" id="fav-movie" name="favorite_movie" required><br>
         <label for="phone">Phone (Optional):</label>
         <input type="tel" id="phone" name="phone"><br><br>
         <input class="submit" type="submit" name="insert" value="Submit">

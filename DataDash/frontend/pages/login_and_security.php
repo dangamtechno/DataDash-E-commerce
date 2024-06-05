@@ -13,11 +13,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_username = $_POST["username"];
     $new_first_name = $_POST["first_name"];
     $new_last_name = $_POST["last_name"];
+    $new_favorite_movie = $_POST["favorite_movie"];
     $new_phone = $_POST["phone"];
 
     // Update user data in the database
     $sql = "UPDATE users SET username='$new_username', first_name='$new_first_name', last_name='$new_last_name',
-                  phone='$new_phone' WHERE user_id = (SELECT user_id FROM sessions WHERE user_id = users.user_id);";
+                  favorite_movie='$new_favorite_movie', phone='$new_phone'  WHERE user_id = 
+                    (SELECT user_id FROM sessions WHERE user_id = users.user_id);";
 
     if ($conn->query($sql) === TRUE) {
         // Redirect to account.php after successful update
@@ -29,8 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Get user data from the database
-$sql = "SELECT username, first_name, last_name, password_hash, phone FROM users WHERE user_id = (SELECT user_id FROM 
-            sessions WHERE user_id = users.user_id);";
+$sql = "SELECT username, first_name, last_name, password_hash, favorite_movie, phone FROM users 
+            WHERE user_id = (SELECT user_id FROM sessions WHERE user_id = users.user_id);";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -38,6 +40,7 @@ if ($result->num_rows > 0) {
     $username = $row["username"];
     $first_name = $row["first_name"];
     $last_name = $row["last_name"];
+    $favorite_movie = $row["favorite_movie"];
     $phone = $row["phone"];
 } else {
     echo "No user data found.";
@@ -109,6 +112,9 @@ background-color: #45a049;
 
 <label for="lastname">Last Name</label>
 <input type="text" id="last_name" name="last_name" value="<?php echo $last_name; ?>" required>
+
+<label for="favmovie">Favorite Movie</label>
+<input type="text" id="favorite_movie" name="favorite_movie" value="<?php echo $favorite_movie; ?>" required>
 
 <label for="phone">Phone Number</label>
 <input type="text" id="phone" name="phone" value="<?php echo $phone; ?>">

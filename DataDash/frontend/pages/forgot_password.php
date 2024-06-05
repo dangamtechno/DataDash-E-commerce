@@ -10,20 +10,20 @@ if ($conn->connect_error) {
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get form data
-    $current_password = $_POST["current_password"];
+    $favorite_movie = $_POST["favorite_movie"];
     $new_password = $_POST["new_password"];
     $confirm_password = $_POST["confirm_password"];
 
-    // Get the user's current password hash from the database
-    $sql = "SELECT password_hash FROM users WHERE user_id = (SELECT user_id FROM sessions WHERE user_id = users.user_id);";
+    // Get the user's favorite movie from the database
+    $sql = "SELECT favorite_movie FROM users WHERE user_id = (SELECT user_id FROM sessions WHERE user_id = users.user_id);";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $current_password_hash = $row["password_hash"];
+        $user_favorite_movie = $row["favorite_movie"];
 
-        // Verify the current password
-        if (password_verify($current_password, $current_password_hash)) {
+        // Check if the favorite movie matches (case-insensitive)
+        if (strtolower($favorite_movie) === strtolower($user_favorite_movie)) {
             // Check if the new password and confirm password match
             if ($new_password === $confirm_password) {
                 // Hash the new password
@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<p class='error-message'>New password and confirm password do not match.</p>";
             }
         } else {
-            echo "<p class='error-message'>Current password is incorrect.</p>";
+            echo "<p class='error-message'>Favorite movie is incorrect.</p>";
         }
     } else {
         echo "<p class='error-message'>Error retrieving user data.</p>";
@@ -54,7 +54,7 @@ $conn->close();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Reset Password</title>
+    <title>Forgot Password</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
         body {
@@ -75,7 +75,7 @@ $conn->close();
             text-align: center;
             color: #333;
         }
-        input[type=password] {
+        input[type=text], input[type=password] {
             width: 100%;
             padding: 12px 20px;
             margin: 8px 0;
@@ -113,11 +113,11 @@ $conn->close();
 </head>
 <body>
     <div class="container">
-        <h2>Reset Password</h2>
+        <h2>Forgot Password</h2>
         <div class="form-container">
-            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-                <label for="current_password">Current Password</label>
-                <input type="password" id="current_password" name="current_password" required>
+            <form method="post" id="forgot-password-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                <label for="favorite_movie">Favorite Movie</label>
+                <input type="text" id="favorite_movie" name="favorite_movie" required>
 
                 <label for="new_password">New Password</label>
                 <input type="password" id="new_password" name="new_password" required>
@@ -127,10 +127,26 @@ $conn->close();
 
                 <button type="submit">Reset Password</button>
             </form>
-            <br><br>
-            <a href="forgot_password.php"><button style="background-color: #0a15ea; color: #ffffff; margin-top: 10px;">Forgot Password</button></a>
         </div>
     </div>
+
+<script>
+  const form = document.getElementById('forgot-password-form');
+  const favoriteMovieInput = document.getElementById('favorite_movie');
+  const passwordInput = document.getElementById('new_password');
+  const confirmPasswordInput = document.getElementById('confirm_password');
+  const passwordMismatchError = document.getElementById('password-mismatch-error');
+
+  form.addEventListener('submit', function(event) {
+    if (passwordInput.value !== confirmPasswordInput.value) {
+      event.preventDefault(); // Prevent form submission
+      passwordMismatchError.style.display = 'block'; // Show error message
+    } else {
+      passwordMismatchError.style.display = 'none'; // Hide error message
+    }
+  });
+</script>
+
     <footer>
         <a href="account.php">
             <button style="background-color: #4218d9; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Back to Account</button>
