@@ -10,6 +10,7 @@ CREATE TABLE users (
   username VARCHAR(255) NOT NULL, -- User's username
   email VARCHAR(255) NOT NULL, -- User's email address
   password_hash VARCHAR(255), -- Hashed password
+  favorite_movie VARCHAR(20), -- User's favorite movie
   phone VARCHAR(20), -- User's phone number
   registration_date DATETIME DEFAULT CURRENT_TIMESTAMP -- User's registration date
 );
@@ -319,3 +320,4 @@ CREATE TABLE sessions (
   end_time DATETIME, -- End time of the session (NULL if still active)
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
