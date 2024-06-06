@@ -41,7 +41,7 @@ CREATE TABLE payment_methods (
 CREATE TABLE category (
   category_id INT AUTO_INCREMENT PRIMARY KEY,
   category_name VARCHAR(45) NOT NULL, -- Category name
-  UNIQUE KEY name_unique (name) -- Unique constraint for category name
+  UNIQUE KEY category_name_unique (category_name) -- Unique constraint for category name
 );
 
 CREATE TABLE brands (
