@@ -67,9 +67,71 @@
         </section>
         <section class="featured-products">
             <h2>Featured Products</h2>
+            <!-- Product grid -->
+            <div class="product-grid">
+                <div class="product">
+                    <img src="images/product1.jpg" alt="Product 1">
+                    <div class="product-details">
+                        <h3>Product Name 1</h3>
+                        <p>$19.99</p>
+                    </div>
+                </div>
+                <div class="product">
+                    <img src="images/product2.jpg" alt="Product 2">
+                    <div class="product-details">
+                        <h3>Product Name 2</h3>
+                        <p>$29.99</p>
+                    </div>
+                </div>
+                <div class="product">
+                    <img src="images/product3.jpg" alt="Product 3">
+                    <div class="product-details">
+                        <h3>Product Name 3</h3>
+                        <p>$24.99</p>
+                    </div>
+                </div>
+                <div class="product">
+                    <img src="images/product4.jpg" alt="Product 4">
+                    <div class="product-details">
+                        <h3>Product Name 4</h3>
+                        <p>$14.99</p>
+                    </div>
+                </div>
+            </div>
         </section>
         <section class="new-products">
-            <h2>New Product</h2>
+            <h2>New Products</h2>
+            <!-- Product grid -->
+            <div class="product-grid">
+                <div class="product">
+                    <img src="images/product1.jpg" alt="Product 1">
+                    <div class="product-details">
+                        <h3>Product Name 1</h3>
+                        <p>$19.99</p>
+                    </div>
+                </div>
+                <div class="product">
+                    <img src="images/product2.jpg" alt="Product 2">
+                    <div class="product-details">
+                        <h3>Product Name 2</h3>
+                        <p>$29.99</p>
+                    </div>
+                </div>
+                <div class="product">
+                    <img src="images/product3.jpg" alt="Product 3">
+                    <div class="product-details">
+                        <h3>Product Name 3</h3>
+                        <p>$24.99</p>
+                    </div>
+                </div>
+                <div class="product">
+                    <img src="images/product4.jpg" alt="Product 4">
+                    <div class="product-details">
+                        <h3>Product Name 4</h3>
+                        <p>$14.99</p>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
     <footer>

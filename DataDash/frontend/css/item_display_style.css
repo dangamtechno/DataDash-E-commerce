@@ -1,0 +1,73 @@
+/*Robens*/
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 60px;
+    background-color: transparent;
+}
+
+.top-nav a {
+    color: black;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+.top-nav .middle img {
+    max-height: 50px;
+}
+
+.middle img {
+    width: 150px;
+    height: auto;
+}
+
+.top-nav .right {
+    display: flex;
+    align-items: center;
+}
+
+.top-nav .cart {
+    position: relative;
+}
+
+.top-nav .cart img {
+    height: 30px;
+}
+
+.top-nav .cart .cart-items {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: red;
+    color: #fff;
+    border-radius: 50%;
+    padding: 5px;
+    font-size: 12px;
+}
+
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 20px;
+}
+
+.product {
+    flex: 1 0 calc(20% - 30px);
+    margin-bottom: 20px;
+}
+
+.product img {
+    width: 100%;
+    max-height: 900px;
+}
+
+.product-details h3 {
+    margin: 10px 0 5px;
+}
+
+.product-details p {
+    margin: 0;
+    color: #888;
+}

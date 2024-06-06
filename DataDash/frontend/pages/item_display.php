@@ -1,41 +1,3 @@
-<?php
-$servername = "localhost";
-$username = "root"; 
-$password = ""; 
-$dbname = ""; 
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $first_name = $_POST['first_name'];
-  $last_name = $_POST['last_name'];
-  $username = $_POST['username'];
-  $email = $_POST['email'];
-  $password = $_POST['password'];
-  
-  // Hash the password
-  $password_hash = password_hash($password, PASSWORD_BCRYPT);
-
-  // Insert user into database
-  $sql = "INSERT INTO Users (first_name, last_name, username, email, password_hash, registration_date)
-          VALUES ('$first_name', '$last_name', '$username', '$email', '$password_hash', NOW())";
-
-  if ($conn->query($sql) === TRUE) {
-    echo "New record created successfully";
-  } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-  }
-
-  $conn->close();
-}
-?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DataDash - Home</title>
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/item_display_style.css">
 </head>
 <body style="background-color: #E1E8EE;">
     <!-- Nav bar -->
@@ -55,10 +17,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <a href="#">CONTACT</a>
         </div>
         <div class="middle">
-          <a href="index.html"><img src="image/DataDashLogoSlogan.png" alt="DataDash Logo"></a>
+          <a href="homepage.php"><img src="../images/DataDash.png" alt="DataDash Logo"></a>
         </div>
         <div class="right">
-          <a href="index.html" class="black">Sign Up/Login</a>
+          <a href="homepage.php" class="black">Sign Up/Login</a>
           <div class="cart">
             <img src="image/ShoppingCartLogo.png" alt="Cart">
             <span class="cart-items">0</span>
