@@ -180,6 +180,7 @@ $conn->close();
                 </ul>
             </div>
         </div>
+        2024 DataDash, All Rights Reserved.
     </footer>
 </body>
 </html>

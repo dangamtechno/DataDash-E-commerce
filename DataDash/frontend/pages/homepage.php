@@ -10,6 +10,31 @@
     <?php require_once '../../backend/utils/session.php'; ?>
 
     <title>Document</title>
+    <style>
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .product {
+            width: 24%;
+            margin-bottom: 20px;
+        }
+
+        .product img {
+            max-width: 100%;
+            height: auto;
+            width: 275px; /* Set the same width and height */
+            height: 275px;
+            object-fit: contain; /* Maintain aspect ratio and fit within the container */
+        }
+
+        .featured-products .product-grid .product:first-child,
+        .new-products .product-grid .product:first-child {
+            margin-left: 3%;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -17,7 +42,7 @@
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
-                        <img id="logo" src="../images/DataDash.png" alt=""/>
+                        <img src="../images/DataDash.png" alt="Logo" width="85" height="500">
                     </a>
                 </div>
                 <div class="search-bar">
@@ -54,7 +79,6 @@
                 </div>
             </div>
         </div>
-        <div class="navigation"></div>
     </header>
     <main>
         <section class="banner">
@@ -67,13 +91,54 @@
         </section>
         <section class="featured-products">
             <h2>Featured Products</h2>
+            <!-- Product grid -->
+            <div class="product-grid">
+                <?php
+                $conn = new mysqli("localhost", "root", "", "datadash");
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+                $featuredProducts = $conn->query("SELECT * FROM product ORDER BY RAND() LIMIT 4");
+                foreach ($featuredProducts as $product) {
+                    echo '<div class="product">';
+                    echo '<img src="../images/' . $product['image'] . '" alt="' . $product['name'] . '">';
+                    echo '<div class="product-details">';
+                    echo '<h3>' . $product['name'] . '</h3>';
+                    echo '<p>$' . $product['price'] . '</p>';
+                    echo '</div>';
+                    echo '</div>';
+                }
+                $conn->close();
+                ?>
+            </div>
         </section>
         <section class="new-products">
-            <h2>New Product</h2>
+            <h2>New Products</h2>
+            <!-- Product grid -->
+            <div class="product-grid">
+                <?php
+                $conn = new mysqli("localhost", "root", "", "datadash");
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+                $newProducts = $conn->query("SELECT * FROM product ORDER BY date_added DESC LIMIT 4");
+                foreach ($newProducts as $product) {
+                    echo '<div class="product">';
+                    echo '<img src="../images/' . $product['image'] . '" alt="' . $product['name'] . '">';
+                    echo '<div class="product-details">';
+                    echo '<h3>' . $product['name'] . '</h3>';
+                    echo '<p>$' . $product['price'] . '</p>';
+                    echo '</div>';
+                    echo '</div>';
+                }
+                $conn->close();
+                ?>
+            </div>
         </section>
     </main>
     <footer>
     <div class="social-media">
+        <br><br>
         <ul>
             <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
             <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
@@ -102,8 +167,9 @@
             </ul>
         </div>
     </div>
+    2024 DataDash, All Rights Reserved.
 </footer>
-    <script src="../js/global.js"></script>
-    <script src="../js/login.js"></script>
+    <script src="../js/navbar.js"></script>
+    <script src="../js/slider.js"></script>
 </body>
 </html>

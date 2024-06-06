@@ -104,6 +104,7 @@
             </ul>
         </div>
     </div>
-</footer>
+    2024 DataDash, All Rights Reserved.
+    </footer>
 </body>
 </html>

@@ -141,5 +141,6 @@ if ($result->num_rows > 0) {
             </ul>
         </div>
     </div>
+    2024 DataDash, All Rights Reserved.
 </footer>
 </html>

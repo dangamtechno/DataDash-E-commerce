@@ -40,9 +40,8 @@ CREATE TABLE payment_methods (
 -- Product-related tables
 CREATE TABLE category (
   category_id INT AUTO_INCREMENT PRIMARY KEY,
-  status TINYINT(1) NOT NULL DEFAULT 0, -- Category status (0 = inactive, 1 = active)
-  name VARCHAR(45) NOT NULL, -- Category name
-  UNIQUE KEY name_unique (name) -- Unique constraint for category name
+  category_name VARCHAR(45) NOT NULL, -- Category name
+  UNIQUE KEY category_name_unique (category_name) -- Unique constraint for category name
 );
 
 CREATE TABLE brands (
