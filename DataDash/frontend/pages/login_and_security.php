@@ -162,5 +162,6 @@ background-color: #45a049;
             </ul>
         </div>
     </div>
+    2024 DataDash, All Rights Reserved.
 </footer>
 </html>

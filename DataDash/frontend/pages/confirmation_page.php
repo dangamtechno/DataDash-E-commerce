@@ -123,6 +123,7 @@
             </ul>
         </div>
     </div>
+    2024 DataDash, All Rights Reserved.
 </footer>
     <script src="../js/global.js"></script>
     <script src="../js/login.js"></script>

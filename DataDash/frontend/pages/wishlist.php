@@ -60,6 +60,7 @@
             </ul>
         </div>
     </div>
+    2024 DataDash, All Rights Reserved.
 </footer>
     <script src="../js/wishlist.js"></script>
 </body>

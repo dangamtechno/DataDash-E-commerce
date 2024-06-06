@@ -233,6 +233,7 @@ require_once '../../backend/include/database_config.php';
             </ul>
         </div>
     </div>
+    2024 DataDash, All Rights Reserved.
 </footer>
 </body>
 </html>
