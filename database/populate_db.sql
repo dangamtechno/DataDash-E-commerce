@@ -1,52 +1,57 @@
 -- Populate the category table
 INSERT INTO category (category_name) VALUES
-  ('Electronics'),
-  ('Clothing'),
-  ('Books'),
-  ('Home & Kitchen'),
-  ('Beauty & Personal Care'),
-  ('Sports & Outdoors'),
-  ('Toys & Games'),
-  ('Automotive'),
-  ('Office Products'),
-  ('Pet Supplies');
+  ('Smartphones'),
+  ('Tablets'),
+  ('Headphones'),
+  ('Laptops'),
+  ('Smartwatches'),
+  ('Cameras'),
+  ('Earbuds'),
+  ('Televisions'),
+  ('Gaming Consoles'),
+  ('Smart Speakers'),
+  ('Chargers'),
+  ('Keyboards'),
+  ('Computer Mice'),
+  ('Storage Devices'),
+  ('Virtual Reality');
 
 -- Populate the brands table
 INSERT INTO brands (brand_name) VALUES
   ('Apple'),
   ('Samsung'),
   ('Sony'),
-  ('Nike'),
-  ('Adidas'),
-  ('Penguin'),
-  ('HarperCollins'),
-  ('KitchenAid'),
-  ('Dyson'),
-  ('Callaway');
+  ('Google'),
+  ('Bose'),
+  ('Canon'),
+  ('JBL'),
+  ('LG'),
+  ('Microsoft'),
+  ('Anker');
 
 -- Insert 20 products into the product table
 INSERT INTO product (category_id, brand_id, name, description, price, image, status)
 VALUES
-  (1, 1, 'Product 1', 'Description for Product 1', 19.99, 'product1.jpg', 1),
-  (1, 2, 'Product 2', 'Description for Product 2', 24.99, 'product2.jpg', 1),
-  (2, 3, 'Product 3', 'Description for Product 3', 14.99, 'product3.jpg', 1),
-  (2, 1, 'Product 4', 'Description for Product 4', 29.99, 'product4.jpg', 1),
-  (3, 2, 'Product 5', 'Description for Product 5', 39.99, 'product5.jpg', 1),
-  (3, 3, 'Product 6', 'Description for Product 6', 49.99, 'product6.jpg', 1),
-  (1, 1, 'Product 7', 'Description for Product 7', 9.99, 'product7.jpg', 1),
-  (1, 2, 'Product 8', 'Description for Product 8', 12.99, 'product8.jpg', 1),
-  (2, 3, 'Product 9', 'Description for Product 9', 17.99, 'product9.jpg', 1),
-  (2, 1, 'Product 10', 'Description for Product 10', 22.99, 'product10.jpg', 1),
-  (3, 2, 'Product 11', 'Description for Product 11', 27.99, 'product11.jpg', 1),
-  (3, 3, 'Product 12', 'Description for Product 12', 32.99, 'product12.jpg', 1),
-  (1, 1, 'Product 13', 'Description for Product 13', 37.99, 'product13.jpg', 1),
-  (1, 2, 'Product 14', 'Description for Product 14', 42.99, 'product14.jpg', 1),
-  (2, 3, 'Product 15', 'Description for Product 15', 47.99, 'product15.jpg', 1),
-  (2, 1, 'Product 16', 'Description for Product 16', 52.99, 'product16.jpg', 1),
-  (3, 2, 'Product 17', 'Description for Product 17', 57.99, 'product17.jpg', 1),
-  (3, 3, 'Product 18', 'Description for Product 18', 62.99, 'product18.jpg', 1),
-  (1, 1, 'Product 19', 'Description for Product 19', 67.99, 'product19.jpg', 1),
-  (1, 2, 'Product 20', 'Description for Product 20', 72.99, 'product20.jpg', 1);
+  (1, 1, 'iPhone 13', 'The latest iPhone with advanced features.', 999.99, 'iphone_13.jpg', 1),
+  (2, 2, 'Galaxy Tab S8', 'High-performance tablet for work and play.', 799.99, 'galaxy_tab_s8.jpg', 1),
+  (3, 3, 'Sony WH-1000XM4', 'Immersive sound experience with noise cancellation.', 349.99, 'sony_wh_1000xm4.jpg', 1),
+  (4, 1, 'MacBook Pro', 'Powerful laptop for professional use.', 1999.99, 'macbook_pro.jpg', 1),
+  (5, 2, 'Galaxy Watch 4', 'Stay connected and track your fitness goals.', 349.99, 'galaxy_watch_4.jpg', 1),
+  (6, 3, 'Canon EOS R5', 'Capture stunning photos and videos with professional quality.', 3499.99, 'canon_eos_r5.jpg', 1),
+  (7, 1, 'AirPods Pro', 'True wireless earbuds for seamless audio experience.', 249.99, 'airpods_pro.jpg', 1),
+  (8, 2, 'LG OLED C1', 'Immerse yourself in a world of entertainment with lifelike visuals.', 1999.99, 'lg_oled_c1.jpg', 1),
+  (9, 3, 'PlayStation 5', 'Experience the next generation of gaming with powerful performance.', 499.99, 'playstation_5.jpg', 1),
+  (10, 1, 'HomePod Mini', 'Voice-controlled speaker for hands-free convenience.', 99.99, 'homepod_mini.jpg', 1),
+  (11, 2, 'Anker Wireless Charger', 'Charge your devices without the hassle of cables.', 29.99, 'anker_wireless_charger.jpg', 1),
+  (12, 3, 'Logitech G Pro X', 'Wireless keyboard for comfortable typing experience.', 129.99, 'logitech_g_pro_x.jpg', 1),
+  (13, 1, 'Razer DeathAdder Elite', 'Precision gaming mouse for competitive edge.', 69.99, 'razer_deathadder_elite.jpg', 1),
+  (14, 2, 'Samsung T7 SSD', 'High-speed storage solution for your digital content.', 199.99, 'samsung_t7_ssd.jpg', 1),
+  (15, 3, 'Oculus Quest 2', 'Immerse yourself in virtual reality experiences.', 299.99, 'oculus_quest_2.jpg', 1),
+  (1, 1, 'Google Nest WiFi', 'Reliable and fast WiFi for your home.', 199.99, 'google_nest_wifi.jpg', 1),
+  (2, 2, 'iPad Air', 'Powerful tablet for work and creativity.', 599.99, 'ipad_air.jpg', 1),
+  (3, 3, 'Bose QuietComfort Earbuds', 'Wireless earbuds with noise cancellation.', 279.99, 'bose_quietcomfort_earbuds.jpg', 1),
+  (4, 1, 'Dell XPS 15', 'Thin and powerful laptop for professionals.', 1599.99, 'dell_xps_15.jpg', 1),
+  (5, 2, 'Fitbit Versa 3', 'Fitness smartwatch with heart rate monitoring.', 229.99, 'fitbit_versa_3.jpg', 1);
 
 
 -- Populate the product table
@@ -127,11 +132,11 @@ VALUES
 -- Populate the suppliers table
 INSERT INTO suppliers (supplier_name, contact_name, contact_email, contact_phone)
 VALUES
-  ('Acme Electronics', 'John Doe', 'john.doe@acme.com', '555-1234'),
-  ('Fashion Suppliers Inc.', 'Jane Smith', 'jane.smith@fashionsuppliers.com', '555-5678'),
-  ('Book Distributors LLC', 'Bob Johnson', 'bob.johnson@bookdistributors.com', '555-9012'),
-  ('Kitchen Essentials Co.', 'Sarah Lee', 'sarah.lee@kitchenessentials.com', '555-3456'),
-  ('Beauty World Inc.', 'Michael Brown', 'michael.brown@beautyworld.com', '555-7890');
+  ('Techtronics Ltd.', 'James Smith', 'james.smith@techtronics.com', '555-1234'),
+  ('Gadget Galaxy', 'Emily Johnson', 'emily.johnson@gadgetgalaxy.com', '555-5678'),
+  ('Electro Enterprises', 'David Wilson', 'david.wilson@electroenterprises.com', '555-9012'),
+  ('Innovative Electronics', 'Sophia Lee', 'sophia.lee@innovativeelectronics.com', '555-3456'),
+  ('Digital Dynamics Inc.', 'William Brown', 'william.brown@digitaldynamics.com', '555-7890');
 
 -- Populate the custom_fields table
 INSERT INTO custom_fields (field_name, field_type, field_value)
