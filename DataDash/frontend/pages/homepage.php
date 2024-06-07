@@ -21,14 +21,11 @@
                     </a>
                 </div>
                 <div class="search-bar">
-                    <form class="search" action="http://localhost:8081/backend/utils/search_catalog.php" method="POST">
+                    <form class="search-form">
                         <label>
                             <input type="search" name="search" placeholder="search...">
                         </label>
-                        <select name="criteria" aria-label="label for the select" id="drop-down">
-                            <option>Product Name</option>
-                        </select>
-                        <input type="submit" name="submit-search">
+                        <input type="submit" name="submit-search" class ="search-button">
                     </form>
                 </div>
             </div>

@@ -3,6 +3,26 @@ document.addEventListener('DOMContentLoaded',requestBanner);
 document.addEventListener('DOMContentLoaded',requestFeaturedProducts);
 document.addEventListener('DOMContentLoaded',requestNewArrivals);
 
+const searchSubmit = document.querySelector('.search-button');
+searchSubmit.addEventListener('click',submitSearch);
+function submitSearch(e){
+    e.preventDefault();
+    const form = document.querySelector('.search-form');
+    const formData = new FormData(form);
+    fetchCall('search.php',responseSearch,'POST',formData)
+    function responseSearch(data){
+        let products = data.search; 
+        console.log(products);
+        if(products){
+           const main = document.querySelector('main');
+           main.innerHTML= "";
+           populateCatalog(products,main);
+        }
+    }
+}
+
+
+
 function fillDropDownList(data){
     list = document.getElementById("drop-down");
     if(list){
@@ -110,81 +130,49 @@ function requestCategories(){
 }
 
 function populateCatalog(products,section){
- //if nonn empty enter branch
- if(products){
-    const catalog = document.createElement("div");
-    catalog.className = "catalog";
-
-    products.forEach((prod)=>{
-       const card = document.createElement('div');
-       card.className = "card";
-       const imgDiv = document.createElement('div');
-       imgDiv.className = "card-img";
-       const descDiv = document.createElement('div');
-       descDiv.className = "card-desc";
-       card.appendChild(imgDiv);
-       card.appendChild(descDiv);
-       const img = document.createElement('img');
-       img.src = `http://localhost:8081${prod.image}`;
-       imgDiv.appendChild(img);
-       const name = document.createElement("p");
-       name.textContent=prod.name;
-       const price = document.createElement("p");
-       price.textContent = `${prod.price}$`
-       name.className = "product-name";
-       price.className="product-price";
-       const prodDescription = document.createElement('p');
-       prodDescription.textContent = prod.description;
-       descDiv.appendChild(name);
-       descDiv.appendChild(prodDescription);
-       descDiv.appendChild(price);
-       cart = document.createElement('button');
-       cart.textContent='Add to cart';
-       cart.className='cart-button';
-       cart.addEventListener('click',addToCart);
-       wishlist = document.createElement('button');
-       wishlist.textContent='wish List';
-       wishlist.className='cart-button';
-       wishlist.addEventListener('click',addToWishlist);
-       let x = 0;
-       const sub = document.createElement('h2');
-       const quantity = document.createElement('h2');
-       quantity.innerHTML = `quantity ${x}`;
-       quantity.id = 'quantity';
-       const increment = document.createElement('button');
-       increment.className='cart-button';
-       increment.textContent="increment";
-
-       increment.addEventListener('click',()=>{
-         x+=1;
-         let total = x*prod.price;
-         sub.innerHTML= total.toFixed(2);
-
-     quantity.textContent=`quantity: ${x}`;})
-     const decrement = document.createElement('button');
-        decrement.textContent="decrement";
-        decrement.className="cart-button";
-         
-        decrement.addEventListener('click',()=>{
-         if( x > 0){
-            x-=1;
-            let total = x*prod.price;
-            sub.innerHTML= total.toFixed(2);
-            quantity.textContent=`quantity: ${x}`;
-            }} ) ;
-
-     card.appendChild(sub);
-        card.appendChild(quantity);
-        card.appendChild(increment);
-        card.appendChild(decrement);
-        card.appendChild(cart);
-        card.appendChild(wishlist)     
-        catalog.appendChild(card);
-    })
-    section.appendChild(catalog);    
+    //if nonn empty enter branch
+    if(products){
+       const catalog = document.createElement("div");
+       catalog.className = "catalog";
+       products.forEach((prod)=>{
+          //create card to hold product info
+          const card = document.createElement('div');
+          card.className = "card";
+          //image for product
+          const imgDiv = document.createElement('div');
+          imgDiv.className = "card-img";
+          //product name price category and product desc
+          const descDiv = document.createElement('div');
+          descDiv.className = "card-desc";
+          //apply it to card
+          card.appendChild(imgDiv);
+          card.appendChild(descDiv);
+          //apply event when card click to get product details 
+          card.addEventListener('click',getProductDetails.bind(prod))
+          //image element for product
+          const img = document.createElement('img');
+          img.src = `http://localhost:8081${prod.image}`;
+          imgDiv.appendChild(img);
+          //product name will be the name the for card
+          const name = document.createElement("p");
+          name.textContent = prod.name;
+          // product price
+          const price = document.createElement("p");
+          price.textContent = `${prod.price}$`
+          name.className = "product-name";
+          price.className="product-price";
+          //product description
+          const prodDescription = document.createElement('p');
+          prodDescription.textContent = prod.description;
+          //append to description container
+          descDiv.appendChild(name);
+          descDiv.appendChild(prodDescription);
+          descDiv.appendChild(price); 
+          catalog.appendChild(card);
+       });
+       section.appendChild(catalog);
+      }
    }
-}
-
                      
 function addToWishlist(){
     console.log("Add to Wishlist");
@@ -193,11 +181,11 @@ function addToCart(){
     console.log("Add to cart");
 }
 
-   
-function fetchCall(resource, callBack, method="GET"){
-    const url ="http://localhost:8081/backend/utils/";
+function fetchCall(resource, callBack, method="GET",data = undefined){
+    const url ="http://localhost:8081/user/backend/";
     fetch(url+resource,{
        method: method,
+       body:data, 
     })
     .then((res) => res.json())
     .then((data)=>{
@@ -205,6 +193,51 @@ function fetchCall(resource, callBack, method="GET"){
     callBack(data);
     }).catch((err)=>console.log(err));
 }
+ 
+
+function remove(stars) {
+    let i = 0;
+    while (i < 5) {
+        stars[i].className = "star";
+        i++;
+    }
+}
+function manageStars(stars,n){
+    return function(event){
+       remove(stars);
+       let cls = "";
+       for (let i = 0; i < n; i++) {
+           if (n == 1){ 
+              cls = "one";
+           }
+           else if (n == 2) cls = "two";
+           else if (n == 3) cls = "three";
+           else if (n == 4) cls = "four";
+           else cls = "five";
+           stars[i].className = "star " + cls;
+       }
+   }
+}
+function createStarRating(section){
+    for(let j = 1 ; j <= 5; j++ ){
+        const i = document.createElement('span');
+        i.className = "star";
+        i.textContent ="★";
+        section.appendChild(i);
+    }
+}
+
+function addRatingClickEvent(){
+    const ratingCards = document.querySelectorAll('.rating-container');
+    ratingCards.forEach((card)=>{
+        const stars = card.querySelectorAll('.star');
+        stars.forEach((star,index)=>{
+            star.addEventListener('click',manageStars(stars,index+=1));
+        });
+    })
+}
+
+
 
 
 function getCategoryProducts(){
@@ -240,3 +273,114 @@ function setActiveCategory(cat){
         } else category.style.backgroundColor = "initial"
     })
 }
+
+function getProductDetails(){
+    const main = document.querySelector('main');
+    fetchCall(`inventory.php?id=${this.id}`,responseInventory.bind(this))
+    function responseInventory(data){
+        //console.log(data);
+        const overlay = document.createElement('div');
+        overlay.className ='overlay';
+        overlay.addEventListener('click',removeOverlay);
+        main.appendChild(overlay);
+        const modal = document.createElement('div');
+        modal.className ='modal';
+        main.appendChild(modal);
+        
+        const modalImageContainer = document.createElement('div');
+        modalImageContainer.className = 'modalImage';
+        const img = document.createElement('img');
+        img.src = `http://localhost:8081${this.image}`;
+        modalImageContainer.appendChild(img);
+        modal.appendChild(modalImageContainer);
+        
+        const modalDesc = document.createElement('div');
+        modalDesc.className = 'modal-desc';
+        const title = document.createElement('div');
+        title.textContent = this.name;
+        modalDesc.appendChild(title);
+        const review = document.createElement('button');
+       review.addEventListener('click',submitReview);
+       review.textContent = 'leave review';
+       review.className ='cart-button';
+       const reviewText = document.createElement('input');
+       reviewText.type = 'text';
+       reviewText.className ='review_text';
+       reviewText.setAttribute("placeholder", "Enter text here");
+       const reviewTextLabel = document.createElement('label');
+       reviewTextLabel.textContent = "Leave a review!";
+       reviewTextLabel.setAttribute('for',"review_text");
+       const ratingDiv = document.createElement('div');
+       ratingDiv.className = 'rating-container'
+       
+       createStarRating(ratingDiv);
+       const review_container = document.createElement('div');
+       review_container.className = 'review-container';
+       review_container.appendChild(reviewTextLabel);
+       review_container.appendChild(reviewText);
+       review_container.appendChild(review);
+       cart = document.createElement('button');
+       cart.textContent='Add to cart';
+       cart.className='cart-button';
+       cart.addEventListener('click',addToCart);
+       wishlist = document.createElement('button');
+       wishlist.textContent='wish List';
+       wishlist.className='cart-button';
+       wishlist.addEventListener('click',addToWishlist);
+       let itemCount  = 0;
+       const subTotal = document.createElement('h2');
+       const itemsForCart = document.createElement('h2');
+       itemsForCart.innerHTML = `Add to cart ${itemCount}`;
+       itemsForCart.id = 'quantity';
+       const increment = document.createElement('button');
+       increment.className='cart-button';
+       increment.textContent="increment";
+       increment.addEventListener('click',()=>{
+           itemCount+=1;
+           let total = itemCount * this.price;
+           subTotal.innerHTML= total.toFixed(2);
+           itemsForCart.textContent=`Add to cart: ${itemCount}`;
+        });
+       const decrement = document.createElement('button');
+       decrement.textContent="decrement";
+       decrement.className="cart-button";
+       decrement.addEventListener('click',
+       ()=>{
+           if( itemCount > 0){
+              itemCount-=1;
+              let total = itemCount * this.price;
+              subTotal.innerHTML= total.toFixed(2);
+              itemsForCart.textContent=`Add to cart: ${itemCount}`;
+           }
+        });
+       const inStock = document.createElement('p');
+       inStock.innerHTML = `In stock: ${data.inStock}`;
+       modal.appendChild(inStock);
+       modal.appendChild(itemsForCart);
+       modal.appendChild(subTotal)
+       const buttonContainer = document.createElement('div');
+       buttonContainer.className = 'modal-buttons';
+       buttonContainer.appendChild(increment);
+       buttonContainer.appendChild(decrement);
+       buttonContainer.appendChild(cart);
+       buttonContainer.appendChild(wishlist);
+       modal.appendChild(buttonContainer);
+       review_container.appendChild(ratingDiv);
+       modal.appendChild(review_container);
+       addRatingClickEvent();
+    }
+}
+
+function removeOverlay(){
+    const main = document.querySelector('main');
+    const overlay =document.querySelector('.overlay');
+    const modal = document.querySelector('.modal');
+    if(overlay){
+        overlay.remove();
+    }
+    if(modal){
+        modal.remove();
+    }
+
+}
+
