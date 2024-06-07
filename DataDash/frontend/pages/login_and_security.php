@@ -13,18 +13,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_username = $_POST["username"];
     $new_first_name = $_POST["first_name"];
     $new_last_name = $_POST["last_name"];
-    $new_password = $_POST["password"]; // Get the plain-text password
-    $new_hashed_password = password_hash($new_password, PASSWORD_DEFAULT); // Hash the password
+    $new_favorite_movie = $_POST["favorite_movie"];
     $new_phone = $_POST["phone"];
 
     // Update user data in the database
     $sql = "UPDATE users SET username='$new_username', first_name='$new_first_name', last_name='$new_last_name',
-                 password_hash='$new_hashed_password', phone='$new_phone' WHERE user_id = (SELECT user_id FROM sessions
-                    WHERE user_id = users.user_id);";
+                  favorite_movie='$new_favorite_movie', phone='$new_phone'  WHERE user_id = 
+                    (SELECT user_id FROM sessions WHERE user_id = users.user_id);";
 
     if ($conn->query($sql) === TRUE) {
         // Redirect to account.php after successful update
-        header("Location: account.php");
+        header("Location: login_and_security.php");
         exit();
     } else {
         echo "Error updating user data: " . $conn->error;
@@ -32,8 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Get user data from the database
-$sql = "SELECT username, first_name, last_name, password_hash, phone FROM users WHERE user_id = (SELECT user_id FROM 
-            sessions WHERE user_id = users.user_id);";
+$sql = "SELECT username, first_name, last_name, password_hash, favorite_movie, phone FROM users 
+            WHERE user_id = (SELECT user_id FROM sessions WHERE user_id = users.user_id);";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -41,7 +40,7 @@ if ($result->num_rows > 0) {
     $username = $row["username"];
     $first_name = $row["first_name"];
     $last_name = $row["last_name"];
-    $password_hash = $row["password_hash"];
+    $favorite_movie = $row["favorite_movie"];
     $phone = $row["phone"];
 } else {
     echo "No user data found.";
@@ -114,13 +113,19 @@ background-color: #45a049;
 <label for="lastname">Last Name</label>
 <input type="text" id="last_name" name="last_name" value="<?php echo $last_name; ?>" required>
 
-<label for="password">Password</label>
-<input type="password" id="password" name="password" value="<?php echo $password_hash; ?>" required>
+<label for="favmovie">Favorite Movie</label>
+<input type="text" id="favorite_movie" name="favorite_movie" value="<?php echo $favorite_movie; ?>" required>
 
 <label for="phone">Phone Number</label>
 <input type="text" id="phone" name="phone" value="<?php echo $phone; ?>">
 
 <button type="submit">Update</button>
+
+<br><br><br>
+<a href="reset_password.php">
+    <button type="button" style="background-color: blue; color: white;">Reset Password</button>
+</a>
+
 </form>
 </div>
 </body>
@@ -129,32 +134,34 @@ background-color: #45a049;
     <button style="background-color: #4218d9; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Back to Account</button>
   </a>
         <div class="social-media">
+        <ul>
+            <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
+            <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
+            <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
+            <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
+            <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
+        </ul>
+    </div>
+    <div class="general-info">
+        <div class="help">
+            <h3>Help</h3>
             <ul>
-                <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
-                <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
-                <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
-                <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
-                <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
+                <li><a href="faq.php">Frequently Asked Questions</a></li>
+                <li><a href="returns.php">Returns</a></li>
+                <li><a href="customer_service.php">Customer Service</a></li>
             </ul>
         </div>
-        <div class="general-info">
-            <div class="help">
-                <h3>Help</h3>
-                <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                </ul>
-            </div>
-            <div class="location">
-                <p>123 Main Street, City, Country</p>
-            </div>
-            <div class="legal">
-                <h3>Legal</h3>
-                <ul>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                </ul>
-            </div>
+        <div class="location">
+            <p>123 Main Street, City, Country</p>
         </div>
-    </footer>
+        <div class="legal">
+            <h3>Privacy & Legal</h3>
+            <ul>
+                <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
+                <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
+            </ul>
+        </div>
+    </div>
+    2024 DataDash, All Rights Reserved.
+</footer>
 </html>

@@ -12,12 +12,12 @@ if ($conn->connect_error) {
 }
 
 // Insert user
-function insertUser($first_name, $last_name, $username, $email, $password, $phone = null) {
+function insertUser($first_name, $last_name, $username, $email, $password, $favorite_movie, $phone = null) {
     global $conn;
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
-    $query = "INSERT INTO users (first_name, last_name, username, email, password_hash, phone) VALUES (?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO users (first_name, last_name, username, email, password_hash, favorite_movie, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssssss", $first_name, $last_name, $username, $email, $password_hash, $phone);
+    $stmt->bind_param("sssssss", $first_name, $last_name, $username, $email, $password_hash, $favorite_movie, $phone);
     $stmt->execute();
     return $conn->insert_id;
 }
@@ -30,10 +30,11 @@ if (isset($_POST['insert'])) {
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
     $confirm_password = filter_input(INPUT_POST, 'confirm_password', FILTER_SANITIZE_STRING);
+    $favorite_movie = filter_input(INPUT_POST, 'favorite_movie', FILTER_SANITIZE_STRING);
     $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
 
     if ($password === $confirm_password) {
-        $user_id = insertUser($first_name, $last_name, $username, $email, $password, $phone);
+        $user_id = insertUser($first_name, $last_name, $username, $email, $password, $favorite_movie, $phone);
         createSession($user_id);
         header("Location: ../../frontend/pages/homepage.php");
         exit;

@@ -10,6 +10,7 @@ CREATE TABLE users (
   username VARCHAR(255) NOT NULL, -- User's username
   email VARCHAR(255) NOT NULL, -- User's email address
   password_hash VARCHAR(255), -- Hashed password
+  favorite_movie VARCHAR(20), -- User's favorite movie
   phone VARCHAR(20), -- User's phone number
   registration_date DATETIME DEFAULT CURRENT_TIMESTAMP -- User's registration date
 );
@@ -39,9 +40,8 @@ CREATE TABLE payment_methods (
 -- Product-related tables
 CREATE TABLE category (
   category_id INT AUTO_INCREMENT PRIMARY KEY,
-  status TINYINT(1) NOT NULL DEFAULT 0, -- Category status (0 = inactive, 1 = active)
-  name VARCHAR(45) NOT NULL, -- Category name
-  UNIQUE KEY name_unique (name) -- Unique constraint for category name
+  category_name VARCHAR(45) NOT NULL, -- Category name
+  UNIQUE KEY category_name_unique (category_name) -- Unique constraint for category name
 );
 
 CREATE TABLE brands (
@@ -319,3 +319,4 @@ CREATE TABLE sessions (
   end_time DATETIME, -- End time of the session (NULL if still active)
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
