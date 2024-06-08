@@ -34,6 +34,26 @@
         .new-products .product-grid .product:first-child {
             margin-left: 3%;
         }
+        .shop-button-container {
+        text-align: center; /* Center the button horizontally */
+        margin-top: 10px; /* Add some space above the button */
+}
+
+        .shop-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #009dff; /* Bootstrap primary color */
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .shop-button:hover {
+            background-color: #0056b3; /* Darker shade for hover effect */
+        }
     </style>
 </head>
 <body>
@@ -53,6 +73,9 @@
                         <input type="submit" name="submit-search" class ="search-button">
                     </form>
                 </div>
+            </div>
+            <div class="shop-button-container">
+                <a href="shop.php" class="shop-button">Shop</a>
             </div>
             <div class="right-heading">
                 <div class="login-status">
