@@ -125,6 +125,7 @@
                     echo '<div class="product-details">';
                     echo '<h3>' . $product['name'] . '</h3>';
                     echo '<p>$' . $product['price'] . '</p>';
+                    echo '<button>Add to Cart</button>';
                     echo '</div>';
                     echo '</div>';
                 }
@@ -148,6 +149,7 @@
                     echo '<div class="product-details">';
                     echo '<h3>' . $product['name'] . '</h3>';
                     echo '<p>$' . $product['price'] . '</p>';
+                    echo '<button>Add to Cart</button>';
                     echo '</div>';
                     echo '</div>';
                 }
