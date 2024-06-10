@@ -4,253 +4,255 @@ USE datadash;
 
 -- User-related tables
 CREATE TABLE users (
-  user_id INT AUTO_INCREMENT PRIMARY KEY,
-  first_name VARCHAR(255) NOT NULL, -- User's first name
-  last_name VARCHAR(255) NOT NULL, -- User's last name
-  username VARCHAR(255) NOT NULL, -- User's username
-  email VARCHAR(255) NOT NULL, -- User's email address
-  password_hash VARCHAR(255), -- Hashed password
-  favorite_movie VARCHAR(20), -- User's favorite movie
-  phone VARCHAR(20), -- User's phone number
-  registration_date DATETIME DEFAULT CURRENT_TIMESTAMP -- User's registration date
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255),
+    favorite_movie VARCHAR(20),
+    phone VARCHAR(20),
+    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE addresses (
-  address_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL, -- User associated with the address
-  address_type VARCHAR(50) NOT NULL, -- Type of address (e.g., billing, shipping)
-  street_address VARCHAR(255) NOT NULL, -- Street address
-  city VARCHAR(100) NOT NULL, -- City
-  state VARCHAR(100) NOT NULL, -- State or province
-  postal_code VARCHAR(20) NOT NULL, -- Postal code
-  country VARCHAR(100) NOT NULL, -- Country
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+    address_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    address_type VARCHAR(50) NOT NULL,
+    street_address VARCHAR(255) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE payment_methods (
-  payment_method_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL, -- User associated with the payment method
-  method_type VARCHAR(50) NOT NULL, -- Type of payment method (e.g., credit card, PayPal)
-  card_number VARCHAR(20), -- Credit card number
-  cvs_number VARCHAR(20), -- CVS number
-  expiration_date DATE, -- Credit card expiration date
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+    payment_method_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    method_type VARCHAR(50) NOT NULL,
+    card_number VARCHAR(20),
+    cvs_number VARCHAR(20),
+    expiration_date DATE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- Product-related tables
 CREATE TABLE category (
-  category_id INT AUTO_INCREMENT PRIMARY KEY,
-  category_name VARCHAR(45) NOT NULL, -- Category name
-  UNIQUE KEY category_name_unique (category_name) -- Unique constraint for category name
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(45) NOT NULL,
+    UNIQUE KEY category_name_unique (category_name)
 );
 
 CREATE TABLE brands (
-  brand_id INT AUTO_INCREMENT PRIMARY KEY,
-  brand_name VARCHAR(255) NOT NULL -- Brand name
+    brand_id INT AUTO_INCREMENT PRIMARY KEY,
+    brand_name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE product (
-  product_id INT AUTO_INCREMENT PRIMARY KEY,
-  category_id INT NOT NULL, -- Category associated with the product
-  brand_id INT, -- Brand associated with the product
-  name VARCHAR(45) NOT NULL, -- Product name
-  description VARCHAR(255) DEFAULT NULL, -- Product description
-  price DECIMAL(10, 2) DEFAULT NULL, -- Product price
-  image VARCHAR(255) DEFAULT NULL, -- Product image URL
-  status TINYINT NOT NULL DEFAULT 0, -- Product status (0 = inactive, 1 = active)
-  date_added DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Date the product was added
-  UNIQUE KEY name_unique (name), -- Unique constraint for product name
-  KEY idx_product_category_id (category_id), -- Index for category_id column
-  CONSTRAINT fk_product_category FOREIGN KEY (category_id) REFERENCES category (category_id) ON UPDATE CASCADE, -- Foreign key constraint for category
-  CONSTRAINT fk_product_brand FOREIGN KEY (brand_id) REFERENCES brands (brand_id) -- Foreign key constraint for brand
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL,
+    brand_id INT,
+    name VARCHAR(45) NOT NULL,
+    description VARCHAR(255) DEFAULT NULL,
+    price DECIMAL(10, 2) DEFAULT NULL,
+    image VARCHAR(255) DEFAULT NULL,
+    status TINYINT NOT NULL DEFAULT 0,
+    date_added DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY name_unique (name),
+    KEY idx_product_category_id (category_id),
+    CONSTRAINT fk_product_category FOREIGN KEY (category_id) REFERENCES category (category_id) ON UPDATE CASCADE,
+    CONSTRAINT fk_product_brand FOREIGN KEY (brand_id) REFERENCES brands (brand_id)
 );
 
 CREATE TABLE inventory (
-  inventory_id INT AUTO_INCREMENT PRIMARY KEY,
-  product_id INT NOT NULL, -- Product associated with the inventory
-  quantity INT NOT NULL, -- Quantity in stock
-  last_updated_date DATETIME NOT NULL, -- Date the inventory was last updated
-  FOREIGN KEY (product_id) REFERENCES product(product_id)
+    inventory_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    last_updated_date DATETIME NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
 -- Order-related tables
 CREATE TABLE orders (
-  order_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL, -- User who placed the order
-  order_date DATETIME NOT NULL, -- Date the order was placed
-  total_amount DECIMAL(10, 2) NOT NULL, -- Total amount of the order
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    order_date DATETIME NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE order_details (
-  order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
-  order_id INT NOT NULL, -- Order associated with the order detail
-  product_id INT NOT NULL, -- Product in the order detail
-  quantity INT NOT NULL, -- Quantity of the product ordered
-  unit_price DECIMAL(10, 2) NOT NULL, -- Unit price of the product
-  FOREIGN KEY (order_id) REFERENCES orders(order_id),
-  FOREIGN KEY (product_id) REFERENCES product(product_id)
+    order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
 CREATE TABLE order_history (
-  order_history_id INT AUTO_INCREMENT PRIMARY KEY,
-  order_id INT NOT NULL, -- Order associated with the history
-  user_id INT NOT NULL, -- User who placed the order
-  order_date DATETIME NOT NULL, -- Date the order was placed
-  total_amount DECIMAL(10, 2) NOT NULL, -- Total amount of the order
-  status VARCHAR(50) NOT NULL, -- Current status of the order
-  current_status VARCHAR(50) DEFAULT NULL, -- Previous status of the order
-  FOREIGN KEY (user_id) REFERENCES users(user_id),
-  FOREIGN KEY (order_id) REFERENCES orders(order_id)
+    order_history_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    user_id INT NOT NULL,
+    order_date DATETIME NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    current_status VARCHAR(50) DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (order_id) REFERENCES orders(order_id)
 );
 
 CREATE TABLE returns (
-  return_id INT AUTO_INCREMENT PRIMARY KEY,
-  order_id INT NOT NULL, -- Order associated with the return
-  return_reason TEXT NOT NULL, -- Reason for the return
-  return_date DATETIME NOT NULL, -- Date the return was initiated
-  FOREIGN KEY (order_id) REFERENCES orders(order_id)
+    return_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    return_reason TEXT NOT NULL,
+    return_date DATETIME NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id)
 );
 
 -- Shopping cart and wishlist tables
 CREATE TABLE cart (
-  cart_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL, -- User associated with the cart
-  FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE
+    cart_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE cart_product (
-  cart_id INT NOT NULL,
-  product_id INT NOT NULL,
-  quantity INT NOT NULL,
-  PRIMARY KEY (cart_id, product_id),
-  FOREIGN KEY (cart_id) REFERENCES cart(cart_id),
-  FOREIGN KEY (product_id) REFERENCES product(product_id)
+    cart_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    PRIMARY KEY (cart_id, product_id),
+    FOREIGN KEY (cart_id) REFERENCES cart(cart_id),
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
 CREATE TABLE wishlists (
-  wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL, -- User associated with the wishlist
-  product_id INT NOT NULL, -- Product in the wishlist
-  FOREIGN KEY (user_id) REFERENCES users(user_id),
-  FOREIGN KEY (product_id) REFERENCES product(product_id)
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    PRIMARY KEY (user_id, product_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
 -- Other tables
 CREATE TABLE reviews (
-  review_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL, -- User who wrote the review
-  product_id INT NOT NULL, -- Product being reviewed
-  rating DECIMAL(2, 1) NOT NULL, -- Rating given by the user
-  review_text TEXT, -- Text of the review
-  review_date DATETIME NOT NULL, -- Date the review was written
-  FOREIGN KEY (user_id) REFERENCES users(user_id),
-  FOREIGN KEY (product_id) REFERENCES product(product_id)
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    rating DECIMAL(2, 1) NOT NULL,
+    review_text TEXT,
+    review_date DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
 CREATE TABLE ratings (
-  rating_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL, -- User who gave the rating
-  product_id INT NOT NULL, -- Product being rated
-  rating_value DECIMAL(2, 1) NOT NULL, -- Rating value
-  FOREIGN KEY (user_id) REFERENCES users(user_id),
-  FOREIGN KEY (product_id) REFERENCES product(product_id)
+    rating_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    rating_value DECIMAL(2, 1) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
 CREATE TABLE coupons (
-  coupon_id INT AUTO_INCREMENT PRIMARY KEY,
-  coupon_code VARCHAR(50) NOT NULL, -- Coupon code
-  discount_amount DECIMAL(10, 2) NOT NULL, -- Discount amount
-  expiration_date DATE NOT NULL -- Expiration date of the coupon
+    coupon_id INT AUTO_INCREMENT PRIMARY KEY,
+    coupon_code VARCHAR(50) NOT NULL,
+    discount_amount DECIMAL(10, 2) NOT NULL,
+    expiration_date DATE NOT NULL
 );
 
 CREATE TABLE messages (
-  message_id INT AUTO_INCREMENT PRIMARY KEY,
-  sender_id INT NOT NULL, -- User who sent the message
-  receiver_id INT NOT NULL, -- User who received the message
-  message_content TEXT NOT NULL, -- Content of the message
-  message_date DATETIME NOT NULL, -- Date the message was sent
-  FOREIGN KEY (sender_id) REFERENCES users(user_id),
-  FOREIGN KEY (receiver_id) REFERENCES users(user_id)
+    message_id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    message_content TEXT NOT NULL,
+    message_date DATETIME NOT NULL,
+    FOREIGN KEY (sender_id) REFERENCES users(user_id),
+    FOREIGN KEY (receiver_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE notifications (
-  notification_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL, -- User associated with the notification
-  notification_content TEXT NOT NULL, -- Content of the notification
-  notification_date DATETIME NOT NULL, -- Date the notification was sent
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+    notification_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    notification_content TEXT NOT NULL,
+    notification_date DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE shipping_methods (
-  shipping_method_id INT AUTO_INCREMENT PRIMARY KEY,
-  method_name VARCHAR(100) NOT NULL, -- Name of the shipping method
-  estimated_delivery_time INT NOT NULL -- Estimated delivery time in days
+    shipping_method_id INT AUTO_INCREMENT PRIMARY KEY,
+    method_name VARCHAR(100) NOT NULL,
+    estimated_delivery_time INT NOT NULL
 );
 
 CREATE TABLE taxes (
-  tax_id INT AUTO_INCREMENT PRIMARY KEY,
-  country VARCHAR(100) NOT NULL, -- Country
-  state VARCHAR(100) NOT NULL, -- State or province
-  tax_rate DECIMAL(5, 2) NOT NULL -- Tax rate
+    tax_id INT AUTO_INCREMENT PRIMARY KEY,
+    country VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    tax_rate DECIMAL(5, 2) NOT NULL
 );
 
 CREATE TABLE discounts (
-  discount_id INT AUTO_INCREMENT PRIMARY KEY,
-  discount_name VARCHAR(100) NOT NULL, -- Name of the discount
-  discount_type VARCHAR(50) NOT NULL, -- Type of discount (e.g., percentage, fixed amount)
-  discount_value DECIMAL(10, 2) NOT NULL -- Value of the discount
+    discount_id INT AUTO_INCREMENT PRIMARY KEY,
+    discount_name VARCHAR(100) NOT NULL,
+    discount_type VARCHAR(50) NOT NULL,
+    discount_value DECIMAL(10, 2) NOT NULL
 );
 
 CREATE TABLE suppliers (
-  supplier_id INT AUTO_INCREMENT PRIMARY KEY,
-  supplier_name VARCHAR(255) NOT NULL, -- Name of the supplier
-  contact_name VARCHAR(255) NOT NULL, -- Contact person's name
-  contact_email VARCHAR(255) NOT NULL, -- Contact email address
-  contact_phone VARCHAR(20) NOT NULL -- Contact phone number
+    supplier_id INT AUTO_INCREMENT PRIMARY KEY,
+    supplier_name VARCHAR(255) NOT NULL,
+    contact_name VARCHAR(255) NOT NULL,
+    contact_email VARCHAR(255) NOT NULL,
+    contact_phone VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE transactions (
-  transaction_id INT AUTO_INCREMENT PRIMARY KEY,
-  order_id INT NOT NULL, -- Order associated with the transaction
-  transaction_date DATETIME NOT NULL, -- Date of the transaction
-  amount DECIMAL(10, 2) NOT NULL, -- Amount of the transaction
-  payment_method_id INT NOT NULL, -- Payment method used for the transaction
-  FOREIGN KEY (order_id) REFERENCES orders(order_id),
-  FOREIGN KEY (payment_method_id) REFERENCES payment_methods(payment_method_id)
+    transaction_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    transaction_date DATETIME NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    payment_method_id INT NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (payment_method_id) REFERENCES payment_methods(payment_method_id)
 );
 
 CREATE TABLE analytics (
-  analytics_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL, -- User associated with the analytics data
-  page_visited VARCHAR(255) NOT NULL, -- Page visited by the user
-  timestamp DATETIME NOT NULL, -- Timestamp of the page visit
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+    analytics_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    page_visited VARCHAR(255) NOT NULL,
+    timestamp DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE subscriptions (
-  subscription_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL, -- User associated with the subscription
-  subscription_type VARCHAR(100) NOT NULL, -- Type of subscription
-  start_date DATE NOT NULL, -- Start date of the subscription
-  end_date DATE NOT NULL, -- End date of the subscription
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+    subscription_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    subscription_type VARCHAR(100) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE recommendations (
-  recommendation_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL, -- User for whom the recommendation is made
-  recommended_product_id INT NOT NULL, -- Recommended product
-  recommendation_score DECIMAL(5, 2) NOT NULL, -- Score of the recommendation
-  FOREIGN KEY (user_id) REFERENCES users(user_id),
-  FOREIGN KEY (recommended_product_id) REFERENCES product(product_id)
+    user_id INT NOT NULL,
+    recommended_product_id INT NOT NULL,
+    recommendation_score DECIMAL(5, 2) NOT NULL,
+    PRIMARY KEY (user_id, recommended_product_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (recommended_product_id) REFERENCES product(product_id)
 );
 
 CREATE TABLE custom_fields (
-  custom_field_id INT AUTO_INCREMENT PRIMARY KEY,
-  field_name VARCHAR(255) NOT NULL, -- Name of the custom field
-  field_type VARCHAR(50) NOT NULL, -- Type of the custom field (e.g., text, number, date)
-  field_value TEXT NOT NULL -- Value of the custom field
+    custom_field_id INT AUTO_INCREMENT PRIMARY KEY,
+    field_name VARCHAR(255) NOT NULL,
+    field_type VARCHAR(50) NOT NULL,
+    field_value TEXT NOT NULL,
+    product_id INT, -- Example: associate with product table
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
 -- Indexes
@@ -280,19 +282,14 @@ CREATE INDEX idx_recommendations_product_id ON recommendations (recommended_prod
 
 -- Triggers
 DELIMITER //
-
-CREATE TRIGGER create_cart_after_user_registration
-AFTER INSERT ON users
+CREATE TRIGGER create_cart_after_user_registration AFTER INSERT ON users
 FOR EACH ROW
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM cart WHERE user_id = NEW.user_id) THEN
-        INSERT INTO cart (user_id)
-        VALUES (NEW.user_id);
+        INSERT INTO cart (user_id) VALUES (NEW.user_id);
     END IF;
 END//
-
-CREATE TRIGGER create_order_history_after_first_order
-AFTER INSERT ON orders
+CREATE TRIGGER create_order_history_after_first_order AFTER INSERT ON orders
 FOR EACH ROW
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM order_history WHERE user_id = NEW.user_id) THEN
@@ -300,23 +297,17 @@ BEGIN
         VALUES (NEW.order_id, NEW.user_id, NEW.order_date, NEW.total_amount, 'new', 'new');
     END IF;
 END//
-
-CREATE TRIGGER update_order_status
-AFTER INSERT ON order_details
+CREATE TRIGGER update_order_status AFTER INSERT ON order_details
 FOR EACH ROW
 BEGIN
-    UPDATE orders
-    SET status = 'processing'
-    WHERE order_id = NEW.order_id;
+    UPDATE orders SET status = 'processing' WHERE order_id = NEW.order_id;
 END//
-
 DELIMITER ;
 
 CREATE TABLE sessions (
-  session_id varchar(33) PRIMARY KEY,
-  user_id INT NOT NULL, -- User associated with the session
-  start_time DATETIME NOT NULL, -- Start time of the session
-  end_time DATETIME, -- End time of the session (NULL if still active)
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+    session_id varchar(33) PRIMARY KEY,
+    user_id INT NOT NULL,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-

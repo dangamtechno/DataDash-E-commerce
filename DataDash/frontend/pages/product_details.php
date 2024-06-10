@@ -13,10 +13,13 @@ if ($product_id === null) {
     exit;
 }
 
-// Query the database to fetch product details
+// Query the database to fetch product details, inventory, and category/brand information
 $product = $conn->query("SELECT p.product_id, p.category_id, p.brand_id, p.name, p.description, p.price, p.image,
-                    p.status, p.date_added, c.category_name, b.brand_name FROM product p LEFT JOIN 
-                    category c ON p.category_id = c.category_id LEFT JOIN brands b ON p.brand_id = b.brand_id
+                    p.status, p.date_added, i.quantity AS inventory, c.category_name, b.brand_name 
+                    FROM product p
+                    LEFT JOIN inventory i ON p.product_id = i.product_id
+                    LEFT JOIN category c ON p.category_id = c.category_id
+                    LEFT JOIN brands b ON p.brand_id = b.brand_id
                     WHERE p.product_id = '$product_id'");
 
 // Check if the product exists
@@ -37,6 +40,56 @@ $conn->close();
     <script src="https://kit.fontawesome.com/d0ce752c6a.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../css/style.css">
     <title>Product Details - DataDash</title>
+    <style>
+        /* Add some styles to make it look like Amazon */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .product-details {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .product-image {
+            width: 400px;
+            height: 400px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .product-information {
+            margin-left: 20px;
+            padding: 20px;
+            border-left: 1px solid #ddd;
+        }
+        .product-information h2 {
+            margin-top: 0;
+        }
+        .product-information ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .product-information li {
+            margin-bottom: 10px;
+        }
+        .product-information li:last-child {
+            margin-bottom: 0;
+        }
+        .add-to-cart {
+            background-color: #ff9900;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .add-to-cart:hover {
+            background-color: #ffc107;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -82,13 +135,25 @@ $conn->close();
 
 <main>
     <section class="product-details">
-        <h2><?= $product_data['name'] ?></h2>
-        <img src="../images/<?= $product_data['image'] ?>" alt="<?= $product_data['name'] ?>">
-        <p>Price: $<?= $product_data['price'] ?></p>
-        <p>Description: <?= $product_data['description'] ?></p>
-        <p>Category: <?= $product_data['category_name'] ?></p>
-        <p>Brand: <?= $product_data['brand_name'] ?></p>
-        <button>Add to Cart</button>
+        <div class="product-image">
+            <img src="../images/<?= $product_data['image'] ?>" alt="<?= $product_data['name'] ?>" width="400" height="400">
+        </div>
+        <div class="product-information">
+            <h2><?= $product_data['name'] ?></h2>
+            <ul>
+                <li>Price: $<?= $product_data['price'] ?></li>
+                <li>Description: <?= $product_data['description'] ?></li>
+                <li>Category: <?= $product_data['category_name'] ?></li>
+                <li>Brand: <?= $product_data['brand_name'] ?></li>
+                <li>Available Quantity: <?= $product_data['inventory'] ?></li>
+            </ul>
+            <form action="cart.php" method="post">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
+                <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
+                <button type="submit" class="add-to-cart">Add to Cart</button>
+            </form>
+        </div>
     </section>
 </main>
 

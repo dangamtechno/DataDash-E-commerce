@@ -121,10 +121,12 @@
                 $featuredProducts = $conn->query("SELECT * FROM product ORDER BY RAND() LIMIT 4");
                 foreach ($featuredProducts as $product) {
                     echo '<div class="product">';
+                    echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
                     echo '<img src="../images/' . $product['image'] . '" alt="' . $product['name'] . '">';
                     echo '<div class="product-details">';
                     echo '<h3>' . $product['name'] . '</h3>';
                     echo '<p>$' . $product['price'] . '</p>';
+                    echo '</a>';
                     echo '<button>Add to Cart</button>';
                     echo '</div>';
                     echo '</div>';
