@@ -56,6 +56,17 @@
             background-color: #0056b3; /* Darker shade for hover effect */
         }
 
+        .add-to-cart {
+            background-color: #0ad4f8;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .add-to-cart:hover {
+            background-color: #07eaff;
+        }
+
     </style>
     <header>
         <div class="heading">
@@ -147,7 +158,7 @@
                     echo '<h3>' . $product['name'] . '</h3>';
                     echo '<p>$' . $product['price'] . '</p>';
                     echo '</a>';
-                    echo '<button>Add to Cart</button>';
+                    echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
                     echo '</div>';
                 }
                 $conn->close();

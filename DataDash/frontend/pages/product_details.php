@@ -80,14 +80,35 @@ $conn->close();
             margin-bottom: 0;
         }
         .add-to-cart {
-            background-color: #ff9900;
+            background-color: #0ad4f8;
             border: none;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
         }
         .add-to-cart:hover {
-            background-color: #ffc107;
+            background-color: #07d2ff;
+        }
+
+        .shop-button-container {
+        text-align: center; /* Center the button horizontally */
+        margin-top: 10px; /* Add some space above the button */
+}
+
+        .shop-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #1e1f22;
+            background-color: #009dff; /* Bootstrap primary color */
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .shop-button:hover {
+            background-color: #0056b3; /* Darker shade for hover effect */
         }
     </style>
 </head>
@@ -108,6 +129,9 @@ $conn->close();
                     <input type="submit" name="submit-search" class="search-button">
                 </form>
             </div>
+        </div>
+        <div class="shop-button-container">
+            <a href="shop.php" class="shop-button">Shop</a>
         </div>
         <div class="right-heading">
             <div class="login-status">
@@ -147,12 +171,12 @@ $conn->close();
                 <li>Brand: <?= $product_data['brand_name'] ?></li>
                 <li>Available Quantity: <?= $product_data['inventory'] ?></li>
             </ul>
-            <form action="cart.php" method="post">
-                <label for="quantity">Quantity:</label>
-                <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
-                <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
-                <button type="submit" class="add-to-cart">Add to Cart</button>
-            </form>
+             <form action="../../backend/utils/add_to_cart.php" method="post">
+                 <label for="quantity">Quantity:</label>
+                 <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
+                 <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
+                 <button type="submit" class="add-to-cart">Add to Cart</button>
+             </form>
         </div>
     </section>
 </main>
