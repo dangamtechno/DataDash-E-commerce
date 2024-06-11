@@ -43,7 +43,7 @@
             display: inline-block;
             padding: 10px 20px;
             font-size: 16px;
-            color: #fff;
+            color: #1e1f22;
             background-color: #009dff; /* Bootstrap primary color */
             border: none;
             border-radius: 5px;
@@ -53,6 +53,17 @@
 
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
+        }
+
+        .add-to-cart {
+            background-color: #0ad4f8;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .add-to-cart:hover {
+            background-color: #07eaff;
         }
     </style>
 </head>
@@ -117,14 +128,25 @@
                 $conn = new mysqli("localhost", "root", "", "datadash");
                 if ($conn->connect_error) {
                     die("Connection failed: " . $conn->connect_error);
-                }
-                $featuredProducts = $conn->query("SELECT * FROM product ORDER BY RAND() LIMIT 4");
+                } $featuredProducts = $conn->query("SELECT * FROM product ORDER BY RAND() LIMIT 4");
                 foreach ($featuredProducts as $product) {
                     echo '<div class="product">';
+                    echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
                     echo '<img src="../images/' . $product['image'] . '" alt="' . $product['name'] . '">';
                     echo '<div class="product-details">';
-                    echo '<h3>' . $product['name'] . '</h3>';
-                    echo '<p>$' . $product['price'] . '</p>';
+                    echo '<h3 style="color: #000;">' . $product['name'] . '</h3>';
+                    echo '<p style="color: #000;">$' . $product['price'] . '</p>';
+                    echo '</a>';
+                    if (sessionExists()) {
+                        echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
+                        echo '<input type="hidden" name="product_id" value="' . $product['product_id'] . '">';
+                        echo '<input type="hidden" name="quantity" value="1">';
+                        echo '<button type="submit" class="add-to-cart">Add to Cart</button>
+';
+                        echo '</form>';
+                    } else {
+                        echo '<a href="login_page.php" class="add-to-cart-link">Add to Cart</a>';
+                    }
                     echo '</div>';
                     echo '</div>';
                 }
@@ -144,10 +166,21 @@
                 $newProducts = $conn->query("SELECT * FROM product ORDER BY date_added DESC LIMIT 4");
                 foreach ($newProducts as $product) {
                     echo '<div class="product">';
+                    echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
                     echo '<img src="../images/' . $product['image'] . '" alt="' . $product['name'] . '">';
                     echo '<div class="product-details">';
-                    echo '<h3>' . $product['name'] . '</h3>';
-                    echo '<p>$' . $product['price'] . '</p>';
+                    echo '<h3 style="color: #000;">' . $product['name'] . '</h3>';
+                    echo '<p style="color: #000;">$' . $product['price'] . '</p>';
+                    echo '</a>';
+                    if (sessionExists()) {
+                        echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
+                        echo '<input type="hidden" name="product_id" value="' . $product['product_id'] . '">';
+                        echo '<input type="hidden" name="quantity" value="1">';
+                        echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
+                        echo '</form>';
+                    } else {
+                        echo '<a href="login_page.php" class="add-to-cart-link">Add to Cart</a>';
+                    }
                     echo '</div>';
                     echo '</div>';
                 }

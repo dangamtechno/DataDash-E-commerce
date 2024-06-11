@@ -12,7 +12,8 @@
         .product-grid {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: flex-start;
+            margin-left: 50px;
         }
 
         .product {
@@ -27,6 +28,45 @@
             height: 275px;
             object-fit: contain;
         }
+
+        .product a {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product a:hover {
+            text-decoration: underline;
+        }
+
+        .shop-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #009dff; /* Bootstrap primary color */
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .shop-button:hover {
+            background-color: #0056b3; /* Darker shade for hover effect */
+        }
+
+        .add-to-cart {
+            background-color: #0ad4f8;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .add-to-cart:hover {
+            background-color: #07eaff;
+        }
+
     </style>
     <header>
         <div class="heading">
@@ -41,9 +81,12 @@
                         <label>
                             <input type="search" name="search" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class ="search-button">
+                        <input type="submit" name="submit-search" class="search-button">
                     </form>
                 </div>
+            </div>
+            <div class="shop-button-container">
+                <a href="shop.php" class="shop-button">Shop</a>
             </div>
             <div class="right-heading">
                 <div class="login-status">
@@ -73,7 +116,34 @@
     <main>
         <section class="shop-products">
             <h2>All Products</h2>
-            <!-- Product grid -->
+            <div class="filter-sort">
+                <label>Filter by:</label>
+                <select>
+                    <option value="">All Categories</option>
+                    <option value="Smartphones">Smartphones</option>
+                    <option value="Tablets">Tablets</option>
+                    <option value="Headphones">Headphones</option>
+                    <option value="Laptops">Laptops</option>
+                    <option value="Smartwatches">Smartwatches</option>
+                    <option value="Cameras">Cameras</option>
+                    <option value="Earbuds">Earbuds</option>
+                    <option value="Televisions">Televisions</option>
+                    <option value="Gaming Consoles">Gaming Consoles</option>
+                    <option value="Smart Speakers">Smart Speakers</option>
+                    <option value="Chargers">Chargers</option>
+                    <option value="Keyboards">Keyboards</option>
+                    <option value="Computer Mice">Computer Mice</option>
+                    <option value="Storage Devices">Storage Devices</option>
+                    <option value="Virtual Reality">Virtual Reality</option>
+                </select>
+                <label>Sort by:</label>
+                <select>
+                    <option value="">Default</option>
+                    <option value="price-asc">Price (Low to High)</option>
+                    <option value="price-desc">Price (High to Low)</option>
+                    <option value="rating">Rating</option>
+                </select>
+            </div>
             <div class="product-grid">
                 <?php
                 $conn = new mysqli("localhost", "root", "", "datadash");
@@ -83,11 +153,12 @@
                 $products = $conn->query("SELECT * FROM product");
                 foreach ($products as $product) {
                     echo '<div class="product">';
+                    echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
                     echo '<img src="../images/' . $product['image'] . '" alt="' . $product['name'] . '">';
-                    echo '<div class="product-details">';
                     echo '<h3>' . $product['name'] . '</h3>';
                     echo '<p>$' . $product['price'] . '</p>';
-                    echo '</div>';
+                    echo '</a>';
+                    echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
                     echo '</div>';
                 }
                 $conn->close();
@@ -95,39 +166,39 @@
             </div>
         </section>
     </main>
-<footer>
-    <div class="social-media">
-        <br><br>
-        <ul>
-            <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
-            <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
-            <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
-            <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
-            <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
-        </ul>
-    </div>
-    <div class="general-info">
-        <div class="help">
-            <h3>Help</h3>
+    <footer>
+        <div class="social-media">
+            <br><br>
             <ul>
-                <li><a href="faq.php">Frequently Asked Questions</a></li>
-                <li><a href="returns.php">Returns</a></li>
-                <li><a href="customer_service.php">Customer Service</a></li>
+                <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
+                <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
+                <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
+                <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
+                <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
             </ul>
         </div>
-        <div class="location">
-            <p>123 Main Street, City, Country</p>
+        <div class="general-info">
+            <div class="help">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="faq.php">Frequently Asked Questions</a></li>
+                    <li><a href="returns.php">Returns</a></li>
+                    <li><a href="customer_service.php">Customer Service</a></li>
+                </ul>
+            </div>
+            <div class="location">
+                <p>123 Main Street, City, Country</p>
+            </div>
+            <div class="legal">
+                <h3>Privacy & Legal</h3>
+                <ul>
+                    <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
+                    <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="legal">
-            <h3>Privacy & Legal</h3>
-            <ul>
-                <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
-                <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-            </ul>
-        </div>
-    </div>
-    2024 DataDash, All Rights Reserved.
-</footer>
+        2024 DataDash, All Rights Reserved.
+    </footer>
     <script src="../js/navbar.js"></script>
 </body>
 </html>
