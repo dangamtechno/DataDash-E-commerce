@@ -53,22 +53,6 @@ VALUES
   (4, 1, 'Dell XPS 15', 'Thin and powerful laptop for professionals.', 1599.99, 'dell_xps_15.jpg', 1),
   (5, 2, 'Fitbit Versa 3', 'Fitness smartwatch with heart rate monitoring.', 229.99, 'fitbit_versa_3.jpg', 1);
 
-
--- Populate the product table
--- INSERT INTO product (category_id, brand_id, name, description, price, image, status)
--- VALUES
---  (1, 1, 'iPhone 13', 'Apple iPhone 13 256GB', 999.99, 'iphone13.jpg', 1),
---  (1, 2, 'Galaxy S22', 'Samsung Galaxy S22 5G', 799.99, 'galaxys22.jpg', 1),
--- (2, 4, 'Air Force 1', 'Nike Air Force 1 Sneakers', 89.99, 'airforce1.jpg', 1),
---  (3, 6, 'The Kite Runner', 'The Kite Runner by Khaled Hosseini', 12.99, 'kiterunner.jpg', 1),
---  (4, 8, 'Stand Mixer', 'KitchenAid Artisan Stand Mixer', 349.99, 'standmixer.jpg', 1),
---  (5, NULL, 'Vitamin C Serum', 'Vitamin C Serum for Face', 19.99, 'vitaminc.jpg', 1),
---  (6, 10, 'Golf Clubs', 'Callaway Strata Golf Club Set', 249.99, 'golfclubs.jpg', 1),
---  (7, NULL, 'Lego City', 'Lego City Police Station', 59.99, 'legocity.jpg', 1),
--- (8, NULL, 'Car Wax', 'Meguiar\'s Ultimate Liquid Wax', 24.99, 'carwax.jpg', 1),
---  (9, NULL, 'Office Chair', 'Ergonomic Office Chair', 99.99, 'officechair.jpg', 1);
-
-
 -- Insert inventory records for the products
 -- Products 1 and 5 will have a quantity greater than 1
 INSERT INTO inventory (product_id, quantity, last_updated_date)
@@ -139,10 +123,29 @@ VALUES
   ('Digital Dynamics Inc.', 'William Brown', 'william.brown@digitaldynamics.com', '555-7890');
 
 -- Populate the custom_fields table
-INSERT INTO custom_fields (field_name, field_type, field_value)
+INSERT INTO custom_fields (field_name, field_type, field_value, product_id)
 VALUES
-  ('Warranty Period', 'number', '12'),
-  ('Color Options', 'text', 'Red, Blue, Green'),
-  ('Delivery Instructions', 'text', 'Leave at front door'),
-  ('Gift Wrap', 'boolean', '1'),
-  ('Size', 'text', 'Small, Medium, Large');
+  ('Warranty Period', 'number', '12', 1),
+  ('Color Options', 'text', 'Red, Blue, Green', 2),
+  ('Delivery Instructions', 'text', 'Leave at front door', NULL),
+  ('Gift Wrap', 'boolean', '1', NULL),
+  ('Size', 'text', 'Small, Medium, Large', 3);
+
+-- Wishlists table
+CREATE TABLE wishlists (
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    PRIMARY KEY (user_id, product_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
+);
+
+-- Recommendations table
+CREATE TABLE recommendations (
+    user_id INT NOT NULL,
+    recommended_product_id INT NOT NULL,
+    recommendation_score DECIMAL(5, 2) NOT NULL,
+    PRIMARY KEY (user_id, recommended_product_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (recommended_product_id) REFERENCES product(product_id)
+);
