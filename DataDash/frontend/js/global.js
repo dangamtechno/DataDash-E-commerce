@@ -173,14 +173,127 @@ function populateCatalog(products,section){
        section.appendChild(catalog);
       }
    }
-                     
-function addToWishlist(){
-    console.log("Add to Wishlist");
-}
-function addToCart(){
-    console.log("Add to cart");
-}
-
+   function getProductDetails(){
+    const main = document.querySelector('main');
+    const price = this.price;
+    fetchCall(`inventory.php?id=${this.id}`,responseInventory.bind(this))
+    function responseInventory(data){
+       const inStock = +(data.inStock); 
+       const overlay = document.createElement('div');
+       overlay.className ='overlay';
+       overlay.addEventListener('click',removeOverlay);
+       main.appendChild(overlay);
+       const modal = document.createElement('div');
+       modal.className ='modal';
+       main.appendChild(modal);
+       const modalImageContainer = document.createElement('div');
+       modalImageContainer.className = 'modalImage';
+       const img = document.createElement('img');
+       img.src = `http://localhost:8081${this.image}`;
+       modalImageContainer.appendChild(img);
+       modal.appendChild(modalImageContainer);
+       const modalDesc = document.createElement('div');
+       modalDesc.className = 'modal-desc';
+       const title = document.createElement('div');
+       title.textContent = this.name;
+       modalDesc.appendChild(title);
+      
+       //Submit Review section that will only be shown if user is logged and has a order id with product id in it
+       //so from here we would need to do a fetch for user credentials to get orders then check to see if product id of card is in one of the orders.
+       //select order_id and user id from ordered_item where order_product_id = product_id;
+       //if true show this section or even just create the section
+       const review = document.createElement('button');
+       review.addEventListener('click',submitReview);
+       review.textContent = 'leave review';
+       review.className ='cart-button';
+       const reviewText = document.createElement('input');
+       reviewText.type = 'text';
+       reviewText.className ='review_text';
+       reviewText.setAttribute("placeholder", "Enter text here");
+       const reviewTextLabel = document.createElement('h2');
+       reviewTextLabel.textContent = "Leave a review!";
+       const ratingDiv = document.createElement('div');
+       ratingDiv.className = 'rating-container'
+       createStarRating(ratingDiv);
+       const review_container = document.createElement('div');
+       review_container.className = 'review-container';
+       review_container.appendChild(reviewTextLabel);
+       review_container.appendChild(reviewText);
+       //Cart functionallity
+       cart = document.createElement('button');
+       cart.textContent='Add to cart';
+       cart.className='cart-button';
+       wishlist = document.createElement('button');
+       wishlist.textContent='wish List';
+       wishlist.className='cart-button';
+       cart.addEventListener('click',addToCart);
+       wishlist.addEventListener('click',addToWishlist);
+       const subTotal = document.createElement('h2');
+       const itemsForCartSection = document.createElement('div');
+       itemsForCartSection.className = 'items-for-cart-section';
+       const itemsForCart = document.createElement('p');
+       itemsForCart.innerHTML = "Add to cart";
+       const select = document.createElement('select');
+       select.className = 'selectQuantity';
+       if(inStock == 0) select.disabled = true;
+       else{
+          let count = inStock > 10 ? 10 : inStock;
+          for(let i = 1 ; i <= count; i++){
+            const option = document.createElement('option');
+            option.value = i;
+            option.text = i;
+            select.appendChild(option);
+          }
+       }
+       select.addEventListener('change',function(){
+          let toBuy = +select.value;
+          let sub = toBuy*price;
+          sub = sub.toFixed(2);
+          subTotal.innerHTML = sub;
+          itemCount = toBuy;
+       });
+       const inStockText = document.createElement('p');
+       inStockText.className = 'in-stock';
+       inStockText.innerHTML = `In stock: ${inStock}`;
+       switch (true) {
+           case inStock > 10 :
+              inStockText.innerHTML = "In stock" 
+              inStockText.style.color = 'green'
+              break;
+           case inStock > 0 && inStock <=10 :
+               inStockText.innerHTML = `Only ${inStock} left`;
+               inStockText.style.color = 'orange'
+               break;
+            case inStock == 0:
+                inStockText.innerHTML = "out of stock";
+                break;
+            default:
+                console.log(inStock);
+                break;
+       }
+       const buttonContainer = document.createElement('div');
+       buttonContainer.className = 'modal-buttons';
+       //past review section for product
+       const pastReviews = document.createElement("div");
+       pastReviews.className = "past-reviews-container";
+       //append to container
+       modal.appendChild(inStockText);
+       itemsForCartSection.appendChild(itemsForCart);
+       itemsForCartSection.appendChild(select);
+       modal.appendChild(itemsForCartSection)
+       modal.appendChild(subTotal)
+       buttonContainer.appendChild(cart);
+       buttonContainer.appendChild(wishlist);
+       modal.appendChild(buttonContainer);
+       modal.appendChild(pastReviews);
+       review_container.appendChild(ratingDiv);
+       review_container.appendChild(review);
+       modal.appendChild(review_container);
+       addRatingClickEvent();
+    //this will be the fetch request for reviews
+       getReviews(this);
+    }
+}                     
 function fetchCall(resource, callBack, method="GET",data = undefined){
     const url ="http://localhost:8081/user/backend/";
     fetch(url+resource,{
@@ -218,6 +331,31 @@ function manageStars(stars,n){
        }
    }
 }
+function setStarRating(stars,rating){
+    let cls = "";
+    switch(rating){
+        case 1 : 
+           cls = "one";
+           break;
+        case 2 : 
+           cls = "two";
+           break;
+        case 3 :
+           cls = "three";
+           break;
+        case 4 :
+           cls = "four"
+           break;
+        case 5 :
+           cls = "five";
+           break;
+        default : console.log(rating);
+           break;
+    }
+    for(let i = 0 ; i < rating; i++){
+       stars[i].className = `${stars[i].className} ${cls}`;
+    }
+}
 function createStarRating(section){
     for(let j = 1 ; j <= 5; j++ ){
         const i = document.createElement('span');
@@ -236,9 +374,6 @@ function addRatingClickEvent(){
         });
     })
 }
-
-
-
 
 function getCategoryProducts(){
     const cat = this;
@@ -273,104 +408,72 @@ function setActiveCategory(cat){
         } else category.style.backgroundColor = "initial"
     })
 }
-
-function getProductDetails(){
-    const main = document.querySelector('main');
-    fetchCall(`inventory.php?id=${this.id}`,responseInventory.bind(this))
-    function responseInventory(data){
-        //console.log(data);
-        const overlay = document.createElement('div');
-        overlay.className ='overlay';
-        overlay.addEventListener('click',removeOverlay);
-        main.appendChild(overlay);
-        const modal = document.createElement('div');
-        modal.className ='modal';
-        main.appendChild(modal);
-        
-        const modalImageContainer = document.createElement('div');
-        modalImageContainer.className = 'modalImage';
-        const img = document.createElement('img');
-        img.src = `http://localhost:8081${this.image}`;
-        modalImageContainer.appendChild(img);
-        modal.appendChild(modalImageContainer);
-        
-        const modalDesc = document.createElement('div');
-        modalDesc.className = 'modal-desc';
-        const title = document.createElement('div');
-        title.textContent = this.name;
-        modalDesc.appendChild(title);
-        const review = document.createElement('button');
-       review.addEventListener('click',submitReview);
-       review.textContent = 'leave review';
-       review.className ='cart-button';
-       const reviewText = document.createElement('input');
-       reviewText.type = 'text';
-       reviewText.className ='review_text';
-       reviewText.setAttribute("placeholder", "Enter text here");
-       const reviewTextLabel = document.createElement('label');
-       reviewTextLabel.textContent = "Leave a review!";
-       reviewTextLabel.setAttribute('for',"review_text");
-       const ratingDiv = document.createElement('div');
-       ratingDiv.className = 'rating-container'
-       
-       createStarRating(ratingDiv);
-       const review_container = document.createElement('div');
-       review_container.className = 'review-container';
-       review_container.appendChild(reviewTextLabel);
-       review_container.appendChild(reviewText);
-       review_container.appendChild(review);
-       cart = document.createElement('button');
-       cart.textContent='Add to cart';
-       cart.className='cart-button';
-       cart.addEventListener('click',addToCart);
-       wishlist = document.createElement('button');
-       wishlist.textContent='wish List';
-       wishlist.className='cart-button';
-       wishlist.addEventListener('click',addToWishlist);
-       let itemCount  = 0;
-       const subTotal = document.createElement('h2');
-       const itemsForCart = document.createElement('h2');
-       itemsForCart.innerHTML = `Add to cart ${itemCount}`;
-       itemsForCart.id = 'quantity';
-       const increment = document.createElement('button');
-       increment.className='cart-button';
-       increment.textContent="increment";
-       increment.addEventListener('click',()=>{
-           itemCount+=1;
-           let total = itemCount * this.price;
-           subTotal.innerHTML= total.toFixed(2);
-           itemsForCart.textContent=`Add to cart: ${itemCount}`;
-        });
-       const decrement = document.createElement('button');
-       decrement.textContent="decrement";
-       decrement.className="cart-button";
-       decrement.addEventListener('click',
-       ()=>{
-           if( itemCount > 0){
-              itemCount-=1;
-              let total = itemCount * this.price;
-              subTotal.innerHTML= total.toFixed(2);
-              itemsForCart.textContent=`Add to cart: ${itemCount}`;
-           }
-        });
-       const inStock = document.createElement('p');
-       inStock.innerHTML = `In stock: ${data.inStock}`;
-       modal.appendChild(inStock);
-       modal.appendChild(itemsForCart);
-       modal.appendChild(subTotal)
-       const buttonContainer = document.createElement('div');
-       buttonContainer.className = 'modal-buttons';
-       buttonContainer.appendChild(increment);
-       buttonContainer.appendChild(decrement);
-       buttonContainer.appendChild(cart);
-       buttonContainer.appendChild(wishlist);
-       modal.appendChild(buttonContainer);
-       review_container.appendChild(ratingDiv);
-       modal.appendChild(review_container);
-       addRatingClickEvent();
+function submitReview(e){
+    let ratingConversion = {
+        'one' : 1 ,'two' : 2, 'three' : 3,'four' : 4,'five' : 5
+    };
+    const parentElement = e.target.parentNode;
+    let num_stars = document.querySelector('.star').classList.toString();
+    num_stars = num_stars.replace('star ','');
+    const textBox = parentElement.querySelector('.review_text');
+    const text = textBox.value;
+    
+    if(text) console.log(text);
+    else console.log("No review entered!".toUpperCase());
+    
+    if(ratingConversion[num_stars]) console.log(`rating ${ratingConversion[num_stars]}`);
+    else console.log("No rating entered!".toUpperCase());
+    const data = {review : text, rating: ratingConversion[num_stars]}; 
+    /*logic for submiting to backend call method for post
+    fetchCall('product_review.php',responseSubmit,"POST",data)
+    function responseSubmit(data){
+        console.log(data);
+    }
+    */
+}
+function getReviews(product){
+    const reviewSection = document.querySelector('.past-reviews-container');
+    const section_title = document.createElement('h2');
+    section_title.innerHTML = "Past reviews";
+    reviewSection.appendChild(section_title);
+    const  id = +(product.id);
+    fetchCall(`get_reviews.php?id=${product.id}`,responseReviews)
+    function responseReviews(data){
+        if(data.reviews.length > 0){
+           const reviews = data.reviews;
+           console.log(reviews);
+           reviews.forEach((review)=>{
+                const past_review = document.createElement('div');
+                past_review.className='past-review';
+                const rating = review.rating;
+                const text = `Review: ${review.reviewText}`;
+                const date = `Date: ${review.date}`;
+                const user_id = `Name: ${review.fname} ${review.lname}`;
+                const text_p = document.createElement('p');
+                const date_p = document.createElement('p');
+                const rating_p = document.createElement('p');
+                const user_id_p =document.createElement('p');
+                text_p.innerHTML = text;
+                user_id_p.innerHTML = user_id;
+                date_p.innerHTML = date;
+                rating_p.innerHTML =`Rating: ${rating}`;
+                past_review.appendChild(user_id_p);
+                past_review.appendChild(date_p);
+                past_review.appendChild(rating_p);
+                createStarRating(past_review);
+                past_review.appendChild(text_p);
+                reviewSection.appendChild(past_review);
+                const r = Math.floor(Math.random()*255)+1;
+                const g = Math.floor(Math.random()*255)+1;
+                const b = Math.floor(Math.random()*255)+1;
+                console.log(`rgb(${r},${g},${b})`);
+                past_review.style.backgroundColor = `rgb(${r},${g},${b})`;
+                const stars = past_review.querySelectorAll('.star');
+                setStarRating(stars,rating);
+           });
+        }
     }
 }
-
 function removeOverlay(){
     const main = document.querySelector('main');
     const overlay =document.querySelector('.overlay');
@@ -383,4 +486,13 @@ function removeOverlay(){
     }
 
 }
-
+function addToWishlist(){
+    selectValue = document.querySelector(".selectQuantity");
+    itemCount= selectValue.value;
+    console.log(`Add ${itemCount} to Wishlist`);
+}
+function addToCart(){
+    selectValue = document.querySelector(".selectQuantity");
+    itemCount= selectValue.value;
+    console.log(`Add ${itemCount} to cart`);
+}

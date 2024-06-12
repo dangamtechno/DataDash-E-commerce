@@ -95,30 +95,33 @@ h2 {
     opacity: 0.8;
     z-index:200;
 }
+/*modal styles*/
 .modal{
     position: fixed;
     top: 5%;
     left: 10%;
     right: 0;
     width: 80vw;
-    height: 85vh;
+    height: 80vh;
     background-color: #fff;
     border: red solid 5px;
     border-radius: 15px;
-    /*opacity: 0.8;*/
     z-index:300;
+    display: grid;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .modal p{
     text-align: center;
 }
 .modal-buttons{
     display: flex;
-    gap: 2px;
+    gap: 1px;
     justify-content: center;
     align-items: center;
     flex-direction: row;
     padding: 0 5%;
-    padding-bottom: 5%;
+    padding-bottom: 10px;
 }
 .modalImage{
     display: flex;
@@ -126,7 +129,20 @@ h2 {
     justify-content: center;
     align-items: center;
 }
-/**/
+.selectQuantity{
+  border:solid 2px red;
+  height: 5vh;
+  text-align: center;
+  width: 10vw;
+}
+.items-for-cart-section{
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2,1fr)
+}
+
+
+/*end modal styles*/
 .cart-button{
     font-size: 10px;
     font-weight: 800;

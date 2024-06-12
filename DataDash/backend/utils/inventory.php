@@ -1,6 +1,4 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "datadash");
-
 require '../include/database_config.php';
 header('Access-Control-Allow-Origin: *');
 

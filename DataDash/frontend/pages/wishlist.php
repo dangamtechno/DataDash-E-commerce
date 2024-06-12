@@ -5,6 +5,72 @@
     <link rel="stylesheet" href="../css/style.css">
     <?php require_once '../../backend/utils/session.php'; ?>
 </head>
+<style>
+        .wishlist-container {
+             max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            margin-left: 50px;
+        }
+
+        .wishlist {
+            width: 24%;
+            margin-bottom: 20px;
+        }
+
+        .wishlist img {
+            max-width: 100%;
+            height: auto;
+            width: 275px;
+            height: 275px;
+            object-fit: contain;
+        }
+
+        .wishlist a {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .wishlist a:hover {
+            text-decoration: underline;
+        }
+
+        .shop-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #009dff; /* Bootstrap primary color */
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .shop-button:hover {
+            background-color: #0056b3; /* Darker shade for hover effect */
+        }
+
+        .add-to-cart {
+            background-color: #0ad4f8;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .add-to-cart:hover {
+            background-color: #07eaff;
+        }
+    </style>
 <body>
     <h1>Wishlist</h1>
     <div class="topnav">
@@ -21,13 +87,39 @@
     </div>
     <div class="wishlist-container">
         <table class="wishlist-table">
-            <tr>
-                <th>Index</th>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th>Actions</th>
-            </tr>
-            <!-- wishlist items will be displayed here -->
+        <div class="product-grid">
+                <?php
+
+                
+                $conn = new mysqli("localhost", "root", "", "datadash");
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+
+                
+                $products = $conn->query("SELECT product.product_id, product.image, product.name, product.price
+                FROM product
+                INNER JOIN wishlist_products ON product.product_id = wishlist_products.product_id");
+                if ($products->num_rows == 0) {  // Check if there are no products
+                    echo '<div class="wishlist-container">';
+                    echo '<p> Your wishlist is empty </p>';
+                    echo '</div>';
+                }else{
+                    foreach ($products as $product) {
+                        echo '<div class="wishlist">';
+                        echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
+                        echo '<img src="../images/' . $product['image'] . '" alt="' . $product['name'] . '">';                       
+                        echo '<h3>' . $product['name'] . '</h3>';
+                        echo '<p>$' . $product['price'] . '</p>';
+                        echo '</a>';
+                        echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
+                        echo '</div>';
+                    }
+                }
+                
+                $conn->close();
+                ?>
+            </div>
         </table>
     </div>
 <footer>

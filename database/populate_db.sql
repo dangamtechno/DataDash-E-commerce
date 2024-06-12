@@ -131,3 +131,26 @@ VALUES
   ('Gift Wrap', 'boolean', '1', NULL),
   ('Size', 'text', 'Small, Medium, Large', 3);
 
+
+-- Populate user table
+INSERT INTO users (first_name, last_name, username, email, password_hash, favorite_movie, phone)
+VALUES
+  ('John', 'Doe', 'johndoe', 'johndoe@example.com', 'pass1234', 'The Matrix', '123-456-7890');
+
+
+-- Populate wishlist table
+INSERT INTO wishlist (wishlist_id, user_id, wishlist_name)
+VALUES
+  (1, 1, 'Home'),  
+  (2, 1, 'Holiday'),  
+  (3, 1, 'Work');  
+
+-- Populate wishlist_products table
+INSERT INTO wishlist_products (wishlist_id, product_id, user_id)
+VALUES
+  (1, 1, 2),
+  (2, 2, 2),
+  (3, 3, 2);
+
+
+
