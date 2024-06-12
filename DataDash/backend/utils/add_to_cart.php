@@ -20,33 +20,35 @@ if ($product_id === null) {
 
 $conn = new mysqli("localhost", "root", "", "datadash");
 
-// Get the user ID from the session
-$user_id = getSessionUserID();
+// Prepare statement to get user ID securely
+$sql1 = "SELECT user_id FROM users WHERE user_id = (SELECT user_id FROM sessions WHERE user_id = users.user_id)";
+$stmt = $conn->prepare($sql1);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+$user_id = $user['user_id'];
 
 // Get the cart ID from the cart table
-$cart_query = "SELECT cart_id FROM cart WHERE user_id = '$user_id'";
-$cart_result = $conn->query($cart_query);
-if ($cart_result->num_rows > 0) {
-    $cart_row = $cart_result->fetch_assoc();
-    $cart_id = $cart_row['cart_id'];
+$cart_id = null;
+$sql2 = "SELECT cart_id FROM cart WHERE user_id = '$user_id'";
+$result = $conn->query($sql2);
+if ($result->num_rows > 0) {
+    $cart = $result->fetch_assoc();
+    $cart_id = $cart['cart_id'];
 } else {
-    // Handle the case where the user does not have a cart
-    header('Location: ../../frontend/pages/shop.php'); // Redirect to shop page if no cart found
-    exit;
+    // If no cart exists, create a new one
+    $insert_cart_query = "INSERT INTO cart (user_id) VALUES ('$user_id')";
+    $result = $conn->query($insert_cart_query);
+    $cart_id = $conn->insert_id;
 }
 
-// Check if the product already exists in the cart
-$check_query = "SELECT * FROM cart_product WHERE cart_id = '$cart_id' AND product_id = '$product_id'";
-$check_result = $conn->query($check_query);
+// Product does not exist in the cart, insert a new row
+$insert_query = "INSERT INTO cart_product (cart_id, product_id, quantity) VALUES ('$cart_id', '$product_id', '$quantity')";
+$result = $conn->query($insert_query);
 
-if ($check_result->num_rows > 0) {
-    // Product already exists in the cart, update the quantity
-    $update_query = "UPDATE cart_product SET quantity = quantity + $quantity WHERE cart_id = '$cart_id' AND product_id = '$product_id'";
-    $conn->query($update_query);
-} else {
-    // Product does not exist in the cart, insert a new row
-    $insert_query = "INSERT INTO cart_product (cart_id, product_id, quantity) VALUES ('$cart_id', '$product_id', '$quantity')";
-    $conn->query($insert_query);
+if (!$result) {
+    echo "Error adding to cart: " . $conn->error;
+    exit;
 }
 
 $conn->close();

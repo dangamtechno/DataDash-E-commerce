@@ -130,3 +130,4 @@ VALUES
   ('Delivery Instructions', 'text', 'Leave at front door', NULL),
   ('Gift Wrap', 'boolean', '1', NULL),
   ('Size', 'text', 'Small, Medium, Large', 3);
+
