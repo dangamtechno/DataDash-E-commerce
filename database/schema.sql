@@ -128,12 +128,24 @@ CREATE TABLE cart_product (
     FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
-CREATE TABLE wishlists (
+CREATE TABLE wishlist (
+    wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
+    wishlist_name VARCHAR(255) NOT NULL,
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE wishlist_products (
+    wishlist_id INT NOT NULL,
     product_id INT NOT NULL,
-    PRIMARY KEY (user_id, product_id),
+    user_id INT NOT NULL,
+    added_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (wishlist_id),
+    FOREIGN KEY (wishlist_id) REFERENCES wishlist(wishlist_id),
+    FOREIGN KEY (product_id) REFERENCES product(product_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (product_id) REFERENCES product(product_id)
+    UNIQUE (wishlist_id, product_id) -- Ensure no duplicate product in the same wishlist
 );
 
 -- Other tables
@@ -264,8 +276,8 @@ CREATE INDEX idx_order_history_user_id ON order_history (user_id);
 CREATE INDEX idx_returns_order_id ON returns (order_id);
 CREATE INDEX idx_cart_user_id ON cart (user_id);
 CREATE INDEX idx_cart_product_product_id ON cart_product (product_id);
-CREATE INDEX idx_wishlists_user_id ON wishlists (user_id);
-CREATE INDEX idx_wishlists_product_id ON wishlists (product_id);
+CREATE INDEX idx_wishlist_user_id ON wishlist (user_id);
+CREATE INDEX idx_wishlist_product_id ON wishlist_products (product_id);
 CREATE INDEX idx_reviews_user_id ON reviews (user_id);
 CREATE INDEX idx_reviews_product_id ON reviews (product_id);
 CREATE INDEX idx_ratings_user_id ON ratings (user_id);
