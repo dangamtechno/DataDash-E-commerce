@@ -222,7 +222,13 @@
     </div>
     2024 DataDash, All Rights Reserved.
 </footer>
+<script src = "../js/global.js" defer ></script>
     <script src="../js/navbar.js"></script>
     <script src="../js/slider.js"></script>
+    <script src = "../js/menu.js"></script>
+   <script src = "../js/banner.js"></script>  
+   <script src = "../js/featured.js"></script>  
+   <script src = "../js/newArrivals.js"></script>  
+   <script src = "../js/starRatingSystem.js"></script> 
 </body>
 </html>

@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded',requestCategories);
 document.addEventListener('DOMContentLoaded',requestBanner);
 document.addEventListener('DOMContentLoaded',requestFeaturedProducts);
 document.addEventListener('DOMContentLoaded',requestNewArrivals);
-
 const searchSubmit = document.querySelector('.search-button');
 searchSubmit.addEventListener('click',submitSearch);
 function submitSearch(e){
@@ -20,9 +19,6 @@ function submitSearch(e){
         }
     }
 }
-
-
-
 function fillDropDownList(data){
     list = document.getElementById("drop-down");
     if(list){
@@ -33,102 +29,6 @@ function fillDropDownList(data){
     });
 }
 }
-
-
-
-function callCarousal(){
-    const swiper = new Swiper('.swiper', {
-       
-        loop: true,
-      
-        // If we need pagination
-        pagination: {
-          el: '.swiper-pagination',
-        },
-      
-        // Navigation arrows
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
-        },
-      
-      
-      });
-
-}
-
-function requestFeaturedProducts(){
-    fetchCall("featured_products.php",responseFeaturedProducts)
-    function responseFeaturedProducts(data){
-        const featuredProducts= data.featured_products;
-        featuredSection = document.querySelector('.featured-products');
-        populateCatalog(featuredProducts,featuredSection);
-    }
-}
-function requestNewArrivals(){
-    fetchCall("new_arrivals.php",responseNewArrivals)
-    function responseNewArrivals(data){
-        const new_items = data.new_items;
-        newSection = document.querySelector('.new-products');
-        populateCatalog(new_items,newSection);
-    }
-}
-
-
-
-function requestBanner(){
-   fetchCall("banner.php",responseBanner)
-   function responseBanner(data){
-    if(data.banners){
-        const banners = data.banners
-        banners.forEach((banner) => {
-            const slide = document.createElement("div");
-            slide.className = "swiper-slide";
-            url =` url('http://localhost:8081${banner.image}')`;
-            if(url===""){
-            slide.style.backgroundImage=` url('http://localhost:8081${banner.image}')`;
-            }
-            slide.style.backgroundSize = "cover";
-            slide.style.height="50vh";
-            const h3 = document.createElement('h3');
-            h3.textContent = banner.name;
-            const p = document.createElement('p');
-            p.textContent = banner.description;
-            const button = document.createElement('button');
-            button.textContent = 'Shop Now';
-            const swiperWrapper = document.querySelector(".swiper-wrapper");
-            slide.append(h3);
-            slide.append(p);
-            slide.append(button);
-            swiperWrapper.append(slide);
-        });
-        callCarousal();
-       }
-   }
-}
-
-
-function requestCategories(){
-    fetchCall("menu.php",responseCategories)
-    function responseCategories(data){
-        const nav = document.querySelector('.navigation');
-        if(data.categories){
-            categories = data.categories;
-            fillDropDownList(categories);
-            const ul = document.createElement('ul');
-            data.categories.forEach((category) => {
-                const li = document.createElement('li');
-                li.className = category;
-                li.textContent = category;
-                li.addEventListener('click',getCategoryProducts.bind(category));
-                ul.appendChild(li);
-            });
-            //append to dom 
-            nav.append(ul);
-         }
-    }
-}
-
 function populateCatalog(products,section){
     //if nonn empty enter branch
     if(products){
@@ -306,106 +206,13 @@ function fetchCall(resource, callBack, method="GET",data = undefined){
     callBack(data);
     }).catch((err)=>console.log(err));
 }
- 
-
-function remove(stars) {
-    let i = 0;
-    while (i < 5) {
-        stars[i].className = "star";
-        i++;
-    }
-}
-function manageStars(stars,n){
-    return function(event){
-       remove(stars);
-       let cls = "";
-       for (let i = 0; i < n; i++) {
-           if (n == 1){ 
-              cls = "one";
-           }
-           else if (n == 2) cls = "two";
-           else if (n == 3) cls = "three";
-           else if (n == 4) cls = "four";
-           else cls = "five";
-           stars[i].className = "star " + cls;
-       }
-   }
-}
-function setStarRating(stars,rating){
-    let cls = "";
-    switch(rating){
-        case 1 : 
-           cls = "one";
-           break;
-        case 2 : 
-           cls = "two";
-           break;
-        case 3 :
-           cls = "three";
-           break;
-        case 4 :
-           cls = "four"
-           break;
-        case 5 :
-           cls = "five";
-           break;
-        default : console.log(rating);
-           break;
-    }
-    for(let i = 0 ; i < rating; i++){
-       stars[i].className = `${stars[i].className} ${cls}`;
-    }
-}
-function createStarRating(section){
-    for(let j = 1 ; j <= 5; j++ ){
-        const i = document.createElement('span');
-        i.className = "star";
-        i.textContent ="★";
-        section.appendChild(i);
-    }
-}
-
-function addRatingClickEvent(){
+ function addRatingClickEvent(){
     const ratingCards = document.querySelectorAll('.rating-container');
     ratingCards.forEach((card)=>{
         const stars = card.querySelectorAll('.star');
         stars.forEach((star,index)=>{
             star.addEventListener('click',manageStars(stars,index+=1));
         });
-    })
-}
-
-function getCategoryProducts(){
-    const cat = this;
-    const main = document.querySelector("main");
-    setActiveCategory(cat);
-    fetchCall(`products.php?category=${cat}`,responseCategoryProducts)
-    function responseCategoryProducts(data){
-       //console.log(data);
-       if(data.products){
-        let products = data.products;
-        let count = products.length;
-        console.log("Count: " + count);
-        main.innerHTML='';
-        if(count > 0) populateCatalog(products,main);
-        else{
-            alert("Empty");
-            main.innerHTML='<h2>nothing to see here</h2>';
-        }
-       }
-    }
-}
-function setActiveCategory(cat){
-    const categoryList = document.querySelectorAll(".navigation li");
-    const root = document.querySelector(":root");
-    const primaryColor = window
-    .getComputedStyle(root)
-    .getPropertyValue("--primaryColor");
-    console.log(primaryColor);
-    categoryList.forEach((category)=>{
-        if(category.classList.contains(cat)){
-        category.style.backgroundColor = primaryColor;
-        } else category.style.backgroundColor = "initial"
     })
 }
 function submitReview(e){
