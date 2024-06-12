@@ -14,7 +14,7 @@ $quantity = isset($_POST['quantity']) ? $_POST['quantity'] : 1;
 
 // Check if the product ID is provided and valid
 if ($product_id === null) {
-    header('Location: ../../frontend.pages/shop.php'); // Redirect to shop page if product ID is not provided
+    header('Location: ../../frontend/pages/shop.php'); // Redirect to shop page if product ID is not provided
     exit;
 }
 
@@ -51,7 +51,7 @@ if ($check_result->num_rows > 0) {
 
 $conn->close();
 
-// Redirect to the cart page
-//header('Location: ../../frontend/pages/cart.php');
-//exit;
+// Redirect to the product details page
+header('Location: ../../frontend/pages/product_details.php?id=' . $product_id . '&added=true');
+exit;
 ?>
