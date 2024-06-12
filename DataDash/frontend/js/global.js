@@ -297,14 +297,14 @@ function getReviews(product){
     }
 }
 function removeOverlay(){
-    const main = document.querySelector('main');
+    //const main = document.querySelector('main');
     const overlay =document.querySelector('.overlay');
-    const modal = document.querySelector('.modal');
+    const modalContainer = document.querySelector('.modal-container');
     if(overlay){
         overlay.remove();
     }
-    if(modal){
-        modal.remove();
+    if(modalContainer){
+        modalContainer.remove();
     }
 
 }

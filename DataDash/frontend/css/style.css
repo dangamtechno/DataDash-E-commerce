@@ -96,7 +96,7 @@ h2 {
     z-index:200;
 }
 /*modal styles*/
-.modal{
+.modal-container{
     position: fixed;
     top: 5%;
     left: 10%;
@@ -107,9 +107,13 @@ h2 {
     border: red solid 5px;
     border-radius: 15px;
     z-index:300;
-    display: grid;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: auto;
+}
+.modal{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    padding: 10px 20px;
 }
 .modal p{
     text-align: center;
