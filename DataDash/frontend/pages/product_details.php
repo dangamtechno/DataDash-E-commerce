@@ -15,12 +15,10 @@ if ($product_id === null) {
 
 // Query the database to fetch product details, inventory, and category/brand information
 $product = $conn->query("SELECT p.product_id, p.category_id, p.brand_id, p.name, p.description, p.price, p.image,
-                    p.status, p.date_added, i.quantity AS inventory, c.category_name, b.brand_name 
-                    FROM product p
-                    LEFT JOIN inventory i ON p.product_id = i.product_id
-                    LEFT JOIN category c ON p.category_id = c.category_id
-                    LEFT JOIN brands b ON p.brand_id = b.brand_id
-                    WHERE p.product_id = '$product_id'");
+                    p.status, p.date_added, i.quantity AS inventory, c.category_name, b.brand_name FROM product p
+                    LEFT JOIN inventory i ON p.product_id = i.product_id LEFT JOIN category c ON 
+                    p.category_id = c.category_id LEFT JOIN brands b ON p.brand_id = b.brand_id WHERE 
+                    p.product_id = '$product_id'");
 
 // Check if the product exists
 if ($product->num_rows > 0) {
@@ -52,6 +50,8 @@ $conn->close();
             margin: 40px auto;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
         }
         .product-image {
             width: 400px;
@@ -91,9 +91,9 @@ $conn->close();
         }
 
         .shop-button-container {
-        text-align: center; /* Center the button horizontally */
-        margin-top: 10px; /* Add some space above the button */
-}
+            text-align: center; /* Center the button horizontally */
+            margin-top: 10px; /* Add some space above the button */
+        }
 
         .shop-button {
             display: inline-block;
@@ -131,32 +131,10 @@ $conn->close();
             </div>
         </div>
         <div class="shop-button-container">
-            <a href="shop.php" class="shop-button">Shop</a>
-        </div>
-        <div class="right-heading">
-            <div class="login-status">
-                <?php if (sessionExists()): ?>
-                    <div class="hello-message">
-                        <span>Hello, <?php echo getSessionUsername(); ?></span>
-                    </div>
-                    <div class="icons">
-                        <a href="account.php"><i class="fas fa-user-check fa-2x"></i>Account</a>
-                        <a href="cart.php"><i class="fas fa-shopping-cart fa-2x"></i>Cart</a>
-                        <a href="../../backend/utils/logout.php"><i class="fas fa-sign-out-alt fa-2x"></i>Logout</a>
-                    </div>
-                <?php else: ?>
-                    <div class="login" title="login">
-                        <a href="login_page.php"><i class="fas fa-sign-in-alt fa-2x"></i>Login</a>
-                    </div>
-                    <div class="register" title="register">
-                        <a href="create_account.php"><i class="fas fa-user-times fa-2x"></i>Register</a>
-                    </div>
-                <?php endif; ?>
-            </div>
+            <a href="shop.php" class="shop-button">Continue Shopping</a>
         </div>
     </div>
 </header>
-
 <main>
     <section class="product-details">
         <div class="product-image">
@@ -164,6 +142,8 @@ $conn->close();
         </div>
         <div class="product-information">
             <h2><?= $product_data['name'] ?></h2>
+            <?php if (isset($_GET['added']) && $_GET['added'] == 'true'): ?>
+            <p style="color: green; text-align: center; margin-top: 20px; font-size: 24px;"><?= $product_data['name'] ?> has been added to your cart!</p>            <?php endif; ?>
             <ul>
                 <li>Price: $<?= $product_data['price'] ?></li>
                 <li>Description: <?= $product_data['description'] ?></li>
@@ -171,12 +151,12 @@ $conn->close();
                 <li>Brand: <?= $product_data['brand_name'] ?></li>
                 <li>Available Quantity: <?= $product_data['inventory'] ?></li>
             </ul>
-             <form action="../../backend/utils/add_to_cart.php" method="post">
-                 <label for="quantity">Quantity:</label>
-                 <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
-                 <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
-                 <button type="submit" class="add-to-cart">Add to Cart</button>
-             </form>
+            <form action="../../backend/utils/add_to_cart.php" method="post">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
+                <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
+                <button type="submit" class="add-to-cart">Add to Cart</button>
+            </form>
         </div>
     </section>
 </main>

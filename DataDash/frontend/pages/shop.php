@@ -42,7 +42,7 @@
 
         .shop-button {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 15px 20px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
@@ -158,8 +158,14 @@
                     echo '<h3>' . $product['name'] . '</h3>';
                     echo '<p>$' . $product['price'] . '</p>';
                     echo '</a>';
-                    echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
-                    echo '</div>';
+                    if (sessionExists()) {
+                        echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
+                        echo '<input type="hidden" name="product_id" value="' . $product['product_id'] . '">';
+                        echo '<input type="hidden" name="quantity" value="1">';
+                        echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
+                        echo '</form>';
+                        echo '</div>';
+                    }
                 }
                 $conn->close();
                 ?>
