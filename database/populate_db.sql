@@ -130,22 +130,3 @@ VALUES
   ('Delivery Instructions', 'text', 'Leave at front door', NULL),
   ('Gift Wrap', 'boolean', '1', NULL),
   ('Size', 'text', 'Small, Medium, Large', 3);
-
--- Wishlists table
-CREATE TABLE wishlists (
-    user_id INT NOT NULL,
-    product_id INT NOT NULL,
-    PRIMARY KEY (user_id, product_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (product_id) REFERENCES product(product_id)
-);
-
--- Recommendations table
-CREATE TABLE recommendations (
-    user_id INT NOT NULL,
-    recommended_product_id INT NOT NULL,
-    recommendation_score DECIMAL(5, 2) NOT NULL,
-    PRIMARY KEY (user_id, recommended_product_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (recommended_product_id) REFERENCES product(product_id)
-);
