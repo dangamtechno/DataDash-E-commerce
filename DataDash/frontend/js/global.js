@@ -78,15 +78,22 @@ function populateCatalog(products,section){
     const price = this.price;
     fetchCall(`inventory.php?id=${this.id}`,responseInventory.bind(this))
     function responseInventory(data){
+       //get howmany instock
        const inStock = +(data.inStock); 
+       //overlay
        const overlay = document.createElement('div');
        overlay.className ='overlay';
        overlay.addEventListener('click',removeOverlay);
        main.appendChild(overlay);
+       //modal container
+       const modalContainer = document.createElement('div');
+       modalContainer.className = 'modal-container';
+       //image container
+       const modalImageContainer = document.createElement('div');
        const modal = document.createElement('div');
        modal.className ='modal';
-       main.appendChild(modal);
-       const modalImageContainer = document.createElement('div');
+       modalContainer.appendChild(modal)
+       main.appendChild(modalContainer);
        modalImageContainer.className = 'modalImage';
        const img = document.createElement('img');
        img.src = `http://localhost:8081${this.image}`;
@@ -96,8 +103,7 @@ function populateCatalog(products,section){
        modalDesc.className = 'modal-desc';
        const title = document.createElement('div');
        title.textContent = this.name;
-       modalDesc.appendChild(title);
-      
+       modalDesc.appendChild(title);     
        //Submit Review section that will only be shown if user is logged and has a order id with product id in it
        //so from here we would need to do a fetch for user credentials to get orders then check to see if product id of card is in one of the orders.
        //select order_id and user id from ordered_item where order_product_id = product_id;
@@ -128,12 +134,36 @@ function populateCatalog(products,section){
        wishlist.className='cart-button';
        cart.addEventListener('click',addToCart);
        wishlist.addEventListener('click',addToWishlist);
-       const subTotal = document.createElement('h2');
        const itemsForCartSection = document.createElement('div');
        itemsForCartSection.className = 'items-for-cart-section';
        const itemsForCart = document.createElement('p');
        itemsForCart.innerHTML = "Add to cart";
-       const select = document.createElement('select');
+       getStockText(inStock,modal);
+       const buttonContainer = document.createElement('div');
+       buttonContainer.className = 'modal-buttons';
+       //past review section for product
+       const pastReviews = document.createElement("div");
+       pastReviews.className = "past-reviews-container";
+       //append to container
+       itemsForCartSection.appendChild(itemsForCart);
+       //add quantitySelector
+       quantitySelector(inStock,price,itemsForCartSection);
+       modal.appendChild(itemsForCartSection)
+       buttonContainer.appendChild(cart);
+       buttonContainer.appendChild(wishlist);
+       modal.appendChild(buttonContainer);
+       modal.appendChild(pastReviews);
+       review_container.appendChild(ratingDiv);
+       review_container.appendChild(review);
+       modal.appendChild(review_container);
+       addRatingClickEvent();
+    //this will be the fetch request for reviews
+       getReviews(this);
+    }
+}
+function quantitySelector(inStock,price,container){
+    const select = document.createElement('select');
+    const subTotal = document.createElement('p');
        select.className = 'selectQuantity';
        if(inStock == 0) select.disabled = true;
        else{
@@ -152,48 +182,33 @@ function populateCatalog(products,section){
           subTotal.innerHTML = sub;
           itemCount = toBuy;
        });
-       const inStockText = document.createElement('p');
-       inStockText.className = 'in-stock';
-       inStockText.innerHTML = `In stock: ${inStock}`;
-       switch (true) {
-           case inStock > 10 :
-              inStockText.innerHTML = "In stock" 
-              inStockText.style.color = 'green'
-              break;
-           case inStock > 0 && inStock <=10 :
-               inStockText.innerHTML = `Only ${inStock} left`;
-               inStockText.style.color = 'orange'
-               break;
-            case inStock == 0:
-                inStockText.innerHTML = "out of stock";
-                break;
-            default:
-                console.log(inStock);
-                break;
-       }
-       const buttonContainer = document.createElement('div');
-       buttonContainer.className = 'modal-buttons';
-       //past review section for product
-       const pastReviews = document.createElement("div");
-       pastReviews.className = "past-reviews-container";
-       //append to container
-       modal.appendChild(inStockText);
-       itemsForCartSection.appendChild(itemsForCart);
-       itemsForCartSection.appendChild(select);
-       modal.appendChild(itemsForCartSection)
-       modal.appendChild(subTotal)
-       buttonContainer.appendChild(cart);
-       buttonContainer.appendChild(wishlist);
-       modal.appendChild(buttonContainer);
-       modal.appendChild(pastReviews);
-       review_container.appendChild(ratingDiv);
-       review_container.appendChild(review);
-       modal.appendChild(review_container);
-       addRatingClickEvent();
-    //this will be the fetch request for reviews
-       getReviews(this);
+       container.appendChild(select);
+       container.appendChild(subTotal);
+}
+function getStockText(inStock,modal){
+    const inStockText = document.createElement('p');
+    inStockText.className = 'in-stock';
+    inStockText.innerHTML = `In stock: ${inStock}`;
+    switch (true) {
+        case inStock > 10 :
+        inStockText.innerHTML = "In stock" 
+        inStockText.style.color = 'green'
+        break;
+        case inStock > 0 && inStock <=10 :
+            inStockText.innerHTML = `Only ${inStock} left`;
+            inStockText.style.color = 'orange'
+            break;
+        case inStock == 0:
+            inStockText.innerHTML = "out of stock";
+            break;
+        default:
+            console.log(inStock);
+            break;
     }
-}                     
+    modal.appendChild(inStockText);
+}
+
+
 function fetchCall(resource, callBack, method="GET",data = undefined){
     const url ="http://localhost:8081/user/backend/";
     fetch(url+resource,{
