@@ -14,10 +14,12 @@ if ($conn->connect_error) {
 function getCartItems($userId) {
     global $conn;
 
-    $sql = "SELECT p.product_id, p.name, p.price, p.image, cp.quantity
+    $sql = "SELECT p.product_id, p.name, p.price, p.image, cp.quantity, i.quantity AS inventory_quantity
             FROM product p 
             INNER JOIN cart_product cp ON p.product_id = cp.product_id 
-            WHERE cp.cart_id = (SELECT cart_id FROM cart WHERE user_id = ?)";
+            INNER JOIN cart c ON cp.cart_id = c.cart_id
+            INNER JOIN inventory i ON p.product_id = i.product_id
+            WHERE c.user_id = ?";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $userId);
@@ -44,15 +46,27 @@ function removeFromCart($userId, $productId) {
 function updateCartQuantity($userId, $productId, $newQuantity) {
     global $conn;
 
-    $sql = "UPDATE cart_product 
-            SET quantity = ? 
-            WHERE cart_id = (SELECT cart_id FROM cart WHERE user_id = ?) 
-            AND product_id = ?";
-
+    // Check if the new quantity is available in the inventory
+    $sql = "SELECT quantity FROM inventory WHERE product_id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iii", $newQuantity, $userId, $productId);
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $inventoryQuantity = $result->fetch_assoc()['quantity'];
 
-    return $stmt->execute();
+    if ($newQuantity <= $inventoryQuantity) {
+        $sql = "UPDATE cart_product 
+                SET quantity = ? 
+                WHERE cart_id = (SELECT cart_id FROM cart WHERE user_id = ?) 
+                AND product_id = ?";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iii", $newQuantity, $userId, $productId);
+
+        return $stmt->execute();
+    } else {
+        return false; // Quantity exceeds inventory
+    }
 }
 
 // Handle cart updates
@@ -147,8 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     </style>
 </head>
 <body>
-    <header>
-        <div class="heading">
+    <header> <div class="heading">
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
@@ -221,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                 $totalPrice += ($item['price'] * $item['quantity']);
                                 ?>
                                 <tr>
-                                    <td><input type="checkbox" class="select-item" data-product-id="<?php echo $item['product_id']; ?>"></td>
+                                    <td><input type="checkbox" class="select-item" data-product-id="<?php echo $item['product_id']; ?>" data-price="<?php echo $item['price']; ?>"></td>
                                     <td>
                                         <img src="../images/<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" class="product-image">
                                         <?php echo $item['name']; ?>
@@ -231,9 +244,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                         <form action="cart.php" method="post">
                                             <input type="hidden" name="action" value="update">
                                             <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
-                                            <input type="number" name="quantity" value="<?php echo $item['quantity']; ?>" min="1">
+                                            <input type="number" name="quantity" value="<?php echo $item['quantity']; ?>" min="1" max="<?php echo $item['inventory_quantity']; ?>">
                                             <button type="submit">Update</button>
                                         </form>
+                                        <?php if ($item['quantity'] > $item['inventory_quantity']): ?>
+                                            <span class="error-message">Quantity exceeds available inventory.</span>
+                                        <?php endif; ?>
                                     </td>
                                     <td>$<?php echo number_format($item['price'] * $item['quantity'], 2); ?></td>
                                     <td>
@@ -316,9 +332,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             let selectedPrice = 0;
             selectItemCheckboxes.forEach(checkbox => {
                 if (checkbox.checked) {
-                    const productId = checkbox.dataset.productId;
-                    const priceElement = checkbox.parentElement.nextElementSibling.nextElementSibling.nextElementSibling; // Find the price element
-                    selectedPrice += parseFloat(priceElement.textContent.replace('$', ''));
+                    selectedPrice += parseFloat(checkbox.dataset.price);
                 }
             });
             totalPriceElement.textContent = selectedPrice.toFixed(2);
@@ -328,6 +342,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         selectItemCheckboxes.forEach(checkbox => {
             checkbox.addEventListener('change', updateTotalPrice);
         });
+
+        // Initial total price (when no items are selected)
+        updateTotalPrice();
     </script>
 </body>
 </html>

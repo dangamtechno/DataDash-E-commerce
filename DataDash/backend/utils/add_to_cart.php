@@ -42,9 +42,19 @@ if ($result->num_rows > 0) {
     $cart_id = $conn->insert_id;
 }
 
-// Product does not exist in the cart, insert a new row
-$insert_query = "INSERT INTO cart_product (cart_id, product_id, quantity) VALUES ('$cart_id', '$product_id', '$quantity')";
-$result = $conn->query($insert_query);
+// Check if the product already exists in the cart
+$sql3 = "SELECT quantity FROM cart_product WHERE cart_id = '$cart_id' AND product_id = '$product_id'";
+$result = $conn->query($sql3);
+if ($result->num_rows > 0) {
+    $existing_product = $result->fetch_assoc();
+    $new_quantity = $existing_product['quantity'] + $quantity;
+    $update_query = "UPDATE cart_product SET quantity = '$new_quantity' WHERE cart_id = '$cart_id' AND product_id = '$product_id'";
+    $result = $conn->query($update_query);
+} else {
+    // Product does not exist in the cart, insert a new row
+    $insert_query = "INSERT INTO cart_product (cart_id, product_id, quantity) VALUES ('$cart_id', '$product_id', '$quantity')";
+    $result = $conn->query($insert_query);
+}
 
 if (!$result) {
     echo "Error adding to cart: " . $conn->error;
