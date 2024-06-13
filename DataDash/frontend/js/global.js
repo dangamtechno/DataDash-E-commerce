@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded',requestCategories);
 document.addEventListener('DOMContentLoaded',requestBanner);
 document.addEventListener('DOMContentLoaded',requestFeaturedProducts);
 document.addEventListener('DOMContentLoaded',requestNewArrivals);
-
 const searchSubmit = document.querySelector('.search-button');
 searchSubmit.addEventListener('click',submitSearch);
 function submitSearch(e){
@@ -20,9 +19,6 @@ function submitSearch(e){
         }
     }
 }
-
-
-
 function fillDropDownList(data){
     list = document.getElementById("drop-down");
     if(list){
@@ -33,102 +29,6 @@ function fillDropDownList(data){
     });
 }
 }
-
-
-
-function callCarousal(){
-    const swiper = new Swiper('.swiper', {
-       
-        loop: true,
-      
-        // If we need pagination
-        pagination: {
-          el: '.swiper-pagination',
-        },
-      
-        // Navigation arrows
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
-        },
-      
-      
-      });
-
-}
-
-function requestFeaturedProducts(){
-    fetchCall("featured_products.php",responseFeaturedProducts)
-    function responseFeaturedProducts(data){
-        const featuredProducts= data.featured_products;
-        featuredSection = document.querySelector('.featured-products');
-        populateCatalog(featuredProducts,featuredSection);
-    }
-}
-function requestNewArrivals(){
-    fetchCall("new_arrivals.php",responseNewArrivals)
-    function responseNewArrivals(data){
-        const new_items = data.new_items;
-        newSection = document.querySelector('.new-products');
-        populateCatalog(new_items,newSection);
-    }
-}
-
-
-
-function requestBanner(){
-   fetchCall("banner.php",responseBanner)
-   function responseBanner(data){
-    if(data.banners){
-        const banners = data.banners
-        banners.forEach((banner) => {
-            const slide = document.createElement("div");
-            slide.className = "swiper-slide";
-            url =` url('http://localhost:8081${banner.image}')`;
-            if(url===""){
-            slide.style.backgroundImage=` url('http://localhost:8081${banner.image}')`;
-            }
-            slide.style.backgroundSize = "cover";
-            slide.style.height="50vh";
-            const h3 = document.createElement('h3');
-            h3.textContent = banner.name;
-            const p = document.createElement('p');
-            p.textContent = banner.description;
-            const button = document.createElement('button');
-            button.textContent = 'Shop Now';
-            const swiperWrapper = document.querySelector(".swiper-wrapper");
-            slide.append(h3);
-            slide.append(p);
-            slide.append(button);
-            swiperWrapper.append(slide);
-        });
-        callCarousal();
-       }
-   }
-}
-
-
-function requestCategories(){
-    fetchCall("menu.php",responseCategories)
-    function responseCategories(data){
-        const nav = document.querySelector('.navigation');
-        if(data.categories){
-            categories = data.categories;
-            fillDropDownList(categories);
-            const ul = document.createElement('ul');
-            data.categories.forEach((category) => {
-                const li = document.createElement('li');
-                li.className = category;
-                li.textContent = category;
-                li.addEventListener('click',getCategoryProducts.bind(category));
-                ul.appendChild(li);
-            });
-            //append to dom 
-            nav.append(ul);
-         }
-    }
-}
-
 function populateCatalog(products,section){
     //if nonn empty enter branch
     if(products){
@@ -178,15 +78,22 @@ function populateCatalog(products,section){
     const price = this.price;
     fetchCall(`inventory.php?id=${this.id}`,responseInventory.bind(this))
     function responseInventory(data){
+       //get howmany instock
        const inStock = +(data.inStock); 
+       //overlay
        const overlay = document.createElement('div');
        overlay.className ='overlay';
        overlay.addEventListener('click',removeOverlay);
        main.appendChild(overlay);
+       //modal container
+       const modalContainer = document.createElement('div');
+       modalContainer.className = 'modal-container';
+       //image container
+       const modalImageContainer = document.createElement('div');
        const modal = document.createElement('div');
        modal.className ='modal';
-       main.appendChild(modal);
-       const modalImageContainer = document.createElement('div');
+       modalContainer.appendChild(modal)
+       main.appendChild(modalContainer);
        modalImageContainer.className = 'modalImage';
        const img = document.createElement('img');
        img.src = `http://localhost:8081${this.image}`;
@@ -196,8 +103,7 @@ function populateCatalog(products,section){
        modalDesc.className = 'modal-desc';
        const title = document.createElement('div');
        title.textContent = this.name;
-       modalDesc.appendChild(title);
-      
+       modalDesc.appendChild(title);     
        //Submit Review section that will only be shown if user is logged and has a order id with product id in it
        //so from here we would need to do a fetch for user credentials to get orders then check to see if product id of card is in one of the orders.
        //select order_id and user id from ordered_item where order_product_id = product_id;
@@ -228,12 +134,37 @@ function populateCatalog(products,section){
        wishlist.className='cart-button';
        cart.addEventListener('click',addToCart);
        wishlist.addEventListener('click',addToWishlist);
-       const subTotal = document.createElement('h2');
        const itemsForCartSection = document.createElement('div');
        itemsForCartSection.className = 'items-for-cart-section';
-       const itemsForCart = document.createElement('p');
-       itemsForCart.innerHTML = "Add to cart";
-       const select = document.createElement('select');
+       getStockText(inStock,itemsForCartSection);
+       const buttonContainer = document.createElement('div');
+       buttonContainer.className = 'modal-buttons';
+       //past review section for product
+       const pastReviews = document.createElement("div");
+       pastReviews.className = "past-reviews-container";
+       //append to container
+       //add quantitySelector
+    //    itemsForCartSection.appendChild(select);
+       quantitySelector(inStock,price,itemsForCartSection);
+       buttonContainer.appendChild(cart);
+       buttonContainer.appendChild(wishlist);
+       itemsForCartSection.appendChild(buttonContainer);
+       modal.appendChild(itemsForCartSection)
+       modal.appendChild(review_container);
+       modal.appendChild(pastReviews);
+       review_container.appendChild(ratingDiv);
+       review_container.appendChild(review);
+       addRatingClickEvent();
+    //this will be the fetch request for reviews
+       getReviews(this);
+    }
+}
+function quantitySelector(inStock,price,container){
+    const select = document.createElement('select');
+    const label= document.createElement('label');
+    label.setAttribute('for', select);
+    label.textContent = 'Choose amount:';
+    const subTotal = document.createElement('p');
        select.className = 'selectQuantity';
        if(inStock == 0) select.disabled = true;
        else{
@@ -249,51 +180,38 @@ function populateCatalog(products,section){
           let toBuy = +select.value;
           let sub = toBuy*price;
           sub = sub.toFixed(2);
-          subTotal.innerHTML = sub;
+          subTotal.innerHTML = `Sub total: ${sub} $`;
           itemCount = toBuy;
        });
-       const inStockText = document.createElement('p');
-       inStockText.className = 'in-stock';
-       inStockText.innerHTML = `In stock: ${inStock}`;
-       switch (true) {
-           case inStock > 10 :
-              inStockText.innerHTML = "In stock" 
-              inStockText.style.color = 'green'
-              break;
-           case inStock > 0 && inStock <=10 :
-               inStockText.innerHTML = `Only ${inStock} left`;
-               inStockText.style.color = 'orange'
-               break;
-            case inStock == 0:
-                inStockText.innerHTML = "out of stock";
-                break;
-            default:
-                console.log(inStock);
-                break;
-       }
-       const buttonContainer = document.createElement('div');
-       buttonContainer.className = 'modal-buttons';
-       //past review section for product
-       const pastReviews = document.createElement("div");
-       pastReviews.className = "past-reviews-container";
-       //append to container
-       modal.appendChild(inStockText);
-       itemsForCartSection.appendChild(itemsForCart);
-       itemsForCartSection.appendChild(select);
-       modal.appendChild(itemsForCartSection)
-       modal.appendChild(subTotal)
-       buttonContainer.appendChild(cart);
-       buttonContainer.appendChild(wishlist);
-       modal.appendChild(buttonContainer);
-       modal.appendChild(pastReviews);
-       review_container.appendChild(ratingDiv);
-       review_container.appendChild(review);
-       modal.appendChild(review_container);
-       addRatingClickEvent();
-    //this will be the fetch request for reviews
-       getReviews(this);
+
+       select.append(label);
+       container.appendChild(select);
+       container.appendChild(subTotal);
+}
+function getStockText(inStock,modal){
+    const inStockText = document.createElement('p');
+    inStockText.className = 'in-stock';
+    inStockText.innerHTML = `In stock: ${inStock}`;
+    switch (true) {
+        case inStock > 10 :
+        inStockText.innerHTML = "In stock" 
+        inStockText.style.color = 'green'
+        break;
+        case inStock > 0 && inStock <=10 :
+            inStockText.innerHTML = `Only ${inStock} left`;
+            inStockText.style.color = 'orange'
+            break;
+        case inStock == 0:
+            inStockText.innerHTML = "out of stock";
+            break;
+        default:
+            console.log(inStock);
+            break;
     }
-}                     
+    modal.appendChild(inStockText);
+}
+
+
 function fetchCall(resource, callBack, method="GET",data = undefined){
     const url ="http://localhost:8081/user/backend/";
     fetch(url+resource,{
@@ -306,106 +224,13 @@ function fetchCall(resource, callBack, method="GET",data = undefined){
     callBack(data);
     }).catch((err)=>console.log(err));
 }
- 
-
-function remove(stars) {
-    let i = 0;
-    while (i < 5) {
-        stars[i].className = "star";
-        i++;
-    }
-}
-function manageStars(stars,n){
-    return function(event){
-       remove(stars);
-       let cls = "";
-       for (let i = 0; i < n; i++) {
-           if (n == 1){ 
-              cls = "one";
-           }
-           else if (n == 2) cls = "two";
-           else if (n == 3) cls = "three";
-           else if (n == 4) cls = "four";
-           else cls = "five";
-           stars[i].className = "star " + cls;
-       }
-   }
-}
-function setStarRating(stars,rating){
-    let cls = "";
-    switch(rating){
-        case 1 : 
-           cls = "one";
-           break;
-        case 2 : 
-           cls = "two";
-           break;
-        case 3 :
-           cls = "three";
-           break;
-        case 4 :
-           cls = "four"
-           break;
-        case 5 :
-           cls = "five";
-           break;
-        default : console.log(rating);
-           break;
-    }
-    for(let i = 0 ; i < rating; i++){
-       stars[i].className = `${stars[i].className} ${cls}`;
-    }
-}
-function createStarRating(section){
-    for(let j = 1 ; j <= 5; j++ ){
-        const i = document.createElement('span');
-        i.className = "star";
-        i.textContent ="★";
-        section.appendChild(i);
-    }
-}
-
-function addRatingClickEvent(){
+ function addRatingClickEvent(){
     const ratingCards = document.querySelectorAll('.rating-container');
     ratingCards.forEach((card)=>{
         const stars = card.querySelectorAll('.star');
         stars.forEach((star,index)=>{
             star.addEventListener('click',manageStars(stars,index+=1));
         });
-    })
-}
-
-function getCategoryProducts(){
-    const cat = this;
-    const main = document.querySelector("main");
-    setActiveCategory(cat);
-    fetchCall(`products.php?category=${cat}`,responseCategoryProducts)
-    function responseCategoryProducts(data){
-       //console.log(data);
-       if(data.products){
-        let products = data.products;
-        let count = products.length;
-        console.log("Count: " + count);
-        main.innerHTML='';
-        if(count > 0) populateCatalog(products,main);
-        else{
-            alert("Empty");
-            main.innerHTML='<h2>nothing to see here</h2>';
-        }
-       }
-    }
-}
-function setActiveCategory(cat){
-    const categoryList = document.querySelectorAll(".navigation li");
-    const root = document.querySelector(":root");
-    const primaryColor = window
-    .getComputedStyle(root)
-    .getPropertyValue("--primaryColor");
-    console.log(primaryColor);
-    categoryList.forEach((category)=>{
-        if(category.classList.contains(cat)){
-        category.style.backgroundColor = primaryColor;
-        } else category.style.backgroundColor = "initial"
     })
 }
 function submitReview(e){
@@ -475,14 +300,14 @@ function getReviews(product){
     }
 }
 function removeOverlay(){
-    const main = document.querySelector('main');
+    //const main = document.querySelector('main');
     const overlay =document.querySelector('.overlay');
-    const modal = document.querySelector('.modal');
+    const modalContainer = document.querySelector('.modal-container');
     if(overlay){
         overlay.remove();
     }
-    if(modal){
-        modal.remove();
+    if(modalContainer){
+        modalContainer.remove();
     }
 
 }

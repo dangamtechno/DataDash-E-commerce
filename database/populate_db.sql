@@ -139,18 +139,18 @@ VALUES
 
 
 -- Populate wishlist table
-INSERT INTO wishlist (wishlist_id, user_id, wishlist_name)
+INSERT INTO wishlist (user_id, wishlist_name)
 VALUES
-  (1, 1, 'Home'),  
-  (2, 1, 'Holiday'),  
-  (3, 1, 'Work');  
+  (1, 'Home'),  
+  (1, 'Holiday'),  
+  (1, 'Work');
 
 -- Populate wishlist_products table
 INSERT INTO wishlist_products (wishlist_id, product_id, user_id)
 VALUES
-  (1, 1, 2),
-  (2, 2, 2),
-  (3, 3, 2);
+  (1, 1, 1),
+  (2, 2, 1),
+  (3, 3, 1);
 
 
 

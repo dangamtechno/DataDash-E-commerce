@@ -84,7 +84,7 @@
                         <input type="submit" name="submit-search" class ="search-button">
                     </form>
                 </div>
-            </div>
+            </div> <br>
             <div class="shop-button-container">
                 <a href="shop.php" class="shop-button">Shop</a>
             </div>
@@ -138,12 +138,11 @@
                     echo '<p style="color: #000;">$' . $product['price'] . '</p>';
                     echo '</a>';
                     if (sessionExists()) {
-                        echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
-                        echo '<input type="hidden" name="product_id" value="' . $product['product_id'] . '">';
-                        echo '<input type="hidden" name="quantity" value="1">';
-                        echo '<button type="submit" class="add-to-cart">Add to Cart</button>
-';
-                        echo '</form>';
+                         echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
+                         echo '<input type="hidden" name="product_id" value="' . $product['product_id'] . '">';
+                         echo '<input type="hidden" name="quantity" value="1">';
+                         echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
+                         echo '</form>';
                     } else {
                         echo '<a href="login_page.php" class="add-to-cart-link">Add to Cart</a>';
                     }
@@ -222,7 +221,13 @@
     </div>
     2024 DataDash, All Rights Reserved.
 </footer>
+<script src = "../js/global.js" defer ></script>
     <script src="../js/navbar.js"></script>
     <script src="../js/slider.js"></script>
+    <script src = "../js/menu.js"></script>
+   <script src = "../js/banner.js"></script>  
+   <script src = "../js/featured.js"></script>  
+   <script src = "../js/newArrivals.js"></script>  
+   <script src = "../js/starRatingSystem.js"></script> 
 </body>
 </html>

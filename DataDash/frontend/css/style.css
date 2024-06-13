@@ -96,52 +96,55 @@ h2 {
     z-index:200;
 }
 /*modal styles*/
-.modal{
+.modal-container{
     position: fixed;
     top: 5%;
-    left: 10%;
+    left: 15%;
     right: 0;
-    width: 80vw;
+    width: 70vw;
     height: 80vh;
     background-color: #fff;
     border: red solid 5px;
     border-radius: 15px;
     z-index:300;
-    display: grid;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: auto;
+}
+.modal{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    padding: 5px 10px;
 }
 .modal p{
     text-align: center;
 }
 .modal-buttons{
+    width: 100%;
     display: flex;
-    gap: 1px;
     justify-content: center;
-    align-items: center;
+    gap: 10px;
+}
+.selectQuantity{
+    border:solid 2px red;
+    height: 5vh;
+    text-align: center;
+    width: 10vw;
+  }
+  .items-for-cart-section{
+    border:solid 2px #002;
+    width:100%;
+    display:flex;
     flex-direction: row;
-    padding: 0 5%;
-    padding-bottom: 10px;
+    flex-wrap: wrap;
+    padding: 2%;
+    gap: 5px; 
+    align-items: center;
+    justify-content: center;
 }
 .modalImage{
     display: flex;
-    flex-direction: row;    
     justify-content: center;
-    align-items: center;
 }
-.selectQuantity{
-  border:solid 2px red;
-  height: 5vh;
-  text-align: center;
-  width: 10vw;
-}
-.items-for-cart-section{
-    padding: 1rem;
-    display: grid;
-    grid-template-columns: repeat(2,1fr)
-}
-
-
 /*end modal styles*/
 .cart-button{
     font-size: 10px;
@@ -206,13 +209,16 @@ h2 {
 
 
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 600px) {
     .navigation ul li{
         margin: none;
         font-size: 0.8rem;
     }
     .catalog{
         grid-template-columns: repeat(1,1fr);
+    }
+    .modal{
+        grid-template-columns: 1fr;
     }
   }
 .cart-button{

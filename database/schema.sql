@@ -124,8 +124,8 @@ CREATE TABLE cart_product (
     product_id INT NOT NULL,
     quantity INT NOT NULL,
     PRIMARY KEY (cart_id, product_id),
-    FOREIGN KEY (cart_id) REFERENCES cart(cart_id),
-    FOREIGN KEY (product_id) REFERENCES product(product_id)
+    FOREIGN KEY (cart_id) REFERENCES cart(cart_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE wishlist (
