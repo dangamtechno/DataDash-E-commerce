@@ -86,19 +86,50 @@
         }
     </style>
 <body>
+<header> <div class="heading">
+            <div class="left-heading">
+                <div class="logo">
+                    <a href="homepage.php">
+                        <img src="../images/DataDash.png" alt="Logo" width="85" height="500">
+                    </a>
+                </div>
+                <div class="search-bar">
+                    <form class="search-form">
+                        <label>
+                            <input type="search" name="search" placeholder="search...">
+                        </label>
+                        <input type="submit" name="submit-search" class ="search-button">
+                    </form>
+                </div>
+            </div> <br>
+            <div class="shop-button-container">
+                <a href="shop.php" class="shop-button">Shop</a>
+            </div>
+            <div class="right-heading">
+                <div class="login-status">
+                    <?php if (sessionExists()): ?>
+                        <div class="hello-message">
+                            <span>Hello, <?php echo getSessionUsername(); ?></span>
+                        </div>
+                        <div class="icons">
+                            <a href="account.php"><i class="fas fa-user-check fa-2x"></i>Account</a>
+                            <a href="cart.php"><i class="fas fa-shopping-cart fa-2x"></i>Cart</a>
+                            <a href="../../backend/utils/logout.php"><i class="fas fa-sign-out-alt fa-2x"></i>Logout</a>
+                        </div>
+                    <?php else: ?>
+                        <div class="login" title="login">
+                            <a href="login_page.php"><i class="fas fa-sign-in-alt fa-2x"></i>Login</a>
+                        </div>
+                        <div class="register" title="register">
+                            <a href="create_account.php"><i class="fas fa-user-times fa-2x"></i>Register</a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </header>
     <h1>Wishlist</h1>
-    <div class="topnav">
-        <a href="homepage.php">Home</a>
-        <?php if (sessionExists()): ?>
-            <a href="cart.php">Shopping Cart</a>
-            <a href="wishlist.php">Wishlist</a>
-        <?php endif; ?>
-        <?php if (sessionExists()): ?>
-            <a href="../../backend/utils/logout.php">Logout</a>
-        <?php else: ?>
-            <a href="login_page.php">Login</a>
-        <?php endif; ?>
-    </div>
+    
     <div class="wishlist-container">
         <table class="wishlist-table">
         <div class="wishlist-grid">
