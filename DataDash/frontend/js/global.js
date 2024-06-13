@@ -136,8 +136,6 @@ function populateCatalog(products,section){
        wishlist.addEventListener('click',addToWishlist);
        const itemsForCartSection = document.createElement('div');
        itemsForCartSection.className = 'items-for-cart-section';
-       const itemsForCart = document.createElement('p');
-       itemsForCart.innerHTML = "Add to cart";
        getStockText(inStock,itemsForCartSection);
        const buttonContainer = document.createElement('div');
        buttonContainer.className = 'modal-buttons';
@@ -145,7 +143,6 @@ function populateCatalog(products,section){
        const pastReviews = document.createElement("div");
        pastReviews.className = "past-reviews-container";
        //append to container
-       itemsForCartSection.appendChild(itemsForCart);
        //add quantitySelector
     //    itemsForCartSection.appendChild(select);
        quantitySelector(inStock,price,itemsForCartSection);
