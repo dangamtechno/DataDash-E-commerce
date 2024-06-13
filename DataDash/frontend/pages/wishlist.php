@@ -7,22 +7,24 @@
 </head>
 <style>
         .wishlist-container {
-             max-width: 800px;
+             max-width: 1000px;
             margin: 50px auto;
             background-color: #fff;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-        .product-grid {
+        }
+        .wishlist-grid {
             display: flex;
             flex-wrap: wrap;
-            justify-content: flex-start;
-            margin-left: 50px;
+            justify-content: center;
+            margin-left: -10px; /* Adjust to balance the padding */
+            margin-right: -10px; /* Adjust to balance the padding */
         }
 
         .wishlist {
-            width: 24%;
+            width: 30%;
             margin-bottom: 20px;
+            justify-content: center;
         }
 
         .wishlist img {
@@ -70,6 +72,18 @@
         .add-to-cart:hover {
             background-color: #07eaff;
         }
+
+        .delete-from-wishlist {
+            background-color: #e10000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 20px;
+        }
+        .delete-from-wishlist:hover {
+            background-color: #f00;
+        }
     </style>
 <body>
     <h1>Wishlist</h1>
@@ -87,7 +101,7 @@
     </div>
     <div class="wishlist-container">
         <table class="wishlist-table">
-        <div class="product-grid">
+        <div class="wishlist-grid">
                 <?php
 
                 
@@ -113,10 +127,10 @@
                         echo '<p>$' . $product['price'] . '</p>';
                         echo '</a>';
                         echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
+                        echo '<button type="submit" class="delete-from-wishlist">Delete</button>';
                         echo '</div>';
                     }
                 }
-                
                 $conn->close();
                 ?>
             </div>

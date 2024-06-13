@@ -42,6 +42,7 @@ $conn->close();
             <a href="homepage.php">Home</a>
             <?php if (sessionExists()): ?>
                 <a href="cart.php">Shopping Cart</a>
+                <a href="wishlist.php">Wishlist</a>
             <?php endif; ?>
             <?php if (sessionExists()): ?>
                 <a href="../../backend/utils/logout.php">Logout</a>
