@@ -99,9 +99,9 @@ h2 {
 .modal-container{
     position: fixed;
     top: 5%;
-    left: 10%;
+    left: 15%;
     right: 0;
-    width: 80vw;
+    width: 70vw;
     height: 80vh;
     background-color: #fff;
     border: red solid 5px;
@@ -119,13 +119,9 @@ h2 {
     text-align: center;
 }
 .modal-buttons{
+    width: 80%;
     display: flex;
-    gap: 1px;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    padding: 0 5%;
-    padding-bottom: 10px;
+    gap: 10px;
 }
 .modalImage{
     display: flex;
@@ -134,15 +130,17 @@ h2 {
     align-items: center;
 }
 .selectQuantity{
-  border:solid 2px red;
-  height: 5vh;
-  text-align: center;
-  width: 10vw;
-}
+    border:solid 2px red;
+    height: 5vh;
+    text-align: center;
+    width: 10vw;
+  }
 .items-for-cart-section{
-    padding: 1rem;
-    display: grid;
-    grid-template-columns: repeat(2,1fr)
+    width:80%;
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 
@@ -210,13 +208,16 @@ h2 {
 
 
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 600px) {
     .navigation ul li{
         margin: none;
         font-size: 0.8rem;
     }
     .catalog{
         grid-template-columns: repeat(1,1fr);
+    }
+    .modal{
+        grid-template-columns: 1fr;
     }
   }
 .cart-button{

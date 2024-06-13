@@ -138,7 +138,7 @@ function populateCatalog(products,section){
        itemsForCartSection.className = 'items-for-cart-section';
        const itemsForCart = document.createElement('p');
        itemsForCart.innerHTML = "Add to cart";
-       getStockText(inStock,modal);
+       getStockText(inStock,itemsForCartSection);
        const buttonContainer = document.createElement('div');
        buttonContainer.className = 'modal-buttons';
        //past review section for product
@@ -147,15 +147,16 @@ function populateCatalog(products,section){
        //append to container
        itemsForCartSection.appendChild(itemsForCart);
        //add quantitySelector
+    //    itemsForCartSection.appendChild(select);
        quantitySelector(inStock,price,itemsForCartSection);
-       modal.appendChild(itemsForCartSection)
        buttonContainer.appendChild(cart);
        buttonContainer.appendChild(wishlist);
-       modal.appendChild(buttonContainer);
+       itemsForCartSection.appendChild(buttonContainer);
+       modal.appendChild(itemsForCartSection)
+       modal.appendChild(review_container);
        modal.appendChild(pastReviews);
        review_container.appendChild(ratingDiv);
        review_container.appendChild(review);
-       modal.appendChild(review_container);
        addRatingClickEvent();
     //this will be the fetch request for reviews
        getReviews(this);
@@ -163,6 +164,9 @@ function populateCatalog(products,section){
 }
 function quantitySelector(inStock,price,container){
     const select = document.createElement('select');
+    const label= document.createElement('label');
+    label.setAttribute('for', select);
+    label.textContent = 'Choose amount:';
     const subTotal = document.createElement('p');
        select.className = 'selectQuantity';
        if(inStock == 0) select.disabled = true;
@@ -179,9 +183,11 @@ function quantitySelector(inStock,price,container){
           let toBuy = +select.value;
           let sub = toBuy*price;
           sub = sub.toFixed(2);
-          subTotal.innerHTML = sub;
+          subTotal.innerHTML = `Sub total: ${sub} $`;
           itemCount = toBuy;
        });
+
+       select.append(label);
        container.appendChild(select);
        container.appendChild(subTotal);
 }
