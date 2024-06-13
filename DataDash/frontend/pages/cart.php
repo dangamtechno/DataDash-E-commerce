@@ -1,5 +1,4 @@
 <?php
-
 require_once '../../backend/utils/session.php';
 require_once '../../backend/include/database_config.php';
 
@@ -15,8 +14,8 @@ function getCartItems($userId) {
     global $conn;
 
     $sql = "SELECT p.product_id, p.name, p.price, p.image, cp.quantity, i.quantity AS inventory_quantity
-            FROM product p 
-            INNER JOIN cart_product cp ON p.product_id = cp.product_id 
+            FROM product p
+            INNER JOIN cart_product cp ON p.product_id = cp.product_id
             INNER JOIN cart c ON cp.cart_id = c.cart_id
             INNER JOIN inventory i ON p.product_id = i.product_id
             WHERE c.user_id = ?";
@@ -33,8 +32,8 @@ function getCartItems($userId) {
 function removeFromCart($userId, $productId) {
     global $conn;
 
-    $sql = "DELETE FROM cart_product 
-            WHERE cart_id = (SELECT cart_id FROM cart WHERE user_id = ?) 
+    $sql = "DELETE FROM cart_product
+            WHERE cart_id = (SELECT cart_id FROM cart WHERE user_id = ?)
             AND product_id = ?";
 
     $stmt = $conn->prepare($sql);
@@ -55,9 +54,9 @@ function updateCartQuantity($userId, $productId, $newQuantity) {
     $inventoryQuantity = $result->fetch_assoc()['quantity'];
 
     if ($newQuantity <= $inventoryQuantity) {
-        $sql = "UPDATE cart_product 
-                SET quantity = ? 
-                WHERE cart_id = (SELECT cart_id FROM cart WHERE user_id = ?) 
+        $sql = "UPDATE cart_product
+                SET quantity = ?
+                WHERE cart_id = (SELECT cart_id FROM cart WHERE user_id = ?)
                 AND product_id = ?";
 
         $stmt = $conn->prepare($sql);
@@ -244,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                         <form action="cart.php" method="post">
                                             <input type="hidden" name="action" value="update">
                                             <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
-                                            <input type="number" name="quantity" value="<?php echo $item['quantity']; ?>" min="1" max="<?php echo $item['inventory_quantity']; ?>">
+                                            <input type="number" name="quantity[<?php echo $item['product_id']; ?>]" value="<?php echo $item['quantity']; ?>" min="1" max="<?php echo $item['inventory_quantity']; ?>">
                                             <button type="submit">Update</button>
                                         </form>
                                         <?php if ($item['quantity'] > $item['inventory_quantity']): ?>
@@ -267,7 +266,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     <div class="cart-total">
                         <h3>Total: $<span id="total-price"><?php echo number_format($totalPrice, 2); ?></span></h3>
                         <br>
-                        <a href="checkout.php?products=<?php echo implode(',', array_column($cartItems, 'product_id')); ?>" class="checkout-button">Proceed to Checkout</a>
+                        <form action="checkout.php" method="post" id="checkout-form">
+                            <input type="hidden" name="action" value="checkout">
+                            <input type="hidden" name="selected_products" id="selected-products">
+                            <input type="hidden" name="selected_quantities" id="selected-quantities">
+                            <button type="submit" class="checkout-button">Proceed to Checkout</button>
+                        </form>
                     </div>
                     <?php
                 } else {
@@ -324,7 +328,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             selectItemCheckboxes.forEach(checkbox => {
                 checkbox.checked = selectAllCheckbox.checked;
                 updateTotalPrice();
+                updateSelectedProducts();
             });
+        });
+
+        // Update selected products on checkbox change
+        function updateSelectedProducts() {
+            const selectedProductIds = [];
+            const selectedQuantities = {};
+            selectItemCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const productId = checkbox.dataset.productId;
+                    const quantityInput = document.querySelector(`input[name="quantity[${productId}]"]`);
+                    const quantity = parseInt(quantityInput.value);
+                    selectedProductIds.push(productId);
+                    selectedQuantities[productId] = quantity;
+                }
+            });
+
+            // Update hidden input fields with selected product data
+            const selectedProductsInput = document.getElementById('selected-products');
+            selectedProductsInput.value = JSON.stringify(selectedProductIds);
+
+            const selectedQuantitiesInput = document.getElementById('selected-quantities');
+            selectedQuantitiesInput.value = JSON.stringify(selectedQuantities);
+        }
+
+        selectItemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedProducts);
+            checkbox.addEventListener('change', updateTotalPrice);
         });
 
         // Update total price based on selected items
@@ -337,11 +369,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             });
             totalPriceElement.textContent = selectedPrice.toFixed(2);
         }
-
-        // Update total price when individual checkboxes change
-        selectItemCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateTotalPrice);
-        });
 
         // Initial total price (when no items are selected)
         updateTotalPrice();
