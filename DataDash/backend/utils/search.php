@@ -1,5 +1,5 @@
 <?php
-require './include/db.php';
+require '../include/database_config.php';
 header('Access-Control-Allow-Origin: *');
 
 if(isset($_POST['search'])){
