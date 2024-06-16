@@ -41,6 +41,7 @@ CREATE TABLE payment_methods (
 CREATE TABLE category (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(45) NOT NULL,
+    status INT NOT NULL DEFAULT 0,
     UNIQUE KEY category_name_unique (category_name)
 );
 
@@ -157,6 +158,15 @@ CREATE TABLE wishlist_products (
 );
 
 -- Other tables
+CREATE TABLE banner (
+  id int NOT NULL AUTO_INCREMENT,
+  name varchar(45) NOT NULL,
+  description varchar(255) NOT NULL,
+  image varchar(255) NOT NULL,
+  status tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE reviews (
     review_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,

@@ -77,7 +77,8 @@ function populateCatalog(products,section){
    function getProductDetails(){
     const main = document.querySelector('main');
     const price = this.price;
-    fetchCall(`inventory.php?id=${this.id}`,responseInventory.bind(this))
+    console.log(this);
+    fetchCall(`inventory.php?id=${this.product_id}`,responseInventory.bind(this))
     function responseInventory(data){
        //get howmany instock
        const inStock = +(data.inStock); 
@@ -270,9 +271,9 @@ function getReviews(product){
                 const past_review = document.createElement('div');
                 past_review.className='past-review';
                 const rating = review.rating;
-                const text = `Review: ${review.reviewText}`;
-                const date = `Date: ${review.date}`;
-                const user_id = `Name: ${review.fname} ${review.lname}`;
+                const text = `Review: ${review.review_text}`;
+                const date = `Date: ${review.review_date}`;
+                const user_id = `Name: ${review.first_name} ${review.last_name}`;
                 const text_p = document.createElement('p');
                 const date_p = document.createElement('p');
                 const rating_p = document.createElement('p');

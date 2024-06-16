@@ -5,7 +5,7 @@ require '../include/database_config.php';
 
 header('Access-Control-Allow-Origin: *');
 if($_SERVER['REQUEST_METHOD']==="GET"){
-    $stmt = "SELECT Name FROM category WHERE status=1;";
+    $stmt = "SELECT category_name FROM category WHERE status=1;";
     if($result = $conn->query($stmt)){
         $arr = array();
         while($row = $result->fetch_assoc()){
