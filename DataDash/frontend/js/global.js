@@ -51,13 +51,14 @@ function populateCatalog(products,section){
           card.addEventListener('click',getProductDetails.bind(prod))
           //image element for product
           const img = document.createElement('img');
-          img.src = `http://localhost:8081${prod.image}`;
+          img.src = `http://localhost:8080${prod.image}`;
           imgDiv.appendChild(img);
           //product name will be the name the for card
           const name = document.createElement("p");
           name.textContent = prod.name;
           // product price
           const price = document.createElement("p");
+          console.log(price);
           price.textContent = `${prod.price}$`
           name.className = "product-name";
           price.className="product-price";
@@ -96,7 +97,7 @@ function populateCatalog(products,section){
        main.appendChild(modalContainer);
        modalImageContainer.className = 'modalImage';
        const img = document.createElement('img');
-       img.src = `http://localhost:8081${this.image}`;
+       img.src = `http://localhost:8080${this.image}`;
        modalImageContainer.appendChild(img);
        modal.appendChild(modalImageContainer);
        const modalDesc = document.createElement('div');
@@ -136,7 +137,7 @@ function populateCatalog(products,section){
        wishlist.addEventListener('click',addToWishlist);
        const itemsForCartSection = document.createElement('div');
        itemsForCartSection.className = 'items-for-cart-section';
-       getStockText(inStock,itemsForCartSection);
+       getStockText(inStock,modalImageContainer);
        const buttonContainer = document.createElement('div');
        buttonContainer.className = 'modal-buttons';
        //past review section for product
@@ -144,7 +145,6 @@ function populateCatalog(products,section){
        pastReviews.className = "past-reviews-container";
        //append to container
        //add quantitySelector
-    //    itemsForCartSection.appendChild(select);
        quantitySelector(inStock,price,itemsForCartSection);
        buttonContainer.appendChild(cart);
        buttonContainer.appendChild(wishlist);
@@ -161,10 +161,10 @@ function populateCatalog(products,section){
 }
 function quantitySelector(inStock,price,container){
     const select = document.createElement('select');
-    const label= document.createElement('label');
-    label.setAttribute('for', select);
-    label.textContent = 'Choose amount:';
+    const label= document.createElement('h2');
+    label.innerHTML = 'Choose amount:';
     const subTotal = document.createElement('p');
+    subTotal.innerText = `$Sub total : ${price}`;
        select.className = 'selectQuantity';
        if(inStock == 0) select.disabled = true;
        else{
@@ -183,8 +183,7 @@ function quantitySelector(inStock,price,container){
           subTotal.innerHTML = `Sub total: ${sub} $`;
           itemCount = toBuy;
        });
-
-       select.append(label);
+       container.append(label);
        container.appendChild(select);
        container.appendChild(subTotal);
 }
@@ -213,7 +212,7 @@ function getStockText(inStock,modal){
 
 
 function fetchCall(resource, callBack, method="GET",data = undefined){
-    const url ="http://localhost:8081/user/backend/";
+    const url ="http://localhost:8080/backend/utils/";
     fetch(url+resource,{
        method: method,
        body:data, 
@@ -321,3 +320,23 @@ function addToCart(){
     itemCount= selectValue.value;
     console.log(`Add ${itemCount} to cart`);
 }
+function getAllProducts(){
+    const cat = this;
+    const main = document.querySelector('main');
+    setActiveCategory(cat);
+    fetchCall('all_products.php',responseAllProducts)
+    function responseAllProducts(data){
+        if(data.products){
+            main.innerHTML = "";
+            let products = data.products;
+            if(products.length > 0){
+               populateCatalog(products,main);
+            }
+            else{   
+            main.innerHTML= "<h2>Nothing to see here</h2>";
+            }
+        }  
+    }
+}
+
+

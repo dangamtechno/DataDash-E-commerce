@@ -1,5 +1,5 @@
 function requestNewArrivals(){
-    fetchCall("newArrivals.php",responseNewArrivals)
+    fetchCall("new_arrivals.php",responseNewArrivals)
     function responseNewArrivals(data){
         const featurdProducts= data.new_items;
         console.log("test: "+featurdProducts)
