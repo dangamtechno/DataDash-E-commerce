@@ -81,7 +81,15 @@ CREATE TABLE orders (
     total_amount DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-
+CREATE TABLE ordered_item (
+  order_id int NOT NULL AUTO_INCREMENT,
+  user_id int NOT NULL,
+  product_id int NOT NULL,
+  quantity int NOT NULL,
+  order_status int NOT NULL DEFAULT '0',
+  order_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`order_id`)
+); 
 CREATE TABLE order_details (
     order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,

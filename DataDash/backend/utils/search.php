@@ -1,6 +1,5 @@
 <?php
 require '../include/database_config.php';
-//header('Access-Control-Allow-Origin: *');
 
 if(isset($_POST['search'])){
     $search = mysqli_real_escape_string($conn, $_POST['search']);
