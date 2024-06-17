@@ -14,7 +14,8 @@ INSERT INTO category (category_name) VALUES
   ('Keyboards'),
   ('Computer Mice'),
   ('Storage Devices'),
-  ('Virtual Reality');
+  ('Virtual Reality'),
+  ('Wi-Fi Routers');
 
 -- Populate the brands table
 INSERT INTO brands (brand_name) VALUES
@@ -27,7 +28,11 @@ INSERT INTO brands (brand_name) VALUES
   ('JBL'),
   ('LG'),
   ('Microsoft'),
-  ('Anker');
+  ('Anker'),
+  ('Logitech'),
+  ('Razer Inc.'),
+  ('Meta'),
+  ('Dell Technologies');
 
 -- Insert 20 products into the product table
 INSERT INTO product (category_id, brand_id, name, description, price, image, status)
@@ -76,7 +81,8 @@ VALUES
   (17, 1, NOW()),
   (18, 1, NOW()),
   (19, 1, NOW()),
-  (20, 1, NOW());
+  (20, 1, NOW()),
+  (21, 1, NOW());
 
 -- Populate the coupons table
 INSERT INTO coupons (coupon_code, discount_amount, expiration_date)

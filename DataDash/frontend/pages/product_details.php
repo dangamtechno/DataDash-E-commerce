@@ -118,7 +118,7 @@ $conn->close();
         <div class="left-heading">
             <div class="logo">
                 <a href="homepage.php">
-                    <img src="../images/DataDash.png" alt="Logo" width="85" height="500">
+                    <img src="../images/misc/DataDash.png" alt="Logo" width="85" height="500">
                 </a>
             </div>
             <div class="search-bar">
@@ -138,7 +138,7 @@ $conn->close();
 <main>
     <section class="product-details">
         <div class="product-image">
-            <img src="../images/<?= $product_data['image'] ?>" alt="<?= $product_data['name'] ?>" width="400" height="400">
+            <img src="../images/electronic_products/<?= $product_data['image'] ?>" alt="<?= $product_data['name'] ?>" width="400" height="400">
         </div>
         <div class="product-information">
             <h2><?= $product_data['name'] ?></h2>

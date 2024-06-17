@@ -90,7 +90,7 @@
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
-                        <img src="../images/DataDash.png" alt="Logo" width="85" height="500">
+                        <img src="../images/misc/DataDash.png" alt="Logo" width="85" height="500">
                     </a>
                 </div>
                 <div class="search-bar">
@@ -153,7 +153,7 @@
                     foreach ($products as $product) {
                         echo '<div class="wishlist">';
                         echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
-                        echo '<img src="../images/' . $product['image'] . '" alt="' . $product['name'] . '">';                       
+                        echo '<img src="../images/electronic_products/' . $product['image'] . '" alt="' . $product['name'] . '">';
                         echo '<h3>' . $product['name'] . '</h3>';
                         echo '<p>$' . $product['price'] . '</p>';
                         echo '</a>';

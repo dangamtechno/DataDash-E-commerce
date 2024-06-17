@@ -191,7 +191,7 @@ function buildEmailBody($firstName, $orderDetails) {
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
-                        <img id="logo" src="../images/DataDash.png" alt="" />
+                        <img id="logo" src="../images/misc/DataDash.png" alt="" />
                     </a>
                 </div>
                 <div class="search-bar">
