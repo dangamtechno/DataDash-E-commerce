@@ -151,7 +151,7 @@ require_once '../../backend/include/database_config.php';
         <div class="heading">
             <div class="left-heading">
                 <div class="logo">
-                <img src="../images/misc/DataDash.png" alt="Logo" width="85" height="500">
+                        <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                 </div>
                 <div class="login-status">
                     <?php if (sessionExists()): ?>

@@ -67,13 +67,19 @@
             background-color: #07eaff;
         }
 
+        .no-results {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            margin-top: 20px;
+        }
     </style>
     <header>
         <div class="heading">
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
-                        <img src="../images/misc/DataDash.png" alt="Logo" width="85" height="500">
+                        <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                     </a>
                 </div>
                 <div class="search-bar">
@@ -115,10 +121,9 @@
 <body>
     <main>
         <section class="shop-products">
-            <h2>All Products</h2>
             <div class="filter-sort">
                 <label>Filter by:</label>
-                <select>
+                <select id="filter-dropdown">
                     <option value="">All Categories</option>
                     <option value="Smartphones">Smartphones</option>
                     <option value="Tablets">Tablets</option>
@@ -136,37 +141,56 @@
                     <option value="Storage Devices">Storage Devices</option>
                     <option value="Virtual Reality">Virtual Reality</option>
                 </select>
-                <label>Sort by:</label>
-                <select>
+            <label>Sort by:</label>
+                <select id="sort-dropdown">
                     <option value="">Default</option>
                     <option value="price-asc">Price (Low to High)</option>
                     <option value="price-desc">Price (High to Low)</option>
                     <option value="rating">Rating</option>
                 </select>
             </div>
-            <div class="product-grid">
+            <div class="product-grid" id="product-grid">
                 <?php
-                $conn = new mysqli("localhost", "root", "", "datadash");
-                if ($conn->connect_error) {
-                    die("Connection failed: " . $conn->connect_error);
+
+                $servername = "localhost";
+                $username = "root";
+                $password = "";
+                $dbname = "datadash"; // Replace with your database name
+
+                // Create connection
+                $conn = new mysqli($servername, $username, $password, $dbname);
+
+
+                $query = "SELECT * FROM product";
+
+                // Execute the query and fetch results
+                $results = mysqli_query($conn, $query);
+
+                    // Display the results
+                    if (mysqli_num_rows($results) > 0) {
+                        while ($row = mysqli_fetch_assoc($results)) {
+                            // ... (HTML to display each product, matching shop.php) ...
+                            echo '<div class="product">';
+                            echo '<a href="product_details.php?id=' . $row['product_id'] . '">';
+                            echo '<img src="../images/electronic_products/' . $row['image'] . '" alt="' . $row['name'] . '">';
+                            echo '<h3>' . $row['name'] . '</h3>';
+                            echo '<p>$' . $row['price'] . '</p>';
+                            echo '</a>';
+                            if (sessionExists()) {
+                                echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
+                                echo '<input type="hidden" name="product_id" value="' . $row['product_id'] . '">';
+                                echo '<input type="hidden" name="quantity" value="1">';
+                                echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
+                                echo '</form>';
+                            }
+                            echo '</div>';
+                        }
+                } else {
+                    // No results found
+                    echo '<div class="no-results">No products found.</div>';
                 }
-                $products = $conn->query("SELECT * FROM product");
-                foreach ($products as $product) {
-                    echo '<div class="product">';
-                    echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
-                    echo '<img src="../images/electronic_products/' . $product['image'] . '" alt="' . $product['name'] . '">';
-                    echo '<h3>' . $product['name'] . '</h3>';
-                    echo '<p>$' . $product['price'] . '</p>';
-                    echo '</a>';
-                    if (sessionExists()) {
-                        echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
-                        echo '<input type="hidden" name="product_id" value="' . $product['product_id'] . '">';
-                        echo '<input type="hidden" name="quantity" value="1">';
-                        echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
-                        echo '</form>';
-                        echo '</div>';
-                    }
-                }
+
+                // Close the database connection
                 $conn->close();
                 ?>
             </div>
@@ -205,6 +229,62 @@
         </div>
         2024 DataDash, All Rights Reserved.
     </footer>
-    <script src="../js/navbar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load initial products
+            fetch('../../backend/utils/search.php')
+                .then(response => response.text())
+                .then(data => {
+                    const productGrid = document.getElementById('product-grid');
+                    // Append the new products to the existing grid
+                    productGrid.innerHTML += data;
+                })
+                .catch(error => console.error('Error loading products:', error));
+
+            // Search functionality
+            const searchForm = document.querySelector('.search-form');
+            searchForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const searchTerm = document.querySelector('input[name="search"]').value;
+                fetch(`../../backend/utils/search.php?submit-search=1&search=${searchTerm}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        const productGrid = document.getElementById('product-grid');
+                        // Clear existing products and append the new ones
+                        productGrid.innerHTML = ''; // Clear existing content
+                        productGrid.innerHTML += data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+
+            // Filtering
+            const filterDropdown = document.getElementById('filter-dropdown');
+            filterDropdown.addEventListener('change', function() {
+                const selectedCategory = this.value;
+                fetch(`../../backend/utils/filter.php?category=${selectedCategory}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        const productGrid = document.getElementById('product-grid');
+                        productGrid.innerHTML = ''; // Clear existing content
+                        productGrid.innerHTML += data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+
+            // Sorting
+            const sortDropdown = document.getElementById('sort-dropdown');
+            sortDropdown.addEventListener('change', function() {
+                const sortOrder = this.value;
+                fetch(`../../backend/utils/sort.php?sort=${sortOrder}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        const productGrid = document.getElementById('product-grid');
+                        productGrid.innerHTML = ''; // Clear existing content
+                        productGrid.innerHTML += data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
 </body>
 </html>
