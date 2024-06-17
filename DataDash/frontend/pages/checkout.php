@@ -315,7 +315,7 @@ function processOrder($userId, $selectedProductIds, $selectedQuantities, $shippi
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
-                        <img src="../images/DataDash.png" alt="Logo" width="85" height="500">
+                        <img src="../images/misc/DataDash.png" alt="Logo" width="85" height="500">
                     </a>
                 </div>
                 <div class="search-bar">
@@ -400,7 +400,7 @@ function processOrder($userId, $selectedProductIds, $selectedQuantities, $shippi
                                                 ?>
                                                 <tr>
                                                     <td>
-                                                        <img src="../images/<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>" class="product-image">
+                                                        <img src="../images/electronic_products/<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>" class="product-image">
                                                         <?php echo $product['name']; ?>
                                                     </td>
                                                     <td><?php echo $quantity; ?></td>
