@@ -79,6 +79,7 @@ CREATE TABLE orders (
     user_id INT NOT NULL,
     order_date DATETIME NOT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(50) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 CREATE TABLE ordered_item (
@@ -89,7 +90,7 @@ CREATE TABLE ordered_item (
   order_status int NOT NULL DEFAULT '0',
   order_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`)
-); 
+);
 CREATE TABLE order_details (
     order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
