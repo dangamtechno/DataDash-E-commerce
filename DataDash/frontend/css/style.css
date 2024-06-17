@@ -144,7 +144,7 @@ h2 {
     height: inherit;
 }
 .modalImage{
-    height: 40vh;
+    height: 40  vh;
     display: grid;
     justify-content: center;
     gap: 5%;

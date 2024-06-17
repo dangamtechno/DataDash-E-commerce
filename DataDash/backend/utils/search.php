@@ -3,7 +3,7 @@ require '../include/database_config.php';
 
 if(isset($_POST['search'])){
     $search = mysqli_real_escape_string($conn, $_POST['search']);
-    $sql = "SELECT * FROM product JOIN category ON product.category_id = category.id WHERE product.name LIKE ?";
+    $sql = "SELECT * FROM product JOIN category ON product.category_id = category.category_id WHERE product.name LIKE ?";
     $prep_stmt = $conn->prepare($sql);
     $searchParam = "%$search%";
     $prep_stmt->bind_param("s", $searchParam);
