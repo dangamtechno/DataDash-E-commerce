@@ -14,7 +14,8 @@ INSERT INTO category (category_name) VALUES
   ('Keyboards'),
   ('Computer Mice'),
   ('Storage Devices'),
-  ('Virtual Reality');
+  ('Virtual Reality'),
+  ('Wi-Fi Routers');
 
 -- Populate the brands table
 INSERT INTO brands (brand_name) VALUES
@@ -27,7 +28,11 @@ INSERT INTO brands (brand_name) VALUES
   ('JBL'),
   ('LG'),
   ('Microsoft'),
-  ('Anker');
+  ('Anker'),
+  ('Logitech'),
+  ('Razer Inc.'),
+  ('Meta'),
+  ('Dell Technologies');
 
 -- Insert 20 products into the product table
 INSERT INTO product (category_id, brand_id, name, description, price, image, status)
@@ -37,21 +42,22 @@ VALUES
   (3, 3, 'Sony WH-1000XM4', 'Immersive sound experience with noise cancellation.', 349.99, 'sony_wh_1000xm4.jpg', 1),
   (4, 1, 'MacBook Pro', 'Powerful laptop for professional use.', 1999.99, 'macbook_pro.jpg', 1),
   (5, 2, 'Galaxy Watch 4', 'Stay connected and track your fitness goals.', 349.99, 'galaxy_watch_4.jpg', 1),
-  (6, 3, 'Canon EOS R5', 'Capture stunning photos and videos with professional quality.', 3499.99, 'canon_eos_r5.jpg', 1),
+  (6, 6, 'Canon EOS R5', 'Capture stunning photos and videos with professional quality.', 3499.99, 'canon_eos_r5.jpg', 1),
   (7, 1, 'AirPods Pro', 'True wireless earbuds for seamless audio experience.', 249.99, 'airpods_pro.jpg', 1),
-  (8, 2, 'LG OLED C1', 'Immerse yourself in a world of entertainment with lifelike visuals.', 1999.99, 'lg_oled_c1.jpg', 1),
+  (8, 8, 'LG OLED C1', 'Immerse yourself in a world of entertainment with lifelike visuals.', 1999.99, 'lg_oled_c1.jpg', 1),
   (9, 3, 'PlayStation 5', 'Experience the next generation of gaming with powerful performance.', 499.99, 'playstation_5.jpg', 1),
   (10, 1, 'HomePod Mini', 'Voice-controlled speaker for hands-free convenience.', 99.99, 'homepod_mini.jpg', 1),
-  (11, 2, 'Anker Wireless Charger', 'Charge your devices without the hassle of cables.', 29.99, 'anker_wireless_charger.jpg', 1),
-  (12, 3, 'Logitech G Pro X', 'Wireless keyboard for comfortable typing experience.', 129.99, 'logitech_g_pro_x.jpg', 1),
-  (13, 1, 'Razer DeathAdder Elite', 'Precision gaming mouse for competitive edge.', 69.99, 'razer_deathadder_elite.jpg', 1),
+  (11, 10, 'Anker Wireless Charger', 'Charge your devices without the hassle of cables.', 29.99, 'anker_wireless_charger.jpg', 1),
+  (12, 11, 'Logitech G Pro X', 'Wireless keyboard for comfortable typing experience.', 129.99, 'logitech_g_pro_x.jpg', 1),
+  (13, 12, 'Razer DeathAdder Elite', 'Precision gaming mouse for competitive edge.', 69.99, 'razer_deathadder_elite.jpg', 1),
   (14, 2, 'Samsung T7 SSD', 'High-speed storage solution for your digital content.', 199.99, 'samsung_t7_ssd.jpg', 1),
-  (15, 3, 'Oculus Quest 2', 'Immerse yourself in virtual reality experiences.', 299.99, 'oculus_quest_2.jpg', 1),
-  (1, 1, 'Google Nest WiFi', 'Reliable and fast WiFi for your home.', 199.99, 'google_nest_wifi.jpg', 1),
-  (2, 2, 'iPad Air', 'Powerful tablet for work and creativity.', 599.99, 'ipad_air.jpg', 1),
-  (3, 3, 'Bose QuietComfort Earbuds', 'Wireless earbuds with noise cancellation.', 279.99, 'bose_quietcomfort_earbuds.jpg', 1),
-  (4, 1, 'Dell XPS 15', 'Thin and powerful laptop for professionals.', 1599.99, 'dell_xps_15.jpg', 1),
-  (5, 2, 'Fitbit Versa 3', 'Fitness smartwatch with heart rate monitoring.', 229.99, 'fitbit_versa_3.jpg', 1);
+  (15, 13, 'Oculus Quest 2', 'Immerse yourself in virtual reality experiences.', 299.99, 'oculus_quest_2.jpg', 1),
+  (16, 4, 'Google Nest WiFi', 'Reliable and fast WiFi for your home.', 199.99, 'google_nest_wifi.jpg', 1),
+  (2, 1, 'iPad Air', 'Powerful tablet for work and creativity.', 599.99, 'ipad_air.jpg', 1),
+  (3, 5, 'Bose QuietComfort Earbuds', 'Wireless earbuds with noise cancellation.', 279.99, 'bose_quietcomfort_earbuds.jpg', 1),
+  (4, 14, 'Dell XPS 15', 'Thin and powerful laptop for professionals.', 1599.99, 'dell_xps_15.jpg', 1),
+  (5, 4, 'Fitbit Versa 3', 'Fitness smartwatch with heart rate monitoring.', 229.99, 'fitbit_versa_3.jpg', 1),
+  (1, 4, 'Google Pixel 8 Pro', 'A premium Android smartphone with advanced camera features.', 1099.99, 'google_pixel_8_pro.jpg', 1);
 
 -- Insert inventory records for the products
 -- Products 1 and 5 will have a quantity greater than 1
@@ -76,7 +82,8 @@ VALUES
   (17, 1, NOW()),
   (18, 1, NOW()),
   (19, 1, NOW()),
-  (20, 1, NOW());
+  (20, 1, NOW()),
+  (21, 1, NOW());
 
 -- Populate the coupons table
 INSERT INTO coupons (coupon_code, discount_amount, expiration_date)
