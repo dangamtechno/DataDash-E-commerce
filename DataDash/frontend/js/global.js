@@ -77,7 +77,6 @@ function populateCatalog(products,section){
    function getProductDetails(){
     const main = document.querySelector('main');
     const price = this.price;
-    console.log(this);
     fetchCall(`inventory.php?id=${this.product_id}`,responseInventory.bind(this))
     function responseInventory(data){
        //get howmany instock
@@ -262,7 +261,7 @@ function getReviews(product){
     section_title.innerHTML = "Past reviews";
     reviewSection.appendChild(section_title);
     const  id = +(product.id);
-    fetchCall(`get_reviews.php?id=${product.id}`,responseReviews)
+    fetchCall(`get_reviews.php?id=${product.product_id}`,responseReviews)
     function responseReviews(data){
         if(data.reviews.length > 0){
            const reviews = data.reviews;

@@ -170,12 +170,14 @@ CREATE TABLE banner (
 CREATE TABLE reviews (
     review_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
+    order_id INT NOT NULL,
     product_id INT NOT NULL,
     rating DECIMAL(2, 1) NOT NULL,
     review_text TEXT,
     review_date DATETIME NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (product_id) REFERENCES product(product_id)
+    FOREIGN KEY (product_id) REFERENCES product(product_id),
+	FOREIGN KEY (order_id) REFERENCES ordered_item(order_id)
 );
 
 CREATE TABLE ratings (
