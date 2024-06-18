@@ -126,10 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
         .shop-button {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 10px 40px;
             font-size: 16px;
-            color: #1e1f22;
-            background-color: #009dff;
+            color: #fff;
+            background-color: #009dff; /* Bootstrap primary color */
             border: none;
             border-radius: 5px;
             text-decoration: none;
@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
 
         .shop-button:hover {
-            background-color: #0056b3;
+            background-color: #0056b3; /* Darker shade for hover effect */
         }
 
         .cart-table input[type="checkbox"] {

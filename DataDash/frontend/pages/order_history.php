@@ -79,6 +79,62 @@ if ($result->num_rows > 0) {
             margin-bottom: 20px;
             text-align: center;
         }
+
+        /* Footer Styles */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .social-media ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .social-media li {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .social-media i {
+            margin-right: 5px;
+        }
+
+        .general-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .general-info div {
+            text-align: left;
+        }
+
+        .general-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .general-info ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .general-info li {
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -109,9 +165,10 @@ if ($result->num_rows > 0) {
     ?>
 </body>
 <footer>
-    <a href="account.php">
-    <button style="background-color: #4CAF50; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Back to Account</button>
-  </a>
+        <a href="account.php">
+            <button style="background-color: #680eea; color: #fff; padding: 10px 20px; border: none; border-radius: 5px;
+             cursor: pointer;">Back to Account</button>
+        </a>
         <div class="social-media">
         <ul>
             <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
@@ -141,6 +198,9 @@ if ($result->num_rows > 0) {
             </ul>
         </div>
     </div>
-    2024 DataDash, All Rights Reserved.
+     2024 DataDash, All Rights Reserved.
 </footer>
+    <script src="../js/payment_methods.js"></script>
+</body>
 </html>
+

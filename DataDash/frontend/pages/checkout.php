@@ -306,6 +306,22 @@ function processOrder($userId, $selectedProductIds, $selectedQuantities, $shippi
         .checkout-section button:hover {
             background-color: #0056b3;
         }
+
+        .shop-button {
+            display: inline-block;
+            padding: 17px 40px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #009dff; /* Bootstrap primary color */
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .shop-button:hover {
+            background-color: #0056b3; /* Darker shade for hover effect */
+        }
     </style>
 </head>
 <body>
