@@ -122,13 +122,13 @@ $conn->close();
                 </a>
             </div>
             <div class="search-bar">
-                <form class="search-form">
-                    <label>
-                        <input type="search" name="search" placeholder="search...">
-                    </label>
-                    <input type="submit" name="submit-search" class="search-button">
-                </form>
-            </div>
+                    <form id="search-form" method="GET" action="shop.php">
+                        <label>
+                            <input type="search" name="search" id="search-input" placeholder="search...">
+                        </label>
+                        <input type="submit" value="Search">
+                    </form>
+                </div>
         </div>
         <div class="shop-button-container">
             <a href="shop.php" class="shop-button">Continue Shopping</a>
@@ -195,5 +195,16 @@ $conn->close();
     2024 DataDash, All Rights Reserved.
 </footer>
 <script src="../js/navbar.js"></script>
+<script>
+$(document).ready(function() {
+    $("#search-form").submit(function(event) {
+        event.preventDefault();
+        var searchTerm = $("#search-input").val();
+
+        // Redirect to shop.php with search term as a query parameter
+        window.location.href = "shop.php?search=" + searchTerm;
+    });
+});
+</script>
 </body>
 </html>

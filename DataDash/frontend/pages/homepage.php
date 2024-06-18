@@ -11,6 +11,7 @@
 
     <title>Document</title>
     <style>
+        /* ... (Your existing styles) ... */
         .product-grid {
             display: flex;
             flex-wrap: wrap;
@@ -77,11 +78,11 @@
                     </a>
                 </div>
                 <div class="search-bar">
-                    <form class="search-form">
+                    <form id="search-form" method="GET" action="shop.php">
                         <label>
-                            <input type="search" name="search" placeholder="search...">
+                            <input type="search" name="search" id="search-input" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class="search-button">
+                        <input type="submit" value="Search">
                     </form>
                 </div>
             </div> <br>
@@ -229,24 +230,17 @@
 <script src = "../js/featured.js"></script>
 <script src = "../js/newArrivals.js"></script>
 <script src = "../js/starRatingSystem.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-    // Search functionality
-            const searchForm = document.querySelector('.search-form');
-            searchForm.addEventListener('submit', function(event) {
-                                        window.location.href = "shop.php";
+$(document).ready(function() {
+    $("#search-form").submit(function(event) {
+        event.preventDefault();
+        var searchTerm = $("#search-input").val();
 
-                event.preventDefault();
-                const searchTerm = document.querySelector('input[name="search"]').value;
-                fetch(`../../backend/utils/search.php?submit-search=1&search=${searchTerm}`)
-                    .then(response => response.text())
-                    .then(data => {
-                        const productGrid = document.getElementById('product-grid');
-                        // Clear existing products and append the new ones
-                        productGrid.innerHTML = ''; // Clear existing content
-                        productGrid.innerHTML += data;
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
+        // Redirect to shop.php with search term as a query parameter
+        window.location.href = "shop.php?search=" + searchTerm;
+    });
+});
 </script>
 </body>
 </html>

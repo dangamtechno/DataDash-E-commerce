@@ -83,11 +83,11 @@
                     </a>
                 </div>
                 <div class="search-bar">
-                    <form class="search-form">
+                    <form id="search-form" method="GET" action="shop.php">
                         <label>
-                            <input type="search" name="search" placeholder="search...">
+                            <input type="search" name="search" id="search-input" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class="search-button">
+                        <input type="submit" value="Search">
                     </form>
                 </div>
             </div>
@@ -161,7 +161,19 @@
                 $conn = new mysqli($servername, $username, $password, $dbname);
 
 
-                $query = "SELECT * FROM product";
+                $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+
+                // Sanitize the search term
+                $searchTerm = mysqli_real_escape_string($conn, $searchTerm);
+
+                if (!empty($searchTerm)) {
+                    $query = "SELECT * FROM product WHERE name LIKE '%" . $searchTerm . "%' 
+                                OR category_id IN (SELECT category_id FROM category WHERE category_name LIKE '%" . $searchTerm . "%') 
+                                OR brand_id IN (SELECT brand_id FROM brands WHERE brand_name LIKE '%" . $searchTerm . "%')";
+                } else {
+                    // If no search term, fetch all products
+                    $query = "SELECT * FROM product";
+                }
 
                 // Execute the query and fetch results
                 $results = mysqli_query($conn, $query);
@@ -237,7 +249,6 @@
                 .then(data => {
                     const productGrid = document.getElementById('product-grid');
                     // Append the new products to the existing grid
-                    productGrid.innerHTML += data;
                 })
                 .catch(error => console.error('Error loading products:', error));
 
@@ -256,6 +267,7 @@
                     })
                     .catch(error => console.error('Error:', error));
             });
+        });
 
             // Filtering
             const filterDropdown = document.getElementById('filter-dropdown');
@@ -286,7 +298,6 @@
                     })
                     .catch(error => console.error('Error:', error));
             });
-        });
     </script>
 </body>
 </html>
