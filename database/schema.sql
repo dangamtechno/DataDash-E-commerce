@@ -7,8 +7,8 @@ CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
-    username VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255),
     favorite_movie VARCHAR(20),
     phone VARCHAR(20),
@@ -41,6 +41,7 @@ CREATE TABLE payment_methods (
 CREATE TABLE category (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(45) NOT NULL,
+    status INT NOT NULL DEFAULT 0,
     UNIQUE KEY category_name_unique (category_name)
 );
 
@@ -58,6 +59,7 @@ CREATE TABLE product (
     price DECIMAL(10, 2) DEFAULT NULL,
     image VARCHAR(255) DEFAULT NULL,
     status TINYINT NOT NULL DEFAULT 0,
+    rating DECIMAL(2, 1) DEFAULT NULL,
     date_added DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY name_unique (name),
     KEY idx_product_category_id (category_id),
@@ -79,9 +81,18 @@ CREATE TABLE orders (
     user_id INT NOT NULL,
     order_date DATETIME NOT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(50) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-
+CREATE TABLE ordered_item (
+  order_id int NOT NULL AUTO_INCREMENT,
+  user_id int NOT NULL,
+  product_id int NOT NULL,
+  quantity int NOT NULL,
+  order_status int NOT NULL DEFAULT '0',
+  order_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`order_id`)
+);
 CREATE TABLE order_details (
     order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
@@ -149,15 +160,26 @@ CREATE TABLE wishlist_products (
 );
 
 -- Other tables
+CREATE TABLE banner (
+  id int NOT NULL AUTO_INCREMENT,
+  name varchar(45) NOT NULL,
+  description varchar(255) NOT NULL,
+  image varchar(255) NOT NULL,
+  status tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE reviews (
     review_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
+    order_id INT NOT NULL,
     product_id INT NOT NULL,
     rating DECIMAL(2, 1) NOT NULL,
     review_text TEXT,
     review_date DATETIME NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (product_id) REFERENCES product(product_id)
+    FOREIGN KEY (product_id) REFERENCES product(product_id),
+	FOREIGN KEY (order_id) REFERENCES ordered_item(order_id)
 );
 
 CREATE TABLE ratings (

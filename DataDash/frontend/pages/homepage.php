@@ -11,6 +11,7 @@
 
     <title>Document</title>
     <style>
+        /* ... (Your existing styles) ... */
         .product-grid {
             display: flex;
             flex-wrap: wrap;
@@ -73,15 +74,15 @@
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
-                        <img src="../images/DataDash.png" alt="Logo" width="85" height="500">
+                        <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                     </a>
                 </div>
                 <div class="search-bar">
-                    <form class="search-form">
+                    <form id="search-form" method="GET" action="shop.php">
                         <label>
-                            <input type="search" name="search" placeholder="search...">
+                            <input type="search" name="search" id="search-input" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class ="search-button">
+                        <input type="submit" value="Search">
                     </form>
                 </div>
             </div> <br>
@@ -132,7 +133,7 @@
                 foreach ($featuredProducts as $product) {
                     echo '<div class="product">';
                     echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
-                    echo '<img src="../images/' . $product['image'] . '" alt="' . $product['name'] . '">';
+                    echo '<img src="../images/electronic_products/' . $product['image'] . '" alt="' . $product['name'] . '">';
                     echo '<div class="product-details">';
                     echo '<h3 style="color: #000;">' . $product['name'] . '</h3>';
                     echo '<p style="color: #000;">$' . $product['price'] . '</p>';
@@ -166,7 +167,7 @@
                 foreach ($newProducts as $product) {
                     echo '<div class="product">';
                     echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
-                    echo '<img src="../images/' . $product['image'] . '" alt="' . $product['name'] . '">';
+                    echo '<img src="../images/electronic_products/' . $product['image'] . '" alt="' . $product['name'] . '">';
                     echo '<div class="product-details">';
                     echo '<h3 style="color: #000;">' . $product['name'] . '</h3>';
                     echo '<p style="color: #000;">$' . $product['price'] . '</p>';
@@ -222,12 +223,24 @@
     2024 DataDash, All Rights Reserved.
 </footer>
 <script src = "../js/global.js" defer ></script>
-    <script src="../js/navbar.js"></script>
-    <script src="../js/slider.js"></script>
-    <script src = "../js/menu.js"></script>
-   <script src = "../js/banner.js"></script>  
-   <script src = "../js/featured.js"></script>  
-   <script src = "../js/newArrivals.js"></script>  
-   <script src = "../js/starRatingSystem.js"></script> 
+<script src="../js/navbar.js"></script>
+<script src="../js/slider.js"></script>
+<script src = "../js/menu.js"></script>
+<script src = "../js/banner.js"></script>
+<script src = "../js/featured.js"></script>
+<script src = "../js/newArrivals.js"></script>
+<script src = "../js/starRatingSystem.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    $("#search-form").submit(function(event) {
+        event.preventDefault();
+        var searchTerm = $("#search-input").val();
+
+        // Redirect to shop.php with search term as a query parameter
+        window.location.href = "shop.php?search=" + searchTerm;
+    });
+});
+</script>
 </body>
 </html>

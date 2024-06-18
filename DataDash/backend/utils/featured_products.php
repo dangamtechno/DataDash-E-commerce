@@ -1,9 +1,7 @@
 <?php
-session_start();
-
+//session_start();
 require '../include/database_config.php';
-$conn = new mysqli("localhost", "root", "", "datadash");
-header('Access-Control-Allow-Origin: *');
+//header('Access-Control-Allow-Origin: *');
 if($_SERVER['REQUEST_METHOD']=="GET"){
    $stmt = "SELECT * FROM product  WHERE status = 1 order by rand() limit 3;";
     if($result = $conn->query($stmt)){

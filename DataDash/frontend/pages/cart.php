@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
-                        <img src="../images/DataDash.png" alt="Logo" width="85" height="500">
+                        <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                     </a>
                 </div>
                 <div class="search-bar">
@@ -235,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                 <tr>
                                     <td><input type="checkbox" class="select-item" data-product-id="<?php echo $item['product_id']; ?>" data-price="<?php echo $item['price']; ?>"></td>
                                     <td>
-                                        <img src="../images/<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" class="product-image">
+                                        <img src="../images/electronic_products/<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" class="product-image">
                                         <?php echo $item['name']; ?>
                                     </td>
                                     <td>$<?php echo number_format($item['price'], 2); ?></td>

@@ -67,21 +67,27 @@
             background-color: #07eaff;
         }
 
+        .no-results {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            margin-top: 20px;
+        }
     </style>
     <header>
         <div class="heading">
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
-                        <img src="../images/DataDash.png" alt="Logo" width="85" height="500">
+                        <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                     </a>
                 </div>
                 <div class="search-bar">
-                    <form class="search-form">
+                    <form id="search-form" method="GET" action="shop.php">
                         <label>
-                            <input type="search" name="search" placeholder="search...">
+                            <input type="search" name="search" id="search-input" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class="search-button">
+                        <input type="submit" value="Search">
                     </form>
                 </div>
             </div>
@@ -115,10 +121,9 @@
 <body>
     <main>
         <section class="shop-products">
-            <h2>All Products</h2>
             <div class="filter-sort">
                 <label>Filter by:</label>
-                <select>
+                <select id="filter-dropdown">
                     <option value="">All Categories</option>
                     <option value="Smartphones">Smartphones</option>
                     <option value="Tablets">Tablets</option>
@@ -136,37 +141,68 @@
                     <option value="Storage Devices">Storage Devices</option>
                     <option value="Virtual Reality">Virtual Reality</option>
                 </select>
-                <label>Sort by:</label>
-                <select>
+            <label>Sort by:</label>
+                <select id="sort-dropdown">
                     <option value="">Default</option>
                     <option value="price-asc">Price (Low to High)</option>
                     <option value="price-desc">Price (High to Low)</option>
                     <option value="rating">Rating</option>
                 </select>
             </div>
-            <div class="product-grid">
+            <div class="product-grid" id="product-grid">
                 <?php
-                $conn = new mysqli("localhost", "root", "", "datadash");
-                if ($conn->connect_error) {
-                    die("Connection failed: " . $conn->connect_error);
+
+                $servername = "localhost";
+                $username = "root";
+                $password = "";
+                $dbname = "datadash"; // Replace with your database name
+
+                // Create connection
+                $conn = new mysqli($servername, $username, $password, $dbname);
+
+
+                $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+
+                // Sanitize the search term
+                $searchTerm = mysqli_real_escape_string($conn, $searchTerm);
+
+                if (!empty($searchTerm)) {
+                    $query = "SELECT * FROM product WHERE name LIKE '%" . $searchTerm . "%' 
+                                OR category_id IN (SELECT category_id FROM category WHERE category_name LIKE '%" . $searchTerm . "%') 
+                                OR brand_id IN (SELECT brand_id FROM brands WHERE brand_name LIKE '%" . $searchTerm . "%')";
+                } else {
+                    // If no search term, fetch all products
+                    $query = "SELECT * FROM product";
                 }
-                $products = $conn->query("SELECT * FROM product");
-                foreach ($products as $product) {
-                    echo '<div class="product">';
-                    echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
-                    echo '<img src="../images/' . $product['image'] . '" alt="' . $product['name'] . '">';
-                    echo '<h3>' . $product['name'] . '</h3>';
-                    echo '<p>$' . $product['price'] . '</p>';
-                    echo '</a>';
-                    if (sessionExists()) {
-                        echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
-                        echo '<input type="hidden" name="product_id" value="' . $product['product_id'] . '">';
-                        echo '<input type="hidden" name="quantity" value="1">';
-                        echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
-                        echo '</form>';
-                        echo '</div>';
-                    }
+
+                // Execute the query and fetch results
+                $results = mysqli_query($conn, $query);
+
+                    // Display the results
+                    if (mysqli_num_rows($results) > 0) {
+                        while ($row = mysqli_fetch_assoc($results)) {
+                            // ... (HTML to display each product, matching shop.php) ...
+                            echo '<div class="product">';
+                            echo '<a href="product_details.php?id=' . $row['product_id'] . '">';
+                            echo '<img src="../images/electronic_products/' . $row['image'] . '" alt="' . $row['name'] . '">';
+                            echo '<h3>' . $row['name'] . '</h3>';
+                            echo '<p>$' . $row['price'] . '</p>';
+                            echo '</a>';
+                            if (sessionExists()) {
+                                echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
+                                echo '<input type="hidden" name="product_id" value="' . $row['product_id'] . '">';
+                                echo '<input type="hidden" name="quantity" value="1">';
+                                echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
+                                echo '</form>';
+                            }
+                            echo '</div>';
+                        }
+                } else {
+                    // No results found
+                    echo '<div class="no-results">No products found.</div>';
                 }
+
+                // Close the database connection
                 $conn->close();
                 ?>
             </div>
@@ -205,6 +241,63 @@
         </div>
         2024 DataDash, All Rights Reserved.
     </footer>
-    <script src="../js/navbar.js"></script>
+     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load initial products
+            fetch('../../backend/utils/filter_and_sort.php')
+                .then(response => response.text())
+                .then(data => {
+                    const productGrid = document.getElementById('product-grid');
+                    // Append the new products to the existing grid
+                })
+                .catch(error => console.error('Error loading products:', error));
+
+            // Search functionality
+            const searchForm = document.querySelector('.search-form');
+            searchForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const searchTerm = document.querySelector('input[name="search"]').value;
+                fetch(`../../backend/utils/search.php?submit-search=1&search=${searchTerm}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        const productGrid = document.getElementById('product-grid');
+                        // Clear existing products and append the new ones
+                        productGrid.innerHTML = ''; // Clear existing content
+                        productGrid.innerHTML += data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+            // Filtering
+            const filterDropdown = document.getElementById('filter-dropdown');
+            filterDropdown.addEventListener('change', function() {
+                const selectedCategory = this.value;
+                const sortOrder = document.getElementById('sort-dropdown').value;
+                fetch(`../../backend/utils/filter_and_sort.php?category=${selectedCategory}&sort=${sortOrder}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        const productGrid = document.getElementById('product-grid');
+                        productGrid.innerHTML = '';
+                        productGrid.innerHTML += data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+
+            // Sorting
+            const sortDropdown = document.getElementById('sort-dropdown');
+            sortDropdown.addEventListener('change', function() {
+                const selectedCategory = document.getElementById('filter-dropdown').value;
+                const sortOrder = this.value;
+                fetch(`../../backend/utils/filter_and_sort.php?category=${selectedCategory}&sort=${sortOrder}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        const productGrid = document.getElementById('product-grid');
+                        productGrid.innerHTML = '';
+                        productGrid.innerHTML += data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+    </script>
 </body>
 </html>

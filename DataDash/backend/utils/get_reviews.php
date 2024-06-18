@@ -1,11 +1,11 @@
 <?php
 require '../include/database_config.php';
-header('Access-Control-Allow-Origin: *');
+//header('Access-Control-Allow-Origin: *');
 
 if($_SERVER['REQUEST_METHOD']== "GET" && isset($_GET['id'])){
-    $stmt = "SELECT reviews.*,users.fname,users.lname FROM reviews
+    $stmt = "SELECT reviews.*,users.first_name,users.last_name FROM reviews
              Join ordered_item on reviews.order_id = ordered_item.order_id 
-             join users on reviews.user_id = users.id
+             join users on reviews.user_id = users.user_id
              WHERE ordered_item.product_id=?;";
     $prep_stmt = $conn->prepare($stmt);
     $id = $_GET['id'];

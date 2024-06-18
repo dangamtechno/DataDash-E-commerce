@@ -2,6 +2,7 @@
 require_once '../../backend/utils/session.php';
 require_once '../../backend/include/database_config.php';
 
+// Establish database connection using the configured credentials
 $conn = new mysqli("localhost", "root", "", "datadash");
 
 // Check connection
@@ -16,7 +17,8 @@ function getCartItems($userId) {
     $sql = "SELECT cp.product_id, p.name, p.price, p.image, cp.quantity
             FROM cart_product cp
             JOIN product p ON cp.product_id = p.product_id
-            WHERE cp.cart_id IN (SELECT cart_id FROM cart WHERE user_id = ?)";
+            JOIN cart c ON cp.cart_id = c.cart_id
+            WHERE c.user_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $userId);
     $stmt->execute();
@@ -30,94 +32,125 @@ function getCartItems($userId) {
     return $cartItems;
 }
 
-// Function to remove an item from the cart
-function removeFromCart($userId, $productId) {
+// Function to retrieve user's shipping addresses
+function getUserShippingAddresses($userId) {
     global $conn;
 
-    $sql = "DELETE FROM cart_product WHERE cart_id IN (SELECT cart_id FROM cart WHERE user_id = ?) AND product_id = ?";
+    $sql = "SELECT address_id, street_address, city, state, postal_code, country 
+            FROM addresses 
+            WHERE user_id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $userId, $productId);
+    $stmt->bind_param("i", $userId);
     $stmt->execute();
+    $result = $stmt->get_result();
+    $addresses = [];
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $addresses[] = $row;
+        }
+    }
+    return $addresses;
 }
 
-// Handle checkout form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'checkout') {
-    // 1. Get selected product IDs and quantities from the POST data
-    $userId = getSessionUserId();
-    $selectedProductIds = isset($_POST['selected_products']) ? json_decode($_POST['selected_products'], true) : [];
-    $selectedQuantities = isset($_POST['selected_quantities']) ? json_decode($_POST['selected_quantities'], true) : [];
+// Function to retrieve user's payment methods
+function getUserPaymentMethods($userId) {
+    global $conn;
 
-    // 2. Retrieve product information for selected products
-    $selectedProducts = [];
+    // IMPORTANT!
+    // Do NOT store full credit card numbers in your database.
+    // This is just for demonstration; replace with your payment gateway integration.
+    $sql = "SELECT payment_method_id, method_type, card_number, cvs_number, expiration_date 
+            FROM payment_methods 
+            WHERE user_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $paymentMethods = [];
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $paymentMethods[] = $row;
+        }
+    }
+    return $paymentMethods;
+}
+
+// Function to process the order
+function processOrder($userId, $selectedProductIds, $selectedQuantities, $shippingAddressId, $paymentMethodId) {
+    global $conn;
+
+    $orderDate = date('Y-m-d H:i:s');
     $totalPrice = 0;
-    if (!empty($selectedProductIds)) {
-        foreach ($selectedProductIds as $productId) {
-            $quantity = isset($selectedQuantities[$productId]) ? $selectedQuantities[$productId] : 1;
+    $orderedItems = [];
 
-            $sql = "SELECT product_id, name, price, image FROM product WHERE product_id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("i", $productId);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            if ($result) {
-                $product = $result->fetch_assoc();
-                $product['quantity'] = $quantity;
-                $selectedProducts[] = $product;
-                $totalPrice += $product['price'] * $quantity; // Calculate total price here
-            }
-        }
+    // Create the order
+    $sql = "INSERT INTO orders (user_id, order_date, total_amount, status) VALUES (?, ?, ?, 'processing')";
+    $stmt = $conn->prepare($sql);
+    $orders_status = 'processing';
+    $stmt->bind_param("isss", $userId, $orderDate, $totalPrice, $orders_status);
+    $stmt->execute();
+    $orderId = $conn->insert_id;
+
+    // Update order details for each item
+    foreach ($selectedProductIds as $productId) {
+        $quantity = $selectedQuantities[$productId];
+        $sql = "SELECT price, name FROM product WHERE product_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $productId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $price = $row['price'];
+        $totalPrice += $price * $quantity;
+
+        // Insert ordered item details
+        $sql = "INSERT INTO order_details (order_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iiii", $orderId, $productId, $quantity, $price);
+        $stmt->execute();
+
+        // Add ordered item information for confirmation
+        $orderedItems[] = [
+            "product_id" => $productId,
+            "name" => $row['name'],
+            "quantity" => $quantity
+        ];
+
+        // Decrement inventory quantity
+        $sql = "UPDATE inventory SET quantity = quantity - ? WHERE product_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $quantity, $productId);
+        $stmt->execute();
+
+        // Add to order history
+        $sql = "INSERT INTO order_history (order_id, user_id, order_date, total_amount, status, current_status) 
+        VALUES (?, ?, ?, ?, 'processing', 'processing')";
+        $status = 'processing';
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iiiss", $orderId, $userId, $orderDate, $totalPrice, $status, $status);
+        $stmt->execute();
     }
 
-    // 3. Process payment (e.g., using a payment gateway)
-    // (Add your payment processing logic here, replace with your actual payment gateway integration)
-    // For this example, we'll just simulate a successful payment.
-    $paymentSuccessful = true; // Replace with your payment gateway integration
+    // Update the total amount of the order
+    $sql = "UPDATE orders SET total_amount = ? WHERE order_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("di", $totalPrice, $orderId);
+    $stmt->execute();
 
-    // 4. Create an order in the database (with order details)
-    if ($paymentSuccessful) {
-        $conn->begin_transaction(); // Start a transaction
+    // Delete items from cart
+    $sql = "DELETE FROM cart_product WHERE cart_id IN (SELECT cart_id FROM cart WHERE user_id = ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
 
-        try {
-            $sql = "INSERT INTO orders (user_id, order_date, total_amount) VALUES (?, NOW(), ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("id", $userId, $totalPrice);
-            if ($stmt->execute()) {
-                $orderId = $conn->insert_id;
+    // Prepare ordered item names for the thank you message
+    $orderedItemNames = array_map(function ($item) {
+        return $item["name"] . " (x" . $item["quantity"] . ")";
+    }, $orderedItems);
+    $orderedItemsString = implode(", ", $orderedItemNames);
 
-                // Add order details to order_details table
-                foreach ($selectedProducts as $product) {
-                    $sql = "INSERT INTO order_details (order_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->bind_param("iiii", $orderId, $product['product_id'], $product['quantity'], $product['price']);
-                    $stmt->execute();
-                }
-
-                // 5. Update inventory if necessary
-                foreach ($selectedProducts as $product) {
-                    $sql = "UPDATE inventory SET quantity = quantity - ? WHERE product_id = ?";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->bind_param("ii", $product['quantity'], $product['product_id']);
-                    $stmt->execute();
-                }
-
-                // 6. Remove items from cart
-                foreach ($selectedProducts as $product) {
-                    removeFromCart($userId, $product['product_id']);
-                }
-
-                $conn->commit(); // Commit the transaction
-                $orderCreated = true;
-            } else {
-                $conn->rollback();
-                echo "Error creating order: " . $stmt->error;
-            }
-        } catch (Exception $e) {
-            $conn->rollback();
-            echo "Error during order processing: " . $e->getMessage();
-        }
-    } else {
-        echo "Payment failed. Please try again.";
-    }
+    // Return the order ID and ordered item names
+    return array("order_id" => $orderId, "ordered_items" => $orderedItemsString);
 }
 
 ?>
@@ -131,44 +164,158 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <link rel="stylesheet" href="../css/style.css">
     <title>Checkout</title>
     <style>
-        /* ... (Add any necessary styles here) ... */
-        .checkout-table img {
-            max-width: 100%;
-            height: auto;
-            width: 275px;
-            height: 275px;
-            object-fit: contain;
+        /* Style for the checkout page */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
         }
+
+        .checkout-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
         .checkout-section {
             margin-bottom: 20px;
         }
-        .checkout-progress {
-            display: flex;
-            justify-content: space-between;
+
+        .checkout-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
             margin-bottom: 20px;
         }
-        .checkout-progress-step {
-            text-align: center;
-            flex: 1;
+
+        .checkout-table th, .checkout-table td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
         }
-        .checkout-progress-step.active {
-            color: #337ab7;
+
+        .checkout-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
         }
-        .checkout-progress-step.completed {
-            color: #5cb85c;
+
+        .checkout-table img {
+            max-width: 100px;
+            height: auto;
+            margin-right: 10px;
         }
-        .checkout-progress-step.next {
-            color: #d9534f;
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .checkout-button {
+            background-color: #009dff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .checkout-button:hover {
+            background-color: #0056b3;
+        }
+
+        .order-details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+
+        .order-details p {
+            margin: 5px 0;
+        }
+
+        .continue-shopping-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #337ab7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .continue-shopping-btn:hover {
+            background-color: #21618C;
+        }
+
+        /* Style for radio button labels */
+        .form-group label {
+            display: block;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .form-group label:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Style for "Create New" buttons */
+        .checkout-section button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 10px auto;
+            width: fit-content;
+        }
+
+        .checkout-section button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
+<body>
 <body>
     <header>
         <div class="heading">
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
-                        <img src="../images/DataDash.png" alt="Logo" width="85" height="500">
+                        <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                     </a>
                 </div>
                 <div class="search-bar">
@@ -218,23 +365,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     $selectedProductIds = [];
                     $selectedQuantities = [];
                     if (isset($_POST['selected_products'])) {
-                        $selectedProductsArray = json_decode($_POST['selected_products'], true); // Decode to an associative array
-
+                        $selectedProductsArray = json_decode($_POST['selected_products'], true);
                         if (isset($selectedProductsArray) && !empty($selectedProductsArray)) {
                             foreach ($cartItems as $item) {
                                 if (in_array($item['product_id'], $selectedProductsArray)) {
                                     $selectedProductIds[] = $item['product_id'];
-                                    $selectedQuantities[$item['product_id']] = (isset($_POST['selected_quantities'][$item['product_id']]) && is_numeric($_POST['selected_quantities'][$item['product_id']])) ? (int)$_POST['selected_quantities'][$item['product_id']] : 1;
+                                    $selectedQuantities[$item['product_id']] = $item['quantity'];
                                 }
                             }
                             ?>
-                            <div class="checkout-progress">
-                                <div class="checkout-progress-step active">Review Your Order</div>
-                                <div class="checkout-progress-step next">Shipping Address</div>
-                                <div class="checkout-progress-step next">Payment</div>
-                                <div class="checkout-progress-step next">Confirmation</div>
-                            </div>
-
                             <div class="checkout-section">
                                 <h3>Your Order</h3>
                                 <table class="checkout-table">
@@ -261,16 +400,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                                 ?>
                                                 <tr>
                                                     <td>
-                                                        <img src="../images/<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>" class="product-image">
+                                                        <img src="../images/electronic_products/<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>" class="product-image">
                                                         <?php echo $product['name']; ?>
                                                     </td>
-                                                    <td>
-                                                        <input type="number" name="selected_quantities[<?php echo $product['product_id']; ?>]" value="<?php echo $quantity; ?>" min="1" required>
-                                                    </td>
+                                                    <td><?php echo $quantity; ?></td>
                                                     <td>$<?php echo number_format($product['price'], 2); ?></td>
                                                     <td>$<?php echo number_format($productTotal, 2); ?></td>
                                                 </tr>
-                                            <?php }
+                                                <?php
+                                            }
                                         }
                                         ?>
                                     </tbody>
@@ -293,63 +431,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
                             <div class="checkout-section">
                                 <h3>Shipping Address</h3>
-                                <form action="checkout.php" method="post">
+                                <form action="checkout.php" method="post" id="checkout-form">
                                     <input type="hidden" name="action" value="checkout">
                                     <input type="hidden" name="selected_products" value="<?php echo json_encode($selectedProductIds); ?>">
                                     <input type="hidden" name="selected_quantities" value="<?php echo json_encode($selectedQuantities); ?>">
+                                    <input type="hidden" name="shipping_address_id" id="shipping_address_id" value="">
+                                    <input type="hidden" name="payment_method_id" id="payment_method_id" value="">
 
                                     <div class="form-group">
-                                        <label for="shipping-address">Full Name:</label>
-                                        <input type="text" id="shipping-name" name="shipping-name" placeholder="Enter your full name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="shipping-address">Address:</label>
-                                        <input type="text" id="shipping-address" name="shipping-address" placeholder="Enter your street address" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="shipping-city">City:</label>
-                                        <input type="text" id="shipping-city" name="shipping-city" placeholder="Enter your city" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="shipping-state">State/Province:</label>
-                                        <input type="text" id="shipping-state" name="shipping-state" placeholder="Enter your state/province" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="shipping-zip">Zip Code:</label>
-                                        <input type="text" id="shipping-zip" name="shipping-zip" placeholder="Enter your zip code" required>
+                                        <label for="shipping-address">Select Shipping Address:</label>
+                                        <div class="form-group">
+                                            <?php
+                                            $shippingAddresses = getUserShippingAddresses($userId);
+                                            if (!empty($shippingAddresses)) {
+                                                foreach ($shippingAddresses as $address) {
+                                                    ?>
+                                                    <div class="form-group">
+                                                        <input type="radio" id="shipping-address-<?php echo $address['address_id']; ?>" name="shipping-address" value="<?php echo $address['address_id']; ?>" required>
+                                                        <label for="shipping-address-<?php echo $address['address_id']; ?>">
+                                                            <?php echo $address['street_address'] . ', ' . $address['city'] . ', ' . $address['state'] . ', ' . $address['postal_code'] . ', ' . $address['country']; ?>
+                                                        </label>
+                                                    </div>
+                                                    <?php
+                                                }
+                                            } else {
+                                                ?>
+                                                <p>You have no saved addresses. You can add an address below.</p>
+                                                <button type="button" onclick="window.location.href='saved_addresses.php'">Create New Address</button>
+                                            <?php
+                                            }
+                                            ?>
+                                        </div>
                                     </div>
 
-                                    <div class="checkout-section" id="payment-section">
+                                    <div class="checkout-section">
                                         <h3>Payment Information</h3>
                                         <div class="form-group">
-                                            <label for="card-number">Card Number:</label>
-                                            <input type="text" id="card-number" name="card-number" placeholder="Enter your card number" required>
+                                            <label for="payment-method">Select Payment Method:</label>
+                                            <div class="form-group">
+                                                <?php
+                                                $paymentMethods = getUserPaymentMethods($userId);
+                                                if (!empty($paymentMethods)) {
+                                                    foreach ($paymentMethods as $method) {
+                                                        ?>
+                                                        <div class="form-group">
+                                                            <input type="radio" id="payment-method-<?php echo $method['payment_method_id']; ?>" name="payment-method" value="<?php echo $method['payment_method_id']; ?>" required>
+                                                            <label for="payment-method-<?php echo $method['payment_method_id']; ?>">
+                                                                <?php echo $method['method_type'] . ' (Ending in ' . substr($method['card_number'], -4) . ')'; ?>
+                                                                <br>
+                                                                <?php echo 'CVV: ' . $method['cvs_number'] . ', Expiration: ' . $method['expiration_date']; ?>
+                                                            </label>
+                                                        </div>
+                                                        <?php
+                                                    }
+                                                } else {
+                                                    ?>
+                                                    <p>You have no saved payment methods. You can add a payment method below.</p>
+                                                    <button type="button" onclick="window.location.href='payment_methods.php'">Create New Payment Method</button>
+                                                <?php
+                                                }
+                                                ?>
+                                            </div>
                                         </div>
-                                        <!-- Add other payment details (expiry date, CVV, etc.) -->
-
-                                        <button type="submit" class="checkout-button">Place Order</button>
+                                        <br><br>
+                                        <button type="submit" class="checkout-button" id="place-order-button">Place Order</button>
                                     </div>
                                 </form>
-
-                                <?php
-                                if (isset($orderCreated) && $orderCreated) {
-                                    ?>
-                                    <div class="checkout-section">
-                                        <h3>Order Confirmation</h3>
-                                        <p>Thank you for your order!</p>
-
-                                        <div class="order-details">
-                                            <p>Order ID: <?php echo $orderId; ?></p>
-                                            <p>Total Amount: $<?php echo number_format($totalPrice, 2); ?></p>
-                                            <!-- Display other order details like shipping address, payment method, etc. -->
-                                        </div>
-
-                                        <p>You will receive an email confirmation with order details shortly.</p>
-                                        <a href="shop.php" class="continue-shopping-btn">Continue Shopping</a>
-                                    </div>
-                                    <?php
-                                }
-                                ?>
                             </div>
                         <?php
                         } else {
@@ -367,84 +514,139 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             ?>
         </div>
     </main>
-    <footer>
-        <div class="social-media">
-            <br><br>
-            <ul>
-                <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
-                <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
-                <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
-                <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
-                <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
-            </ul>
-        </div>
-        <div class="general-info">
-            <div class="help">
-                <h3>Help</h3>
-                <ul>
-                    <li><a href="faq.php">Frequently Asked Questions</a></li>
-                    <li><a href="returns.php">Returns</a></li>
-                    <li><a href="customer_service.php">Customer Service</a></li>
-                </ul>
-            </div>
-            <div class="location">
-                <p>123 Main Street, City, Country</p>
-            </div>
-            <div class="legal">
-                <h3>Privacy & Legal</h3>
-                <ul>
-                    <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
-                    <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-                </ul>
-            </div>
-        </div>
-        2024 DataDash, All Rights Reserved.
-    </footer>
-    <script src="../js/navbar.js"></script>
-    <script src="../js/slider.js"></script>
     <script>
-        // Update quantity input listeners
-        document.querySelectorAll('.checkout-table input[type="number"]').forEach(input => {
-            input.addEventListener('change', function() {
-                updateCartTotal();
+        // Disable Place Order button initially
+        document.getElementById('place-order-button').disabled = true;
+
+        // Add event listeners to radio buttons
+        const shippingAddressRadios = document.querySelectorAll('input[name="shipping-address"]');
+        const paymentMethodRadios = document.querySelectorAll('input[name="payment-method"]');
+
+        // Check if all required fields are filled out
+        function checkRequiredFields() {
+            let allFieldsFilled = true;
+
+            // Check shipping address fields
+            if (shippingAddressRadios.length > 0) {
+                if (!document.querySelector('input[name="shipping-address"]:checked')) {
+                    allFieldsFilled = false;
+                }
+            }
+
+            // Check payment method fields
+            if (paymentMethodRadios.length > 0) {
+                if (!document.querySelector('input[name="payment-method"]:checked')) {
+                    allFieldsFilled = false;
+                }
+            }
+
+            // Enable Place Order button if all fields are filled
+            if (allFieldsFilled) {
+                document.getElementById('place-order-button').disabled = false;
+            } else {
+                document.getElementById('place-order-button').disabled = true;
+            }
+        }
+
+        // Add event listeners to radio buttons to enable Place Order button
+        shippingAddressRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.getElementById('shipping_address_id').value = radio.value;
+                checkRequiredFields();
             });
         });
 
-        function updateCartTotal() {
-            let totalPrice = 0;
-            document.querySelectorAll('.checkout-table tr').forEach(row => {
-                const quantityInput = row.querySelector('input[type="number"]');
-                const priceCell = row.querySelector('td:nth-child(3)');
-                const totalCell = row.querySelector('td:nth-child(4)');
-
-                if (quantityInput && priceCell && totalCell) {
-                    const quantity = parseInt(quantityInput.value, 10);
-                    const price = parseFloat(priceCell.textContent.replace('$', ''));
-                    const total = quantity * price;
-                    totalCell.textContent = '$' + total.toFixed(2);
-                    totalPrice += total;
-                }
+        paymentMethodRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.getElementById('payment_method_id').value = radio.value;
+                checkRequiredFields();
             });
+        });
 
-            // Update total price in the footer
-            document.getElementById('total-price').textContent = '$' + totalPrice.toFixed(2);
-        }
+        // Add event listeners to input fields to enable Place Order button
+        const inputFields = document.querySelectorAll('input[type="text"], input[type="date"]');
+        inputFields.forEach(input => {
+            input.addEventListener('input', checkRequiredFields);
+        });
 
-        // Show payment section when shipping details are filled out
-        const shippingForm = document.querySelector('form');
-        shippingForm.addEventListener('submit', function(event) {
+        // Add event listener to the "Place Order" button to submit the form
+        document.getElementById('place-order-button').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent default form submission
-            // Check if all required fields are filled out
-            if (document.getElementById('shipping-name').value &&
-                document.getElementById('shipping-address').value &&
-                document.getElementById('shipping-city').value &&
-                document.getElementById('shipping-state').value &&
-                document.getElementById('shipping-zip').value) {
-                document.getElementById('payment-section').style.display = 'block';
+
+            // Get the selected shipping address ID
+            const shippingAddressId = document.querySelector('input[name="shipping-address"]:checked').value;
+
+            // Get the selected payment method ID
+            const paymentMethodId = document.querySelector('input[name="payment-method"]:checked').value;
+
+            // Get the selected product IDs and quantities
+            const selectedProductIds = JSON.parse(document.querySelector('input[name="selected_products"]').value);
+            const selectedQuantities = JSON.parse(document.querySelector('input[name="selected_quantities"]').value);
+
+            // Process the order
+            <?php
+            if (sessionExists()) {
+                $userId = getSessionUserId();
+                ?>
+                // Send AJAX request to process the order
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'checkout.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // Successful order placement
+                        const response = JSON.parse(xhr.responseText);
+                        alert('Order placed successfully! Your order ID is ' + response.order_id + '. You ordered ' + response.ordered_items);
+                        window.location.href = 'cart.php'; // Redirect to cart page
+                    } else {
+                        // Error processing order
+                        alert('Error processing order. Please try again.');
+                    }
+                };
+                xhr.onerror = function() {
+                    alert('Network error. Please try again.');
+                };
+                // **Here is the fix:** Include the 'action' parameter
+                xhr.send('action=checkout&selected_products=' + JSON.stringify(selectedProductIds) + '&selected_quantities=' + JSON.stringify(selectedQuantities) + '&shipping_address_id=' + shippingAddressId + '&payment_method_id=' + paymentMethodId);
+            <?php
             } else {
-                alert('Please fill out all required shipping details.');
+                echo 'alert("Please log in to place an order.");';
             }
+            ?>
         });
     </script>
 </body>
+<footer>
+    <div class="social-media">
+        <br><br>
+        <ul>
+            <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
+            <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
+            <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
+            <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
+            <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
+        </ul>
+    </div>
+    <div class="general-info">
+        <div class="help">
+            <h3>Help</h3>
+            <ul>
+                <li><a href="faq.php">Frequently Asked Questions</a></li>
+                <li><a href="returns.php">Returns</a></li>
+                <li><a href="customer_service.php">Customer Service</a></li>
+            </ul>
+        </div>
+        <div class="location">
+            <p>123 Main Street, City, Country</p>
+        </div>
+        <div class="legal">
+            <h3>Privacy & Legal</h3>
+            <ul>
+                <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
+                <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
+            </ul>
+        </div>
+    </div>
+    2024 DataDash, All Rights Reserved.
+</footer>
 </html>
