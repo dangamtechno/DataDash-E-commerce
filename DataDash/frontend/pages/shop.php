@@ -42,7 +42,7 @@
 
         .shop-button {
             display: inline-block;
-            padding: 15px 20px;
+            padding: 17px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
