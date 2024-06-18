@@ -229,10 +229,10 @@
         </div>
         2024 DataDash, All Rights Reserved.
     </footer>
-    <script>
+     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Load initial products
-            fetch('../../backend/utils/search.php')
+            fetch('../../backend/utils/filter_and_sort.php')
                 .then(response => response.text())
                 .then(data => {
                     const productGrid = document.getElementById('product-grid');
@@ -261,11 +261,12 @@
             const filterDropdown = document.getElementById('filter-dropdown');
             filterDropdown.addEventListener('change', function() {
                 const selectedCategory = this.value;
-                fetch(`../../backend/utils/filter.php?category=${selectedCategory}`)
+                const sortOrder = document.getElementById('sort-dropdown').value;
+                fetch(`../../backend/utils/filter_and_sort.php?category=${selectedCategory}&sort=${sortOrder}`)
                     .then(response => response.text())
                     .then(data => {
                         const productGrid = document.getElementById('product-grid');
-                        productGrid.innerHTML = ''; // Clear existing content
+                        productGrid.innerHTML = '';
                         productGrid.innerHTML += data;
                     })
                     .catch(error => console.error('Error:', error));
@@ -274,12 +275,13 @@
             // Sorting
             const sortDropdown = document.getElementById('sort-dropdown');
             sortDropdown.addEventListener('change', function() {
+                const selectedCategory = document.getElementById('filter-dropdown').value;
                 const sortOrder = this.value;
-                fetch(`../../backend/utils/sort.php?sort=${sortOrder}`)
+                fetch(`../../backend/utils/filter_and_sort.php?category=${selectedCategory}&sort=${sortOrder}`)
                     .then(response => response.text())
                     .then(data => {
                         const productGrid = document.getElementById('product-grid');
-                        productGrid.innerHTML = ''; // Clear existing content
+                        productGrid.innerHTML = '';
                         productGrid.innerHTML += data;
                     })
                     .catch(error => console.error('Error:', error));

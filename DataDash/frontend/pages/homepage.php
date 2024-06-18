@@ -81,7 +81,7 @@
                         <label>
                             <input type="search" name="search" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class ="search-button">
+                        <input type="submit" name="submit-search" class="search-button">
                     </form>
                 </div>
             </div> <br>
@@ -222,12 +222,31 @@
     2024 DataDash, All Rights Reserved.
 </footer>
 <script src = "../js/global.js" defer ></script>
-    <script src="../js/navbar.js"></script>
-    <script src="../js/slider.js"></script>
-    <script src = "../js/menu.js"></script>
-   <script src = "../js/banner.js"></script>  
-   <script src = "../js/featured.js"></script>  
-   <script src = "../js/newArrivals.js"></script>  
-   <script src = "../js/starRatingSystem.js"></script> 
+<script src="../js/navbar.js"></script>
+<script src="../js/slider.js"></script>
+<script src = "../js/menu.js"></script>
+<script src = "../js/banner.js"></script>
+<script src = "../js/featured.js"></script>
+<script src = "../js/newArrivals.js"></script>
+<script src = "../js/starRatingSystem.js"></script>
+<script>
+    // Search functionality
+            const searchForm = document.querySelector('.search-form');
+            searchForm.addEventListener('submit', function(event) {
+                                        window.location.href = "shop.php";
+
+                event.preventDefault();
+                const searchTerm = document.querySelector('input[name="search"]').value;
+                fetch(`../../backend/utils/search.php?submit-search=1&search=${searchTerm}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        const productGrid = document.getElementById('product-grid');
+                        // Clear existing products and append the new ones
+                        productGrid.innerHTML = ''; // Clear existing content
+                        productGrid.innerHTML += data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+</script>
 </body>
 </html>

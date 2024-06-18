@@ -59,6 +59,7 @@ CREATE TABLE product (
     price DECIMAL(10, 2) DEFAULT NULL,
     image VARCHAR(255) DEFAULT NULL,
     status TINYINT NOT NULL DEFAULT 0,
+    rating DECIMAL(2, 1) DEFAULT NULL,
     date_added DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY name_unique (name),
     KEY idx_product_category_id (category_id),
