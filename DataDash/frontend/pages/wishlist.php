@@ -2,10 +2,35 @@
 <html lang="en">
 <head>
     <title>Wishlist</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5,minimum-scale=1.0">
+    <script src="https://kit.fontawesome.com/d0ce752c6a.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
     <?php require_once '../../backend/utils/session.php'; ?>
 </head>
 <style>
+        .shop-button-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .shop-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #1e1f22;
+            background-color: #009dff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .shop-button:hover {
+            background-color: #0056b3;
+        }
         .wishlist-container {
              max-width: 1000px;
             margin: 50px auto;
@@ -68,6 +93,7 @@
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
+            border-radius: 5px;
         }
         .add-to-cart:hover {
             background-color: #07eaff;
@@ -80,10 +106,17 @@
             font-size: 16px;
             cursor: pointer;
             margin: 20px;
+            border-radius: 5px;
         }
         .delete-from-wishlist:hover {
             background-color: #f00;
         }
+
+        .delete-from-wishlist img {
+            width: 20px;
+            height: 10px;
+        }
+
     </style>
 <body>
 <header> <div class="heading">
@@ -158,7 +191,9 @@
                         echo '<p>$' . $product['price'] . '</p>';
                         echo '</a>';
                         echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
-                        echo '<button type="submit" class="delete-from-wishlist">Delete</button>';
+                        echo '<button type="submit" class="delete-from-wishlist" aria-lavel="Delete">
+                                <img src="../images/bin.png" alt="Delete">
+                            </button>';
                         echo '</div>';
                     }
                 }
