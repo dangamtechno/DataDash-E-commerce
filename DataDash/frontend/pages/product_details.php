@@ -99,7 +99,7 @@ $conn->close();
             display: inline-block;
             padding: 10px 20px;
             font-size: 16px;
-            color: #1e1f22;
+            color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
             border: none;
             border-radius: 5px;
@@ -133,6 +133,27 @@ $conn->close();
         <div class="shop-button-container">
             <a href="shop.php" class="shop-button">Continue Shopping</a>
         </div>
+        <div class="right-heading">
+                <div class="login-status">
+                    <?php if (sessionExists()): ?>
+                        <div class="hello-message">
+                            <span>Hello, <?php echo getSessionUsername(); ?></span>
+                        </div>
+                        <div class="icons">
+                            <a href="account.php"><i class="fas fa-user-check fa-2x"></i>Account</a>
+                            <a href="cart.php"><i class="fas fa-shopping-cart fa-2x"></i>Cart</a>
+                            <a href="../../backend/utils/logout.php"><i class="fas fa-sign-out-alt fa-2x"></i>Logout</a>
+                        </div>
+                    <?php else: ?>
+                        <div class="login" title="login">
+                            <a href="login_page.php"><i class="fas fa-sign-in-alt fa-2x"></i>Login</a>
+                        </div>
+                        <div class="register" title="register">
+                            <a href="create_account.php"><i class="fas fa-user-times fa-2x"></i>Register</a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
     </div>
 </header>
 <main>
