@@ -8,7 +8,9 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
-    <?php require_once '../../backend/utils/session.php'; ?>
+    <?php require_once '../../backend/utils/session.php'; 
+          require_once '../../backend/include/database_config.php';?>
+    
 </head>
 <style>
         .shop-button-container {
@@ -183,6 +185,10 @@
                     echo '<p> Your wishlist is empty </p>';
                     echo '</div>';
                 }else{
+                    echo '<div> 
+                            <h1> Wishlist </h1>
+                        </div>';
+
                     foreach ($products as $product) {
                         echo '<div class="wishlist">';
                         echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
@@ -190,11 +196,19 @@
                         echo '<h3>' . $product['name'] . '</h3>';
                         echo '<p>$' . $product['price'] . '</p>';
                         echo '</a>';
-                        echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
-                        echo '<button type="submit" class="delete-from-wishlist" aria-lavel="Delete">
-                                <img src="../images/bin.png" alt="Delete">
-                            </button>';
-                        echo '</div>';
+                        echo '<form action="../../backend/utils/add_to_cart.php" method="post">
+                            <label for="quantity">Quantity:</label>
+                            <input type="number" id="quantity" name="quantity" min="1" max="' . $product['inventory'] . '" value="1">
+                            <input type="hidden" name="product_id" value="' . $product['product_id'] . '">
+                            <button type="submit" class="add-to-cart">Add to Cart</button>
+                        </form>';
+                        echo '</form>
+                                <form action="../../backend/utils/delete_from_wishlist.php" method="post">
+                                <input type="hidden" name="product_id" value="' . $product['product_id'] . '">
+                                <button type="submit" class="delete-from-wishlist">
+                                <img src="../images/bin.png" alt="Delete"></button>
+                        </form>';
+                        echo '</div>';    
                     }
                 }
                 $conn->close();
