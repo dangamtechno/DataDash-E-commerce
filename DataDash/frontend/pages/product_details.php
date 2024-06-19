@@ -89,6 +89,16 @@ $conn->close();
         .add-to-cart:hover {
             background-color: #07d2ff;
         }
+        .add-to-wishlist {
+            background-color: #baae3e;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .add-to-cart:hover {
+            background-color: #ece800;
+        }
 
         .shop-button-container {
             text-align: center; /* Center the button horizontally */
@@ -177,6 +187,10 @@ $conn->close();
                 <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
                 <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
                 <button type="submit" class="add-to-cart">Add to Cart</button>
+            </form>
+            <form action="../../backend/utils/add_to_wishlist.php" method="post">
+                <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
+                <button type="submit" class="add-to-wishlist">Add to wishlist</button>
             </form>
         </div>
     </section>
