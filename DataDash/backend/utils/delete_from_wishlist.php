@@ -44,8 +44,6 @@ if ($result->num_rows > 0) {
 $sql3 = "SELECT * FROM wishlist_products WHERE wishlist_id = '$wishlist_id' AND product_id = '$product_id'";
 $result = $conn->query($sql3);
 if ($result->num_rows == 0) {
-    // Product does not exist in the wishlist
-    //header('Location: ../../frontend/pages/product_details.php?id=' . $product_id . '&wishlist_not_exists=true');
     header('Location: ../../frontend/pages/shop.php');
     exit;
 } else {
@@ -62,7 +60,7 @@ if (!$result) {
 
 $conn->close();
 
-// Redirect to the product details page
+// Redirect to the wishlist page
 header('Location: ../../frontend/pages/wishlist.php');
 exit;
 ?>
