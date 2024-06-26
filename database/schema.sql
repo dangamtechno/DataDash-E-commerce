@@ -142,15 +142,18 @@ CREATE TABLE cart_product (
 CREATE TABLE wishlist (
     wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
+    wishlist_name VARCHAR(50),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE wishlist_products (
     wishlist_id INT NOT NULL,
     product_id INT NOT NULL,
+    user_id INT NOT NULL,
     PRIMARY KEY (wishlist_id, product_id),
     FOREIGN KEY (wishlist_id) REFERENCES wishlist(wishlist_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (product_id) REFERENCES product(product_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Other tables
