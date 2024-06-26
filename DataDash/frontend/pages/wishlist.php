@@ -34,24 +34,23 @@
             background-color: #0056b3;
         }
         .wishlist-container {
-             max-width: 1000px;
-            margin: 50px auto;
+            max-width: 1500px;
+            margin: 100px;
             background-color: #fff;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
+        .wishlist {
+            width: 24%;
+            margin-bottom: 20px;
+        }
+
         .wishlist-grid {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            margin-left: -10px; /* Adjust to balance the padding */
-            margin-right: -10px; /* Adjust to balance the padding */
-        }
-
-        .wishlist {
-            width: 30%;
-            margin-bottom: 20px;
-            justify-content: center;
+            justify-content: flex-start;
+            margin-left: 50px;
         }
 
         .wishlist img {
@@ -165,9 +164,8 @@
     </header>
     <h1>Wishlist</h1>
     
-    <div class="wishlist-container">
-        <table class="wishlist-table">
-        <div class="wishlist-grid">
+    <section class="wishlist-container">
+        <div class="wishlist-grid" id="wishlist-grid">
                 <?php
 
                 
@@ -214,8 +212,7 @@
                 $conn->close();
                 ?>
             </div>
-        </table>
-    </div>
+    </section>
 <footer>
         <div class="social-media">
         <ul>
