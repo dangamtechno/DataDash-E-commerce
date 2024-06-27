@@ -19,18 +19,25 @@ if ($product_id === null) {
 
 $conn = new mysqli("localhost", "root", "", "datadash");
 
-// Prepare statement to get user ID securely
-$sql1 = "SELECT user_id FROM users WHERE user_id = (SELECT user_id FROM sessions WHERE user_id = users.user_id)";
-$stmt = $conn->prepare($sql1);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-$user_id = $user['user_id'];
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Get the user ID from the session
+$user_id = getSessionUserId();
+
+if (!$user_id) {
+    header('Location: ../../frontend/pages/login_page.php');
+    exit;
+}
 
 // Get the wishlist ID from the wishlist table
-$wishlist_id = null;
-$sql2 = "SELECT wishlist_id FROM wishlist WHERE user_id = '$user_id'";
-$result = $conn->query($sql2);
+$sql = "SELECT wishlist_id FROM wishlist WHERE user_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
 if ($result->num_rows > 0) {
     $wishlist = $result->fetch_assoc();
     $wishlist_id = $wishlist['wishlist_id'];
@@ -41,21 +48,25 @@ if ($result->num_rows > 0) {
 }
 
 // Check if the product exists in the wishlist
-$sql3 = "SELECT * FROM wishlist_products WHERE wishlist_id = '$wishlist_id' AND product_id = '$product_id'";
-$result = $conn->query($sql3);
+$sql = "SELECT * FROM wishlist_products WHERE wishlist_id = ? AND product_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $wishlist_id, $product_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
 if ($result->num_rows == 0) {
-    header('Location: ../../frontend/pages/shop.php');
+    header('Location: ../../frontend/pages/shop.php'); // Redirect to shop page if product is not in the wishlist
     exit;
 } else {
     // Product exists in the wishlist, delete it
-    $delete_query = "DELETE FROM wishlist_products WHERE wishlist_id = '$wishlist_id' AND product_id = '$product_id'";
-    $result = $conn->query($delete_query);
-}
+    $delete_query = "DELETE FROM wishlist_products WHERE wishlist_id = ? AND product_id = ?";
+    $stmt = $conn->prepare($delete_query);
+    $stmt->bind_param("ii", $wishlist_id, $product_id);
 
-if (!$result) {
-    header('Location: ../../frontend/pages/homepage.php');
-    echo "Error deleting from wishlist: " . $conn->error;
-    exit;
+    if (!$stmt->execute()) {
+        echo "Error deleting from wishlist: " . $stmt->error;
+        exit;
+    }
 }
 
 $conn->close();
