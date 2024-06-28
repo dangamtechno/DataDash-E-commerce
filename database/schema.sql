@@ -192,7 +192,7 @@ CREATE TABLE coupons (
     coupon_id INT AUTO_INCREMENT PRIMARY KEY,
     coupon_code VARCHAR(50) NOT NULL,
     discount_amount DECIMAL(10, 2) NOT NULL,
-    expiration_date DATE NOT NULL
+    expiration_date DATE NOT NULL,
     active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
