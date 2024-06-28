@@ -109,7 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     <title>Shopping Cart</title>
     <style>
-        /* ... same CSS as in the previous example ... */
         .cart-table img {
             max-width: 100%;
             height: auto;

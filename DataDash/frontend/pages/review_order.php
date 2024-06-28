@@ -33,52 +33,30 @@ function getCartItems($userId) {
     return $cartItems;
 }
 
-// Function to retrieve user's shipping addresses
-function getUserShippingAddresses($userId) {
-
+function getAddressById($addressId) {
     $conn = new mysqli("localhost", "root", "", "datadash");
 
-    $sql = "SELECT address_id, street_address, city, state, postal_code, country 
-            FROM addresses 
-            WHERE user_id = ?";
+    $sql = "SELECT * FROM addresses WHERE address_id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $userId);
+    $stmt->bind_param("i", $addressId);
     $stmt->execute();
     $result = $stmt->get_result();
-    $addresses = [];
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $addresses[] = $row;
-        }
-    }
-    return $addresses;
+    return $result->fetch_assoc();
 }
 
-// Function to retrieve user's payment methods
-function getUserPaymentMethods($userId) {
-
+// Function to retrieve a specific payment method by ID
+function getPaymentMethodById($paymentMethodId) {
     $conn = new mysqli("localhost", "root", "", "datadash");
 
-    // IMPORTANT!
-    // Do NOT store full credit card numbers in your database.
-    // This is just for demonstration; replace with your payment gateway integration.
-    $sql = "SELECT payment_method_id, method_type, card_number, cvs_number, expiration_date 
-            FROM payment_methods 
-            WHERE user_id = ?";
+    $sql = "SELECT * FROM payment_methods WHERE payment_method_id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $userId);
+    $stmt->bind_param("i", $paymentMethodId);
     $stmt->execute();
     $result = $stmt->get_result();
-    $paymentMethods = [];
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $paymentMethods[] = $row;
-        }
-    }
-    return $paymentMethods;
+    return $result->fetch_assoc();
 }
+
 $conn->close();
-
 ?>
 
 <!DOCTYPE html>
@@ -158,20 +136,7 @@ $conn->close();
             box-sizing: border-box;
         }
 
-        .checkout-button {
-            background-color: #009dff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
 
-        .checkout-button:hover {
-            background-color: #0056b3;
-        }
 
         .order-details {
             margin-top: 20px;
@@ -231,6 +196,11 @@ $conn->close();
 
         .checkout-section button:hover {
             background-color: #0056b3;
+        }
+
+        .button-container {
+            display: flex; /* Enable flexbox */
+        justify-content: center; /* Center content horizontally */
         }
 
         .shop-button {
@@ -370,76 +340,40 @@ $conn->close();
                                     </tfoot>
                                 </table>
                             </div>
-
                             <div class="checkout-section">
-                                <h3>Shipping Address</h3>
-                                <form action="review_order.php" method="post" id="checkout-form">
-                                    <input type="hidden" name="action" value="checkout">
-                                    <input type="hidden" name="selected_products" value="<?php echo json_encode($selectedProductIds); ?>">
-                                    <input type="hidden" name="selected_quantities" value="<?php echo json_encode($selectedQuantities); ?>">
-                                    <input type="hidden" name="shipping_address_id" id="shipping_address_id" value="">
-                                    <input type="hidden" name="payment_method_id" id="payment_method_id" value="">
+                                <?php
+                                if (sessionExists()) {
+                                    $userId = getSessionUserId();
 
-                                    <div class="form-group">
-                                        <label for="shipping-address">Select Shipping Address:</label>
-                                        <div class="form-group">
-                                            <?php
-                                            $shippingAddresses = getUserShippingAddresses($userId);
-                                            if (!empty($shippingAddresses)) {
-                                                foreach ($shippingAddresses as $address) {
-                                                    ?>
-                                                    <div class="form-group">
-                                                        <input type="radio" id="shipping-address-<?php echo $address['address_id']; ?>" name="shipping-address" value="<?php echo $address['address_id']; ?>" required>
-                                                        <label for="shipping-address-<?php echo $address['address_id']; ?>">
-                                                            <?php echo $address['street_address'] . ', ' . $address['city'] . ', ' . $address['state'] . ', ' . $address['postal_code'] . ', ' . $address['country']; ?>
-                                                        </label>
-                                                    </div>
-                                                    <?php
-                                                }
-                                            } else {
-                                                ?>
-                                                <p>You have no saved addresses. You can add an address below.</p>
-                                                <button type="button" onclick="window.location.href='saved_addresses.php'">Create New Address</button>
-                                            <?php
-                                            }
-                                            ?>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="checkout-section">
-                                        <h3>Payment Information</h3>
-                                        <div class="form-group">
-                                            <label for="payment-method">Select Payment Method:</label>
-                                            <div class="form-group">
-                                                <?php
-                                                $paymentMethods = getUserPaymentMethods($userId);
-                                                if (!empty($paymentMethods)) {
-                                                    foreach ($paymentMethods as $method) {
-                                                        ?>
-                                                        <div class="form-group">
-                                                            <input type="radio" id="payment-method-<?php echo $method['payment_method_id']; ?>" name="payment-method" value="<?php echo $method['payment_method_id']; ?>" required>
-                                                            <label for="payment-method-<?php echo $method['payment_method_id']; ?>">
-                                                                <?php echo $method['method_type'] . ' (Ending in ' . substr($method['card_number'], -4) . ')'; ?>
-                                                                <br>
-                                                                <?php echo 'CVV: ' . $method['cvs_number'] . ', Expiration: ' . $method['expiration_date']; ?>
-                                                            </label>
-                                                        </div>
-                                                        <?php
-                                                    }
-                                                } else {
-                                                    ?>
-                                                    <p>You have no saved payment methods. You can add a payment method below.</p>
-                                                    <button type="button" onclick="window.location.href='payment_methods.php'">Create New Payment Method</button>
-                                                <?php
-                                                }
-                                                ?>
-                                            </div>
-                                        </div>
-                                        <br><br>
-                                            <button type="submit" id="review-order-button">Review Order</button>
-                                    </div>
-                                </form>
+                                    $shippingAddressId = $_POST['shipping_address_id'];
+                                    $paymentMethodId = $_POST['payment_method_id'];
+
+                                    $shippingAddress = getAddressById($shippingAddressId);
+                                    $paymentMethod = getPaymentMethodById($paymentMethodId);
+                                }
+                                ?>
+                            <h3>Shipping Address</h3>
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label for="shipping-address-<?php echo $shippingAddress['address_id']; ?>">
+                                        <?php echo $shippingAddress['street_address'] . ', ' . $shippingAddress['city'] . ', ' . $shippingAddress['state'] . ', ' . $shippingAddress['postal_code'] . ', ' . $shippingAddress['country']; ?>
+                                    </label>
+                                </div>
                             </div>
+                        </div>
+
+                        <div class="checkout-section">
+                            <h3>Payment Information</h3>
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label for="payment-method-<?php echo $paymentMethod['payment_method_id']; ?>">
+                                        <?php echo $paymentMethod['method_type'] . ' (Ending in ' . substr($paymentMethod['card_number'], -4) . ')'; ?>
+                                        <br>
+                                        <?php echo 'CVV: ' . $paymentMethod['cvs_number'] . ', Expiration: ' . $paymentMethod['expiration_date']; ?>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                         <?php
                         } else {
                             echo '<p>Invalid product selection.</p>';
@@ -455,101 +389,64 @@ $conn->close();
             }
             ?>
         </div>
-    </main>
-    <script>
-        // Disable Review Order button initially
-        document.getElementById('review-order-button').disabled = true;
-
-        // Add event listeners to radio buttons
-        const shippingAddressRadios = document.querySelectorAll('input[name="shipping-address"]');
-        const paymentMethodRadios = document.querySelectorAll('input[name="payment-method"]');
-
-        // Check if all required fields are filled out
-        function checkRequiredFields() {
-            let allFieldsFilled = true;
-
-            // Check shipping address fields
-            if (shippingAddressRadios.length > 0) {
-                if (!document.querySelector('input[name="shipping-address"]:checked')) {
-                    allFieldsFilled = false;
-                }
-            }
-
-            // Check payment method fields
-            if (paymentMethodRadios.length > 0) {
-                if (!document.querySelector('input[name="payment-method"]:checked')) {
-                    allFieldsFilled = false;
-                }
-            }
-
-            // Enable Review Order button if all fields are filled
-            if (allFieldsFilled) {
-                document.getElementById('review-order-button').disabled = false;
-            } else {
-                document.getElementById('review-order-button').disabled = true;
-            }
-        }
-
-        // Add event listeners to radio buttons to enable Review Order button
-        shippingAddressRadios.forEach(radio => {
-            radio.addEventListener('change', () => {
-                document.getElementById('shipping_address_id').value = radio.value;
-                checkRequiredFields();
-            });
-        });
-
-        paymentMethodRadios.forEach(radio => {
-            radio.addEventListener('change', () => {
-                document.getElementById('payment_method_id').value = radio.value;
-                checkRequiredFields();
-            });
-        });
-    </script>
-</body>
-<footer>
-    <div class="social-media">
         <br><br>
-        <ul>
-            <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
-            <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
-            <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
-            <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
-            <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
-        </ul>
-    </div>
-    <div class="general-info">
-        <div class="help">
-            <h3>Help</h3>
+        <div class="button-container">
+          <button type="submit" id="place-order-button" style="
+            background-color: #009dff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+          ">
+            Place Order
+          </button>
+        </div>
+    </main>
+    <footer>
+        <div class="social-media">
+            <br><br>
             <ul>
-                <li><a href="faq.php">Frequently Asked Questions</a></li>
-                <li><a href="returns.php">Returns</a></li>
-                <li><a href="customer_service.php">Customer Service</a></li>
+                <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
+                <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
+                <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
+                <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
+                <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
             </ul>
         </div>
-        <div class="location">
-            <p>123 Main Street, City, Country</p>
+        <div class="general-info">
+            <div class="help">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="faq.php">Frequently Asked Questions</a></li>
+                    <li><a href="returns.php">Returns</a></li>
+                    <li><a href="customer_service.php">Customer Service</a></li>
+                </ul>
+            </div>
+            <div class="location">
+                <p>123 Main Street, City, Country</p>
+            </div>
+            <div class="legal">
+                <h3>Privacy & Legal</h3>
+                <ul>
+                    <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
+                    <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="legal">
-            <h3>Privacy & Legal</h3>
-            <ul>
-                <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
-                <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-            </ul>
-        </div>
-    </div>
-    2024 DataDash, All Rights Reserved.
-</footer>
-<script>
-$(document).ready(function() {
-    $("#search-form").submit(function(event) {
-        event.preventDefault();
-        var searchTerm = $("#search-input").val();
+        2024 DataDash, All Rights Reserved.
+    </footer>
+    <script>
+    $(document).ready(function() {
+        $("#search-form").submit(function(event) {
+            event.preventDefault();
+            var searchTerm = $("#search-input").val();
 
-        // Redirect to shop.php with search term as a query parameter
-        window.location.href = "shop.php?search=" + searchTerm;
+            // Redirect to shop.php with search term as a query parameter
+            window.location.href = "shop.php?search=" + searchTerm;
+        });
     });
-});
-</script>
+    </script>
 </html>
-
-
