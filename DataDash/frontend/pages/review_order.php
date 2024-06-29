@@ -12,8 +12,7 @@ if ($conn->connect_error) {
 
 // Function to retrieve cart items for a given user ID
 function getCartItems($userId) {
-
-    $conn = new mysqli("localhost", "root", "", "datadash");
+$conn = new mysqli("localhost", "root", "", "datadash");
 
     $sql = "SELECT cp.product_id, p.name, p.price, p.image, cp.quantity
             FROM cart_product cp
@@ -34,7 +33,7 @@ function getCartItems($userId) {
 }
 
 function getAddressById($addressId) {
-    $conn = new mysqli("localhost", "root", "", "datadash");
+$conn = new mysqli("localhost", "root", "", "datadash");
 
     $sql = "SELECT * FROM addresses WHERE address_id = ?";
     $stmt = $conn->prepare($sql);
@@ -46,7 +45,7 @@ function getAddressById($addressId) {
 
 // Function to retrieve a specific payment method by ID
 function getPaymentMethodById($paymentMethodId) {
-    $conn = new mysqli("localhost", "root", "", "datadash");
+$conn = new mysqli("localhost", "root", "", "datadash");
 
     $sql = "SELECT * FROM payment_methods WHERE payment_method_id = ?";
     $stmt = $conn->prepare($sql);
@@ -54,6 +53,63 @@ function getPaymentMethodById($paymentMethodId) {
     $stmt->execute();
     $result = $stmt->get_result();
     return $result->fetch_assoc();
+}
+
+// Function to create a new order
+function createOrder($userId, $selectedProducts, $selectedQuantities, $shippingAddressId, $paymentMethodId) {
+$conn = new mysqli("localhost", "root", "", "datadash");
+
+    $orderDate = date('Y-m-d H:i:s');
+    $totalPrice = 0;
+
+    // Calculate total price
+    foreach ($selectedProducts as $productId) {
+        $quantity = $selectedQuantities[$productId];
+        $sql = "SELECT price FROM product WHERE product_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $productId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $productPrice = $row['price'];
+        $totalPrice += $productPrice * $quantity;
+    }
+
+    // Insert order into orders table
+    $sql = "INSERT INTO orders (user_id, order_date, total_amount, status)
+            VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $statusp = 'processing';
+    $stmt->bind_param("isds", $userId, $orderDate, $totalPrice, $statusp);
+    $stmt->execute();
+
+    // Get the order ID
+    $orderId = $conn->insert_id;
+
+    // Insert order details into ordered_item table
+    foreach ($selectedProducts as $productId) {
+        $quantity = $selectedQuantities[$productId];
+        $sql = "INSERT INTO ordered_item (order_id, user_id, product_id, quantity, order_status, order_date)
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $orderStatus = 'processing'; // Assuming 0 represents a new order
+        $stmt->bind_param("iiisi", $orderId, $userId, $productId, $quantity, $orderStatus, $orderDate);
+        $stmt->execute();
+
+        // Update inventory for the specific product
+        $sql = "UPDATE inventory SET quantity = quantity - ? WHERE product_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $quantity, $productId);
+        $stmt->execute();
+    }
+
+    // Remove items from cart (for selected products)
+    foreach ($selectedProducts as $productId) {
+        $sql = "DELETE FROM cart_product WHERE cart_id IN (SELECT cart_id FROM cart WHERE user_id = ?) AND product_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $userId, $productId);
+        $stmt->execute();
+    }
 }
 
 $conn->close();
@@ -375,6 +431,39 @@ $conn->close();
                             </div>
                         </div>
                         <?php
+                        // Check if the form has been submitted
+                        if (isset($_POST['place_order'])) {
+                            // Call the createOrder function after validating product selection
+                            if (isset($_POST['selected_products']) && !empty($selectedProductIds)) {
+                                createOrder($userId, $selectedProductIds, $selectedQuantities, $shippingAddressId, $paymentMethodId);
+                                echo '<p class="success-message">Thank you for your order!</p>';
+                            } else {
+                                echo '<p>Invalid product selection.</p>';
+                            }
+                        } else {
+                            // Display the order summary
+                            ?>
+                            <div class="button-container">
+                              <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                                <input type="hidden" name="selected_products" value='<?php echo json_encode($selectedProductIds); ?>' />
+                                <input type="hidden" name="shipping_address_id" value="<?php echo $shippingAddressId; ?>" />
+                                <input type="hidden" name="payment_method_id" value="<?php echo $paymentMethodId; ?>" />
+                                <button type="submit" name="place_order" id="place-order-button" style="
+                                background-color: #009dff;
+                                color: white;
+                                padding: 10px 20px;
+                                border: none;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                text-decoration: none;
+                                transition: background-color 0.3s ease;
+                              ">
+                                Place Order
+                              </button>
+                              </form>
+                            </div>
+                            <?php
+                        }
                         } else {
                             echo '<p>Invalid product selection.</p>';
                         }
@@ -388,21 +477,6 @@ $conn->close();
                 echo '<p>Please <a href="login_page.php">log in</a> to proceed to checkout.</p>';
             }
             ?>
-        </div>
-        <br><br>
-        <div class="button-container">
-          <button type="submit" id="place-order-button" style="
-            background-color: #009dff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-          ">
-            Place Order
-          </button>
         </div>
     </main>
     <footer>

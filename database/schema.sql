@@ -89,7 +89,7 @@ CREATE TABLE ordered_item (
   user_id int NOT NULL,
   product_id int NOT NULL,
   quantity int NOT NULL,
-  order_status int NOT NULL DEFAULT '0',
+  status VARCHAR(50) NOT NULL,
   order_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`)
 );
@@ -192,7 +192,7 @@ CREATE TABLE coupons (
     coupon_id INT AUTO_INCREMENT PRIMARY KEY,
     coupon_code VARCHAR(50) NOT NULL,
     discount_amount DECIMAL(10, 2) NOT NULL,
-    expiration_date DATE NOT NULL,
+    expiration_date DATE NOT NULL
     active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
