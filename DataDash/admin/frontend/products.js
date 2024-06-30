@@ -76,7 +76,7 @@ function getProductDetails(){
         const modalImage = document.createElement('div');
         modalImage.className='card-img';
         const img = document.createElement('img')
-        img.src = `http://localhost:8081${product.image}`;
+        img.src = `http://localhost:8080${product.image}`;
         //name of prod
         const name = document.createElement('p');
         name.id = 'name';
@@ -196,14 +196,24 @@ function submitProductUpdate(e){
     e.preventDefault();
     form = document.querySelector('.update-products');
     const formData = new FormData(form);
-    formData.append('id',this.id);
-    console.log(this.id);
+    formData.append('id',this.product_id);
     for(key of formData.entries()){
         console.log(key);
     }
     fetchCall("product.php",responseSubmitProductUpdate,"POST",formData);
     function responseSubmitProductUpdate(data){
-        console.log(data);
+        if(data.product){
+            let product = data.product;
+            const name = document.getElementById('name');
+            const price = document.getElementById('price');
+            const desc  = document.getElementById('desc');
+            const status = document.getElementById('status');
+            name.innerText = product.name;
+            price.innerText = product.price;
+            status.innerHTML = getStatus(product.status);
+            desc.innerHTML = product.description;
+            alert("Product update successful");
+        }
     }
     //perform update then show the change in the product card in the admin update product page.
 

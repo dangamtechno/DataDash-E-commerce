@@ -33,7 +33,7 @@ function requestBanners(){
        card.addEventListener('click',getBannerDetails.bind(banners[banner]));
        //image element for product
        const img = document.createElement('img');
-       img.src = `http://localhost:8081${banners[banner].image}`;
+       img.src = `http://localhost:8080${banners[banner].image}`;
        imgDiv.appendChild(img);
        //product name will be the name the for card
        const name = document.createElement("p");

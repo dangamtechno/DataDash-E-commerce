@@ -38,11 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     // Retrieve and sanitize input data
     $name = isset($_POST['name']) ? $_POST['name'] : '';
     $status = isset($_POST['status']) ? intval($_POST['status']) : 0;
+    $price = isset($_POST['price']) ? floatval($_POST['price']) : 0;
     $desc = isset($_POST['description']) ? $_POST['description'] : '';
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
     
     // Prepare the SQL statement
-    $stmt = "UPDATE product SET name = ? ,description = ? , status = ? WHERE product_id = ?;";
+    $stmt = "UPDATE product SET name = ? , price = ?,description = ? , status = ? WHERE product_id = ?;";
     
     // Prepare and execute the statement
     $prep_stmt = $conn->prepare($stmt);
@@ -59,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     }
     
     // Bind parameters
-    $prep_stmt->bind_param('ssii', $name,$desc,$status ,$id);
+    $prep_stmt->bind_param('sdsii', $name,$price,$desc,$status ,$id);
     
     // Execute the statement
     $executeResult = $prep_stmt->execute();
@@ -69,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
         echo json_encode(['error' => 'Execute statement failed: ' . $prep_stmt->error]);
         exit();
     } else {
-       $stmt='SELECT * FROM product  WHERE  id = ?;';
+       $stmt='SELECT * FROM product  WHERE  product_id = ?;';
        $prep_stmt = $conn->prepare($stmt);
        $id = $_POST['id'];
        $prep_stmt->bind_param('i',$id);
