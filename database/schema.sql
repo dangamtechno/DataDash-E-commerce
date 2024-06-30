@@ -2,6 +2,18 @@
 CREATE DATABASE datadash;
 USE datadash;
 
+-- admin-related tables
+CREATE TABLE admin (
+   admin_id int NOT NULL AUTO_INCREMENT,
+   name varchar(45) NOT NULL,
+   email varchar(45) NOT NULL,
+   password varchar(45) NOT NULL,
+   phone varchar(45) NOT NULL,
+   date_registered datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`admin_id`)
+);
+-- end admin tables
+
 -- User-related tables
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
