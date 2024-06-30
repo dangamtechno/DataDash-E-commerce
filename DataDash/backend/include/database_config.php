@@ -1,11 +1,11 @@
 <?php
-header('Access-Control-Allow-Origin: http://127.0.0.1:5501');
+header('Access-Control-Allow-Origin: http://127.0.0.1:5500');
 header('Access-Control-Allow-Credentials: true');
+session_start(['cookie_samesite'=>'None','cookie_secure' => true]);
+$conn = new mysqli("localhost:3306","root","","datadash");
 
-session_start();
-
-$conn = new mysqli("localhost", "root", "", "datadash");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if($conn->connect_errno){
+    echo json_encode(['error'=>$conn->connect_error]);
+    exit();
 }
+?>
