@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
     
     // Prepare the SQL statement
-    $stmt = "UPDATE category SET name = ? , status = ? WHERE category_id = ?;";
+    $stmt = "UPDATE category SET category_name = ? , status = ? WHERE category_id = ?;";
     
     // Prepare and execute the statement
     $prep_stmt = $conn->prepare($stmt);

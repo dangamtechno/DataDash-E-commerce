@@ -2,6 +2,7 @@ function requestCategories(){
     fetchCall("menu.php",responseCategories)
     function responseCategories(data){
         const nav = document.querySelector('.navigation');
+        console.log(data);
         if(data.categories){
             categories = data.categories;
           //  console.log(categories);

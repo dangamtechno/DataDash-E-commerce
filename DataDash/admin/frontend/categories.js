@@ -94,6 +94,10 @@ function updateCategoryForm(modal,category){
     statusField.innerText = getStatus(i);
     selectStatus.appendChild(statusField);
 }
+    //default values will be the current ones in db
+    selectStatus.selectedIndex = category.status;
+    nameField.value = category.category_name;
+
     statusSection.appendChild(selectStatus);
     const submit = document.createElement('input');
     submit.name='update';
@@ -125,7 +129,6 @@ function submitCategoryUpdate(e){
         form = document.querySelector('.update-category');
         const formData = new FormData(form);
         formData.append('id',this.category_id);
-        console.log(this.id);
         //formData.append('status',)
         fetchCall(`categories.php`,responseUpdate,'POST',formData);
         function responseUpdate(data){
@@ -138,8 +141,9 @@ function submitCategoryUpdate(e){
                 const categoryStatus = document.getElementById('status');
                 const newName = category.category_name;
                 const newStatus = category.status;
-                categoryName.innerText = newName;
-                categoryStatus.innerText = getStatus(newStatus);
+                categoryName.innerText = `Updated Name: ${newName}`;
+                categoryStatus.innerText =`Updated Status: ${getStatus(newStatus)}`;
+                alert("Updated category sucessfully");
              }
    }
 }

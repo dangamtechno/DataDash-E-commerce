@@ -127,6 +127,10 @@ function updateBannerForm(modal,banner){
     statusField.innerText = getStatus(i);
     selectStatus.appendChild(statusField);
 }
+    //default values will be the current ones in db
+    selectStatus.selectedIndex = banner.status;
+    nameField.value = banner.name;
+    descField.value = banner.description;
 //submit will send info to be used to update value in database where id is the currently viewed object id
    const submit = document.createElement('input');
    submit.name='submit';
@@ -154,16 +158,17 @@ function submitBannerUpdate(e){
     function responseBannerUpdate(data){
         //update banner card
         if(data.banner){
-        const banner = data.banner;
-        const bannerName = document.getElementById('name');
-        const bannerStatus = document.getElementById('status');
-        const bannerDesc = document.getElementById('description');
-        const newName = banner.name;
-        const newStatus = banner.status;
-        const newDesc = banner.description;
-        bannerName.innerText = newName;
-        bannerStatus.innerText = getStatus(newStatus);
-        bannerDesc.innerText = newDesc;
+            const banner = data.banner;
+            const bannerName = document.getElementById('name');
+            const bannerStatus = document.getElementById('status');
+            const bannerDesc = document.getElementById('description');
+            const newName = banner.name;
+            const newStatus = banner.status;
+            const newDesc = banner.description;
+            bannerName.innerText = `Update Name: ${newName}`;
+            bannerStatus.innerText = `Updated Status: ${getStatus(newStatus)}`;
+            bannerDesc.innerText = `Updated Description: ${newDesc}`;
+            alert("banner update successful");
         }
     }
     //console.log(form);

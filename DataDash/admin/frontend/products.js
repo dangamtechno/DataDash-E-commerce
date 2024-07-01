@@ -166,8 +166,8 @@ function updateProductForm(modal,product){
     statusField.innerText = getStatus(i);
     selectStatus.appendChild(statusField);
 }
-selectStatus.selectedIndex = product.status;
 //default values will be the current ones in db
+   selectStatus.selectedIndex = product.status;
    nameField.value = product.name;
    descField.value = product.description;
    price.value = product.price;
@@ -213,10 +213,10 @@ function submitProductUpdate(e){
             const price = document.getElementById('price');
             const desc  = document.getElementById('description');
             const status = document.getElementById('status');
-            name.innerText = product.name;
-            price.innerText = product.price;
-            status.innerHTML = getStatus(product.status);
-            desc.innerHTML = product.description;
+            name.innerText = `Updated Product Name: ${product.name}`;
+            price.innerText = `Updated Product price: ${product.price}$`;
+            status.innerHTML = `Updated Product status: ${getStatus(product.status)}`;
+            desc.innerHTML =`Updated Product Description: ${product.description}`;
             alert("Product update successful");
         }
     }
