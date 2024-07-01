@@ -121,7 +121,7 @@ function updateProductForm(modal,product){
    nameField.type = 'text';
    nameField.placeholder='name';
    nameField.name='name';
-   
+
    const nameLabel = document.createElement('label');
    nameLabel.innerText = "Product Name";
    nameLabel.setAttribute('for',nameField.id);
@@ -166,6 +166,11 @@ function updateProductForm(modal,product){
     statusField.innerText = getStatus(i);
     selectStatus.appendChild(statusField);
 }
+selectStatus.selectedIndex = product.status;
+//default values will be the current ones in db
+   nameField.value = product.name;
+   descField.value = product.description;
+   price.value = product.price;
 //submit will send info to be used to update value in database where id is the currently viewed object id
    const submit = document.createElement('input');
    submit.name='submit';
@@ -206,7 +211,7 @@ function submitProductUpdate(e){
             let product = data.product;
             const name = document.getElementById('name');
             const price = document.getElementById('price');
-            const desc  = document.getElementById('desc');
+            const desc  = document.getElementById('description');
             const status = document.getElementById('status');
             name.innerText = product.name;
             price.innerText = product.price;

@@ -79,11 +79,11 @@ function displayLoggedUser(user){
 
 
 function addAdminFunctions(){
+    //here will be the existing item edit options for update and delete
     getCategories();
     getProducts();
     getBanners();
-//products
-//getbanners
+    //add new item buttons will for forms for inserting new tupples into the db
 }
 
 //banners categoreis and products will be just like the populate catalog with cards but with buttons for update and delete
