@@ -210,7 +210,14 @@
             </ul>
         </div>
         <div class="location">
-            <p>123 Main Street, City, Country</p>
+        <ul>
+                <h3>admin login</h3>     
+                <li>  
+                    <a href="../../admin/frontend/index.html">
+                        <i class="fas fa-users-cog"></i>
+                    </a>
+                </li>
+            </ul>
         </div>
         <div class="legal">
             <h3>Privacy & Legal</h3>
