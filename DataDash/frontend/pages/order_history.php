@@ -9,21 +9,15 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Get user_id from the sessions table
-// $session_id = session_id();
-$sql1 = "SELECT user_id FROM users WHERE user_id = (SELECT user_id FROM sessions WHERE user_id = users.user_id)";
-$result = $conn->query($sql1);
+// Get user_id from the session
+$user_id = $_SESSION['user_id'];
 
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $user_id = $row['user_id'];
+// Get order history from database
+$sql = "SELECT * FROM order_history WHERE user_id = $user_id";
+$result = $conn->query($sql);
 
-    // Get order history from database
-    $sql2 = "SELECT * FROM order_history WHERE user_id = '$sql1'";
-    $result = $conn->query($sql2);
-} else {
-    echo "User not found in the sessions table.";
-}
+$conn->close();
+
 ?>
 
 <!DOCTYPE html>
@@ -32,8 +26,7 @@ if ($result->num_rows > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order History</title>
-        <link rel="stylesheet" href="../css/style.css">
-
+    <link rel="stylesheet" href="../css/style.css">
     <style>
         /* General Styles */
         body {
@@ -160,16 +153,13 @@ if ($result->num_rows > 0) {
         </table>
     </div>
 
-    <?php
-    $conn->close();
-    ?>
 </body>
 <footer>
-        <a href="account.php">
-            <button style="background-color: #680eea; color: #fff; padding: 10px 20px; border: none; border-radius: 5px;
-             cursor: pointer;">Back to Account</button>
-        </a>
-        <div class="social-media">
+    <a href="account.php">
+        <button style="background-color: #680eea; color: #fff; padding: 10px 20px; border: none; border-radius: 5px;
+         cursor: pointer;">Back to Account</button>
+    </a>
+    <div class="social-media">
         <ul>
             <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
             <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
@@ -200,7 +190,6 @@ if ($result->num_rows > 0) {
     </div>
      2024 DataDash, All Rights Reserved.
 </footer>
-    <script src="../js/payment_methods.js"></script>
+<script src="../js/payment_methods.js"></script>
 </body>
 </html>
-
