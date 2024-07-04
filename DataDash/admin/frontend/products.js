@@ -81,6 +81,11 @@ function getProductDetails(){
         const name = document.createElement('p');
         name.id = 'name';
         name.innerText = `Name: ${product.name}`;
+        //category
+
+        const category = document.createElement('p');
+        category.id = 'category';
+        setCategoryName(product.category_id);
         //status of prod
         const status = document.createElement('p');
         status.id = 'status';
@@ -92,6 +97,7 @@ function getProductDetails(){
 
      //append to desc div
         descDiv.appendChild(name);
+        descDiv.appendChild(category);
         descDiv.appendChild(desc);
         descDiv.appendChild(price);
         descDiv.appendChild(status);
@@ -146,8 +152,14 @@ function updateProductForm(modal,product){
     priceLabel.setAttribute("for",price.id);
 //category input will be here needs a select field that has options from the category
 // i will need to fetch the name and cat id the option text will be the name but the value will be the id
+const categoryLabel = document.createElement('label');
+   categoryLabel.innerText = "Category Name";
+   categoryLabel.setAttribute('for',categoryLabel.id);
 
-
+const categoryList = document.createElement('select');
+categoryList.id = 'drop-down';
+categoryList.name = 'category';
+categoryDropDown();
 
 //image url field will come here
 
@@ -187,6 +199,10 @@ function updateProductForm(modal,product){
    //price
    form.appendChild(priceLabel);
    form.appendChild(price);
+  // category
+  form.appendChild(categoryLabel);
+  form.appendChild(categoryList);
+
    //status
    statusSection.appendChild(selectStatus);
    form.appendChild(statusSection);
@@ -213,6 +229,8 @@ function submitProductUpdate(e){
             const price = document.getElementById('price');
             const desc  = document.getElementById('description');
             const status = document.getElementById('status');
+            setCategoryName(product.category_id);
+
             name.innerText = `Updated Product Name: ${product.name}`;
             price.innerText = `Updated Product price: ${product.price}$`;
             status.innerHTML = `Updated Product status: ${getStatus(product.status)}`;
@@ -224,6 +242,16 @@ function submitProductUpdate(e){
 
 }
 
+function setCategoryName(id){
+    fetchCall(`categories.php?id=${id}`,responseCategory);
+    function responseCategory(data){
+        if(data.category){
+            const category = data.category;
+            console.log(category.category_name);
+            document.getElementById('category').innerText = `Category: ${category.category_name}`;
+        }
+    }
+}
 //create
 //update
 //delete

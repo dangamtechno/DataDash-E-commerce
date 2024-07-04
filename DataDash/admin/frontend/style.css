@@ -216,7 +216,7 @@ padding-left: 15vw;
     border: red solid 5px;
     border-radius: 15px;
     z-index:300;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
 }
 .modal{
@@ -258,7 +258,7 @@ padding-left: 15vw;
     padding-left: 20vw;
 }
 label {
-    padding: 15px;
+    padding: 10px;
 }
 .register-link{
     margin-left: 27vw;

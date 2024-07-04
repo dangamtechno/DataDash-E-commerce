@@ -49,3 +49,30 @@ function fetchCall(resource, callBack, method="GET",data = undefined){
     callBack(data);
     }).catch((err)=>console.log(err+" "+ resource + ' resource '));
 }
+
+function categoryDropDown(){
+    fetchCall("categories.php",fillDropdownResponse);
+    function fillDropdownResponse(data)
+    {
+        if(data.categories){
+           const categories = data.categories;
+           fillDropDownList(categories);
+        }
+    }
+}
+
+function fillDropDownList(data){
+    console.log(data);
+    list = document.getElementById("drop-down");
+    if(list){
+    data.forEach((item) =>{
+        let option = document.createElement('option');
+        option.text = item.category_name;
+        option.value = item.category_id;
+        console.log(item.category_id);
+        list.add(option);
+    });
+   }
+}
+
+

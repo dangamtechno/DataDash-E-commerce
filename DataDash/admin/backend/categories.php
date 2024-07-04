@@ -1,6 +1,29 @@
 <?php
 require './include/db.php';
 // header('Access-Control-Allow-Origin: *');
+
+if($_SERVER['REQUEST_METHOD']==="GET" && isset($_GET['id'])){
+    $stmt = "SELECT category_name FROM category where  category_id = ?;";
+    $prep_stmt = $conn->prepare($stmt);
+    $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    $prep_stmt->bind_param('i',$id);
+    if($prep_stmt->execute()) 
+    { 
+        $result = $prep_stmt->get_result();
+        $category = $result->fetch_assoc();
+        echo json_encode([ 'category' => $category]);
+    }
+    else{
+        echo json_encode([ 'error' => 'something went wrong' ]);
+    }
+    $prep_stmt->close();
+    exit();
+}
+
+
+
+
+
 if($_SERVER['REQUEST_METHOD']==="GET"){
     $stmt = "SELECT * FROM category;";
     if($result = $conn->query($stmt)){
@@ -15,6 +38,8 @@ if($_SERVER['REQUEST_METHOD']==="GET"){
     }
     exit();
 }   
+   
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     // Retrieve and sanitize input data
