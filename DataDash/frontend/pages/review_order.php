@@ -479,7 +479,7 @@ $conn->close();
                     echo '<p>Your cart is empty.</p>';
                 }
             } else {
-                echo '<p>Please <a href="login_page.php">log in</a> to proceed to checkout.</p>';
+                echo '<p>Please log in to proceed to checkout.</p>';
             }
             ?>
         </div>

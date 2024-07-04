@@ -9,6 +9,13 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Check if the user is logged in
+if (!sessionExists()) {
+    echo "<p class='error-message'>You must be logged in to reset your password.</p>";
+    echo "<a href='login_page.php'>Login</a>";
+    exit;
+}
+
 // Get user_id from the session
 $user_id = $_SESSION['user_id'];
 

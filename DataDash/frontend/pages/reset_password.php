@@ -1,10 +1,19 @@
 <?php
+require_once '../../backend/utils/session.php';
+
 // Create connection
 $conn = new mysqli("localhost", "root", "", "datadash");
 
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if the user is logged in
+if (!sessionExists()) {
+    echo "<p class='error-message'>You must be logged in to reset your password.</p>";
+    echo "<a href='login_page.php'>Login</a>";
+    exit;
 }
 
 // Check if the form is submitted
