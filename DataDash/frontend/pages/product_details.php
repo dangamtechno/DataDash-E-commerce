@@ -4,6 +4,8 @@ require_once '../../backend/include/database_config.php';
 
 $conn = new mysqli("localhost", "root", "", "datadash");
 
+
+
 // Retrieve the product ID from the query parameter
 $product_id = isset($_GET['id']) ? $_GET['id'] : null;
 

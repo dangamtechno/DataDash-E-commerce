@@ -1,10 +1,20 @@
 <?php
+// Include the session utility file
+require_once '../../backend/utils/session.php';
+
 // Create connection
 $conn = new mysqli("localhost", "root", "", "datadash");
 
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if the user is logged in
+if (!sessionExists()) {
+    echo "<p class='error-message'>You must be logged in to reset your password.</p>";
+    echo "<a href='login_page.php'>Login</a>";
+    exit;
 }
 
 // Check if the form is submitted
@@ -15,8 +25,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirm_password = $_POST["confirm_password"];
 
     // Get the user's favorite movie from the database
-    $sql = "SELECT favorite_movie FROM users WHERE user_id = (SELECT user_id FROM sessions WHERE user_id = users.user_id);";
-    $result = $conn->query($sql);
+    $sql = "SELECT favorite_movie FROM users WHERE user_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -30,9 +43,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $new_password_hash = password_hash($new_password, PASSWORD_DEFAULT);
 
                 // Update the password in the database
-                $sql = "UPDATE users SET password_hash='$new_password_hash' WHERE user_id = (SELECT user_id FROM sessions WHERE user_id = users.user_id);";
+                $sql = "UPDATE users SET password_hash=? WHERE user_id=?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $new_password_hash, $_SESSION['user_id']);
 
-                if ($conn->query($sql) === TRUE) {
+                if ($stmt->execute()) {
                     echo "<p class='success-message'>Password reset successful!</p>";
                 } else {
                     echo "<p class='error-message'>Error updating password: " . $conn->error . "</p>";
@@ -46,6 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "<p class='error-message'>Error retrieving user data.</p>";
     }
+
+    $stmt->close();
 }
 
 $conn->close();

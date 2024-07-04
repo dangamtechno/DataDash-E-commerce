@@ -4,13 +4,12 @@ USE datadash;
 
 -- admin-related tables
 CREATE TABLE admin (
-   admin_id int NOT NULL AUTO_INCREMENT,
-   name varchar(45) NOT NULL,
-   email varchar(45) NOT NULL,
-   password varchar(45) NOT NULL,
-   phone varchar(45) NOT NULL,
-   date_registered datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`admin_id`)
+   admin_id INT AUTO_INCREMENT PRIMARY KEY,
+   name VARCHAR(45) NOT NULL,
+   email VARCHAR(45) NOT NULL,
+   password VARCHAR(45) NOT NULL,
+   phone VARCHAR(45) NOT NULL,
+   date_registered DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 -- end admin tables
 
@@ -96,35 +95,24 @@ CREATE TABLE orders (
     status VARCHAR(50) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-CREATE TABLE ordered_item (
-  order_id int NOT NULL AUTO_INCREMENT,
-  user_id int NOT NULL,
-  product_id int NOT NULL,
-  quantity int NOT NULL,
-  status VARCHAR(50) NOT NULL,
-  order_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`order_id`)
-);
-CREATE TABLE order_details (
-    order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
+
+-- Use a single table for ordered items with order details
+CREATE TABLE order_items (
+    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
     product_id INT NOT NULL,
     quantity INT NOT NULL,
     unit_price DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
 CREATE TABLE order_history (
     order_history_id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT NOT NULL,
     user_id INT NOT NULL,
-    order_date DATETIME NOT NULL,
-    total_amount DECIMAL(10, 2) NOT NULL,
-    status VARCHAR(50) NOT NULL,
-    current_status VARCHAR(50) DEFAULT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (order_id) REFERENCES orders(order_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE returns (
@@ -170,11 +158,11 @@ CREATE TABLE wishlist_products (
 
 -- Other tables
 CREATE TABLE banner (
-  id int NOT NULL AUTO_INCREMENT,
-  name varchar(45) NOT NULL,
-  description varchar(255) NOT NULL,
-  image varchar(255) NOT NULL,
-  status tinyint NOT NULL DEFAULT '0',
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(45) NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  status TINYINT NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
 );
 
@@ -188,7 +176,7 @@ CREATE TABLE reviews (
     review_date DATETIME NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (product_id) REFERENCES product(product_id),
-	FOREIGN KEY (order_id) REFERENCES ordered_item(order_id)
+    FOREIGN KEY (order_id) REFERENCES order_items(order_id)
 );
 
 CREATE TABLE ratings (
@@ -204,7 +192,7 @@ CREATE TABLE coupons (
     coupon_id INT AUTO_INCREMENT PRIMARY KEY,
     coupon_code VARCHAR(50) NOT NULL,
     discount_amount DECIMAL(10, 2) NOT NULL,
-    expiration_date DATE NOT NULL
+    expiration_date DATE NOT NULL,
     active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
@@ -301,10 +289,8 @@ CREATE TABLE custom_fields (
 
 -- Indexes
 CREATE INDEX idx_orders_user_id ON orders (user_id);
-CREATE INDEX idx_order_details_order_id ON order_details (order_id);
-CREATE INDEX idx_order_details_product_id ON order_details (product_id);
-CREATE INDEX idx_order_history_order_id ON order_history (order_id);
-CREATE INDEX idx_order_history_user_id ON order_history (user_id);
+CREATE INDEX idx_order_items_order_id ON order_items (order_id);
+CREATE INDEX idx_order_items_product_id ON order_items (product_id);
 CREATE INDEX idx_returns_order_id ON returns (order_id);
 CREATE INDEX idx_cart_user_id ON cart (user_id);
 CREATE INDEX idx_cart_product_product_id ON cart_product (product_id);
@@ -333,15 +319,14 @@ BEGIN
         INSERT INTO cart (user_id) VALUES (NEW.user_id);
     END IF;
 END//
-CREATE TRIGGER create_order_history_after_first_order AFTER INSERT ON orders
+CREATE TRIGGER create_order_history_after_user_registration AFTER INSERT ON users
 FOR EACH ROW
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM order_history WHERE user_id = NEW.user_id) THEN
-        INSERT INTO order_history (order_id, user_id, order_date, total_amount, status, current_status)
-        VALUES (NEW.order_id, NEW.user_id, NEW.order_date, NEW.total_amount, 'new', 'new');
+        INSERT INTO order_history (user_id) VALUES (NEW.user_id);
     END IF;
 END//
-CREATE TRIGGER update_order_status AFTER INSERT ON order_details
+CREATE TRIGGER update_order_status AFTER INSERT ON order_items
 FOR EACH ROW
 BEGIN
     UPDATE orders SET status = 'processing' WHERE order_id = NEW.order_id;
@@ -349,7 +334,7 @@ END//
 DELIMITER ;
 
 CREATE TABLE sessions (
-    session_id varchar(33) PRIMARY KEY,
+    session_id VARCHAR(33) PRIMARY KEY,
     user_id INT NOT NULL,
     start_time DATETIME NOT NULL,
     end_time DATETIME,

@@ -12,7 +12,7 @@ if ($conn->connect_error) {
 
 // Function to retrieve cart items for a given user ID
 function getCartItems($userId) {
-$conn = new mysqli("localhost", "root", "", "datadash");
+    $conn = new mysqli("localhost", "root", "", "datadash");
 
     $sql = "SELECT cp.product_id, p.name, p.price, p.image, cp.quantity
             FROM cart_product cp
@@ -33,7 +33,7 @@ $conn = new mysqli("localhost", "root", "", "datadash");
 }
 
 function getAddressById($addressId) {
-$conn = new mysqli("localhost", "root", "", "datadash");
+    $conn = new mysqli("localhost", "root", "", "datadash");
 
     $sql = "SELECT * FROM addresses WHERE address_id = ?";
     $stmt = $conn->prepare($sql);
@@ -45,7 +45,7 @@ $conn = new mysqli("localhost", "root", "", "datadash");
 
 // Function to retrieve a specific payment method by ID
 function getPaymentMethodById($paymentMethodId) {
-$conn = new mysqli("localhost", "root", "", "datadash");
+    $conn = new mysqli("localhost", "root", "", "datadash");
 
     $sql = "SELECT * FROM payment_methods WHERE payment_method_id = ?";
     $stmt = $conn->prepare($sql);
@@ -57,7 +57,7 @@ $conn = new mysqli("localhost", "root", "", "datadash");
 
 // Function to create a new order
 function createOrder($userId, $selectedProducts, $selectedQuantities, $shippingAddressId, $paymentMethodId) {
-$conn = new mysqli("localhost", "root", "", "datadash");
+    $conn = new mysqli("localhost", "root", "", "datadash");
 
     $orderDate = date('Y-m-d H:i:s');
     $totalPrice = 0;
@@ -86,14 +86,14 @@ $conn = new mysqli("localhost", "root", "", "datadash");
     // Get the order ID
     $orderId = $conn->insert_id;
 
-    // Insert order details into ordered_item table
+    // Insert order details into order_items table
     foreach ($selectedProducts as $productId) {
         $quantity = $selectedQuantities[$productId];
-        $sql = "INSERT INTO ordered_item (order_id, user_id, product_id, quantity, order_status, order_date)
+        $sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, status, order_date)
                 VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $orderStatus = 'processing'; // Assuming 0 represents a new order
-        $stmt->bind_param("iiisi", $orderId, $userId, $productId, $quantity, $orderStatus, $orderDate);
+        $orderStatus = 'processing';
+        $stmt->bind_param("iiidss", $orderId, $productId, $quantity, $productPrice, $orderStatus, $orderDate);
         $stmt->execute();
 
         // Update inventory for the specific product
@@ -274,9 +274,14 @@ $conn->close();
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
         }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
     </style>
 </head>
-<body>
 <body>
     <header>
         <div class="heading">
@@ -408,65 +413,65 @@ $conn->close();
                                     $paymentMethod = getPaymentMethodById($paymentMethodId);
                                 }
                                 ?>
-                            <h3>Shipping Address</h3>
-                            <div class="form-group">
+                                <h3>Shipping Address</h3>
                                 <div class="form-group">
-                                    <label for="shipping-address-<?php echo $shippingAddress['address_id']; ?>">
-                                        <?php echo $shippingAddress['street_address'] . ', ' . $shippingAddress['city'] . ', ' . $shippingAddress['state'] . ', ' . $shippingAddress['postal_code'] . ', ' . $shippingAddress['country']; ?>
-                                    </label>
+                                    <div class="form-group">
+                                        <label for="shipping-address-<?php echo $shippingAddress['address_id']; ?>">
+                                            <?php echo $shippingAddress['street_address'] . ', ' . $shippingAddress['city'] . ', ' . $shippingAddress['state'] . ', ' . $shippingAddress['postal_code'] . ', ' . $shippingAddress['country']; ?>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="checkout-section">
-                            <h3>Payment Information</h3>
-                            <div class="form-group">
+                            <div class="checkout-section">
+                                <h3>Payment Information</h3>
                                 <div class="form-group">
-                                    <label for="payment-method-<?php echo $paymentMethod['payment_method_id']; ?>">
-                                        <?php echo $paymentMethod['method_type'] . ' (Ending in ' . substr($paymentMethod['card_number'], -4) . ')'; ?>
-                                        <br>
-                                        <?php echo 'CVV: ' . $paymentMethod['cvs_number'] . ', Expiration: ' . $paymentMethod['expiration_date']; ?>
-                                    </label>
+                                    <div class="form-group">
+                                        <label for="payment-method-<?php echo $paymentMethod['payment_method_id']; ?>">
+                                            <?php echo $paymentMethod['method_type'] . ' (Ending in ' . substr($paymentMethod['card_number'], -4) . ')'; ?>
+                                            <br>
+                                            <?php echo 'CVV: ' . $paymentMethod['cvs_number'] . ', Expiration: ' . $paymentMethod['expiration_date']; ?>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <?php
-                        // Check if the form has been submitted
-                        if (isset($_POST['place_order'])) {
-                            // Call the createOrder function after validating product selection
-                            if (isset($_POST['selected_products']) && !empty($selectedProductIds)) {
-                                createOrder($userId, $selectedProductIds, $selectedQuantities, $shippingAddressId, $paymentMethodId);
-                                echo '<p class="success-message">Thank you for your order!</p>';
+                            <?php
+                            // Check if the form has been submitted
+                            if (isset($_POST['place_order'])) {
+                                // Call the createOrder function after validating product selection
+                                if (isset($_POST['selected_products']) && !empty($selectedProductIds)) {
+                                    createOrder($userId, $selectedProductIds, $selectedQuantities, $shippingAddressId, $paymentMethodId);
+                                    echo '<p class="success-message">Thank you for your order!</p>';
+                                } else {
+                                    echo '<p>Invalid product selection.</p>';
+                                }
+                            } else {
+                                // Display the order summary
+                                ?>
+                                <div class="button-container">
+                                  <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                                    <input type="hidden" name="selected_products" value='<?php echo json_encode($selectedProductIds); ?>' />
+                                    <input type="hidden" name="shipping_address_id" value="<?php echo $shippingAddressId; ?>" />
+                                    <input type="hidden" name="payment_method_id" value="<?php echo $paymentMethodId; ?>" />
+                                    <button type="submit" name="place_order" id="place-order-button" style="
+                                    background-color: #009dff;
+                                    color: white;
+                                    padding: 10px 20px;
+                                    border: none;
+                                    border-radius: 5px;
+                                    cursor: pointer;
+                                    text-decoration: none;
+                                    transition: background-color 0.3s ease;
+                                  ">
+                                    Place Order
+                                  </button>
+                                  </form>
+                                </div>
+                                <?php
+                            }
                             } else {
                                 echo '<p>Invalid product selection.</p>';
                             }
-                        } else {
-                            // Display the order summary
-                            ?>
-                            <div class="button-container">
-                              <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                                <input type="hidden" name="selected_products" value='<?php echo json_encode($selectedProductIds); ?>' />
-                                <input type="hidden" name="shipping_address_id" value="<?php echo $shippingAddressId; ?>" />
-                                <input type="hidden" name="payment_method_id" value="<?php echo $paymentMethodId; ?>" />
-                                <button type="submit" name="place_order" id="place-order-button" style="
-                                background-color: #009dff;
-                                color: white;
-                                padding: 10px 20px;
-                                border: none;
-                                border-radius: 5px;
-                                cursor: pointer;
-                                text-decoration: none;
-                                transition: background-color 0.3s ease;
-                              ">
-                                Place Order
-                              </button>
-                              </form>
-                            </div>
-                            <?php
-                        }
-                        } else {
-                            echo '<p>Invalid product selection.</p>';
-                        }
                     } else {
                         echo '<p>Please select products for checkout.</p>';
                     }
@@ -474,7 +479,7 @@ $conn->close();
                     echo '<p>Your cart is empty.</p>';
                 }
             } else {
-                echo '<p>Please <a href="login_page.php">log in</a> to proceed to checkout.</p>';
+                echo '<p>Please log in to proceed to checkout.</p>';
             }
             ?>
         </div>

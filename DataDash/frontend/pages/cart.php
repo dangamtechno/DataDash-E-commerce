@@ -277,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     echo '<p class="empty-cart">Your cart is empty.</p>';
                 }
             } else {
-                echo '<p class="empty-cart">Please <a href="login_page.php">log in</a> to view your cart.</p>';
+                echo '<p class="empty-cart">Please log in to view your cart.</p>';
             }
             ?>
         </div>
