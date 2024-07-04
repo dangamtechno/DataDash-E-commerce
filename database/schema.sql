@@ -109,17 +109,10 @@ CREATE TABLE order_items (
     FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
--- Keep order history as a separate table
 CREATE TABLE order_history (
     order_history_id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT NOT NULL,
     user_id INT NOT NULL,
-    order_date DATETIME NOT NULL,
-    total_amount DECIMAL(10, 2) NOT NULL,
-    status VARCHAR(50) NOT NULL,
-    current_status VARCHAR(50) DEFAULT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (order_id) REFERENCES orders(order_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE returns (
@@ -298,8 +291,6 @@ CREATE TABLE custom_fields (
 CREATE INDEX idx_orders_user_id ON orders (user_id);
 CREATE INDEX idx_order_items_order_id ON order_items (order_id);
 CREATE INDEX idx_order_items_product_id ON order_items (product_id);
-CREATE INDEX idx_order_history_order_id ON order_history (order_id);
-CREATE INDEX idx_order_history_user_id ON order_history (user_id);
 CREATE INDEX idx_returns_order_id ON returns (order_id);
 CREATE INDEX idx_cart_user_id ON cart (user_id);
 CREATE INDEX idx_cart_product_product_id ON cart_product (product_id);
@@ -328,12 +319,11 @@ BEGIN
         INSERT INTO cart (user_id) VALUES (NEW.user_id);
     END IF;
 END//
-CREATE TRIGGER create_order_history_after_first_order AFTER INSERT ON orders
+CREATE TRIGGER create_order_history_after_user_registration AFTER INSERT ON users
 FOR EACH ROW
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM order_history WHERE user_id = NEW.user_id) THEN
-        INSERT INTO order_history (order_id, user_id, order_date, total_amount, status, current_status)
-        VALUES (NEW.order_id, NEW.user_id, NEW.order_date, NEW.total_amount, 'new', 'new');
+        INSERT INTO order_history (user_id) VALUES (NEW.user_id);
     END IF;
 END//
 CREATE TRIGGER update_order_status AFTER INSERT ON order_items

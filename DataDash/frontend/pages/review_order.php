@@ -92,8 +92,8 @@ function createOrder($userId, $selectedProducts, $selectedQuantities, $shippingA
         $sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, status, order_date)
                 VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $orderStatus = 'processing'; // Assuming 0 represents a new order
-        $stmt->bind_param("iiidis", $orderId, $productId, $quantity, $productPrice, $orderStatus, $orderDate);
+        $orderStatus = 'processing';
+        $stmt->bind_param("iiidss", $orderId, $productId, $quantity, $productPrice, $orderStatus, $orderDate);
         $stmt->execute();
 
         // Update inventory for the specific product
@@ -273,6 +273,12 @@ $conn->close();
 
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
+        }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-bottom: 40px;
         }
     </style>
 </head>
