@@ -42,9 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     $desc = isset($_POST['description']) ? $_POST['description'] : '';
     $category = isset($_POST['category']) ? $_POST['category'] : 0;
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
-    
+    $image  = isset($_POST['image']) ? $_POST['image'] : '';
+
     // Prepare the SQL statement
-    $stmt = "UPDATE product SET name = ? , price = ?,description = ? , category_id = ?, status = ? WHERE product_id = ?;";
+    $stmt = "UPDATE product SET name = ? , price = ?,description = ? , category_id = ?,image = ? ,status = ? WHERE product_id = ?;";
     
     // Prepare and execute the statement
     $prep_stmt = $conn->prepare($stmt);
@@ -61,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     }
     
     // Bind parameters
-    $prep_stmt->bind_param('sdsiii', $name,$price,$desc,$category,$status ,$id);
+    $prep_stmt->bind_param('sdsisii', $name,$price,$desc,$category,$image,$status ,$id);
     
     // Execute the statement
     $executeResult = $prep_stmt->execute();

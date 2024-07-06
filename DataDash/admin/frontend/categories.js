@@ -42,8 +42,9 @@ function requestCategories(){
     name.textContent =`Name: ${categories[category].category_name}`;
     const statusText = document.createElement("p");
     statusText.id = 'status';
-    const status = Boolean(categories[category].status);
-    statusText.textContent = `Is viewable: ${status}`;
+    let status  =categories[category].status;
+    console.log(`Status:${getStatus(status)}`);
+    statusText.textContent = `Is viewable: ${getStatus(status)}`;
      //append to description container
      descDiv.appendChild(name);
      descDiv.appendChild(statusText);

@@ -4,7 +4,7 @@ require '../include/database_config.php';
 
 if($_SERVER['REQUEST_METHOD']==="GET"
    && isset($_GET['category'])){
-   $stmt = "SELECT * FROM product WHERE status = 1 AND category_id = (SELECT id FROM category WHERE name = ?);";
+   $stmt = "SELECT * FROM product WHERE status = 1 AND category_id = (SELECT category_id FROM category WHERE category_name = ?);";
    $prep_stmt = $conn->prepare($stmt);
    $category = $_GET['category'];
    $prep_stmt->bind_param('s',$category);

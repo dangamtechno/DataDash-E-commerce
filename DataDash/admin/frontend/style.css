@@ -216,8 +216,8 @@ padding-left: 15vw;
     border: red solid 5px;
     border-radius: 15px;
     z-index:300;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-x: auto;
 }
 .modal{
     display: grid;
@@ -354,8 +354,8 @@ footer li:hover{
   }
 .form-div{
     display: grid ;
-    height: 55vh;
-    width: 60vw;
+    height: 80vh;
+    width: 45vw;
     overflow: hidden;
 }
 .form-div form input {

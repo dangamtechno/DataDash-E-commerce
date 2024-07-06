@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded',checkLoginStatus);
 
 function getStatus(i){
     let status = '';
-    if(Boolean(i)){
+    console.log(i);
+    if(i != 0){
      status = 'viewable'; 
     }
     else status = 'unviewable'

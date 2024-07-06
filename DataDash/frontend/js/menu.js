@@ -31,6 +31,7 @@ function getCategoryProducts(){
     fetchCall(`product.php?category=${cat}`,responseCategories)
     function responseCategories(data){
         if(data.products){
+            console.log(data);
             main.innerHTML = "";
             let products = data.products;
             if(products.length > 0){

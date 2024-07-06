@@ -162,7 +162,17 @@ categoryList.name = 'category';
 categoryDropDown();
 
 //image url field will come here
+ //image url
+ const imageField= document.createElement('input');
+        
+ imageField.type = 'text';
+ imageField.placeholder='image src';
+ imageField.name='image';
+imageField.value =  product.image;
 
+ const imageLabel = document.createElement('label');
+ imageLabel.innerText = "Image src";
+ imageLabel.setAttribute('for',imageField.id);
 
    //status is either 1 or 0
    const statusSection = document.createElement('div');
@@ -202,7 +212,9 @@ categoryDropDown();
   // category
   form.appendChild(categoryLabel);
   form.appendChild(categoryList);
-
+ //image
+ form.appendChild(imageLabel);
+ form.appendChild(imageField);
    //status
    statusSection.appendChild(selectStatus);
    form.appendChild(statusSection);
