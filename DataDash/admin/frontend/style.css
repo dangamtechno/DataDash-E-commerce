@@ -355,8 +355,8 @@ footer li:hover{
 .form-div{
     display: grid ;
     height: 80vh;
-    width: 45vw;
-    overflow: hidden;
+    width: 55vw;
+    overflow: auto;
 }
 .form-div form input {
     width: 100px;
