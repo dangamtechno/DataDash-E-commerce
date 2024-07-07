@@ -33,6 +33,25 @@ function getCartItems($userId) {
     return $cartItems;
 }
 
+// Function to validate coupon code
+function validateCoupon($couponCode) {
+
+    $conn = new mysqli("localhost", "root", "", "datadash");
+
+    $sql = "SELECT discount_amount FROM coupons WHERE coupon_code = ? AND expiration_date >= CURDATE() AND active = TRUE";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $couponCode);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $coupon = $result->fetch_assoc();
+        $stmt->close();
+        return $coupon['discount_amount'];
+    }
+    $stmt->close();
+    return false;
+}
+
 // Function to retrieve user's shipping addresses
 function getUserShippingAddresses($userId) {
 
@@ -359,6 +378,19 @@ $conn->close();
                                             <th colspan="3">Subtotal:</th>
                                             <th>$<?php echo number_format($totalPrice, 2); ?></th>
                                         </tr>
+                                        <?php
+                                            if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'apply_coupon') {
+                                                $couponCode = $_POST['coupon_code'];
+                                                $discountAmount = validateCoupon($couponCode);
+                                                if ($discountAmount !== false) {
+                                                    $totalPrice -= $discountAmount;
+                                                    echo "<tr>
+                                                        <th colspan='3'>Discount:</th>
+                                                        <th>$" . number_format($discountAmount, 2) . "</th>
+                                                    </tr>";
+                                                }
+                                            }
+                                            ?>
                                         <tr>
                                             <th colspan="3">Shipping:</th>
                                             <th>$0.00 (Free)</th>
@@ -369,6 +401,32 @@ $conn->close();
                                         </tr>
                                     </tfoot>
                                 </table>
+                            </div>
+
+                            <div class="checkout-section">
+                                <h3>Apply Coupon</h3>
+                                <form action="checkout.php" method="post" id="coupon-form">
+                                    <input type="hidden" name="action" value="apply_coupon">
+                                    <input type="hidden" name="selected_products" value="<?php echo json_encode($selectedProductIds); ?>">
+                                    <input type="hidden" name="selected_quantities" value="<?php echo json_encode($selectedQuantities); ?>">
+                                    <div class="form-group">
+                                        <label for="coupon-code">Coupon Code:</label>
+                                        <input type="text" name="coupon_code" id="coupon-code" required>
+                                    </div>
+                                    <button type="submit" class="checkout-button">Apply Coupon</button>
+                                    <?php
+                                if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'apply_coupon') {
+                                    $couponCode = $_POST['coupon_code'];
+                                    $discountAmount = validateCoupon($couponCode);
+                                    if ($discountAmount !== false) {
+                                        echo '<p style="color: green;">Coupon applied! Discount: $' . number_format($discountAmount, 2) . '</p>';
+                                    } else {
+                                        echo '<p style="color: red;">Invalid or expired coupon code.</p>';
+                                    }
+                                }
+                                
+                            ?>
+                                </form>
                             </div>
 
                             <div class="checkout-section">
