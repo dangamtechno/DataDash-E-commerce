@@ -52,6 +52,19 @@ function validateCoupon($couponCode) {
     return false;
 }
 
+//Function to deactivate coupon code
+function deactivateCoupon($couponCode){
+
+    $conn = new mysqli("localhost", "root", "", "datadash");
+
+    $sql = "UPDATE coupons SET active = FALSE WHERE coupon_code = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $couponCode);
+        $stmt->execute();
+        $stmt->close();
+
+}
+
 // Function to retrieve user's shipping addresses
 function getUserShippingAddresses($userId) {
 
@@ -419,6 +432,7 @@ $conn->close();
                                     $couponCode = $_POST['coupon_code'];
                                     $discountAmount = validateCoupon($couponCode);
                                     if ($discountAmount !== false) {
+                                        deactivateCoupon($couponCode);
                                         echo '<p style="color: green;">Coupon applied! Discount: $' . number_format($discountAmount, 2) . '</p>';
                                     } else {
                                         echo '<p style="color: red;">Invalid or expired coupon code.</p>';
