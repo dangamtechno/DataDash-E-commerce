@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded',requestCategories);
 document.addEventListener('DOMContentLoaded',requestBanner);
+document.addEventListener('DOMContentLoaded',checkLoginStatus);
 document.addEventListener('DOMContentLoaded',requestFeaturedProducts);
 document.addEventListener('DOMContentLoaded',requestNewArrivals);
 const searchSubmit = document.querySelector('.search-button');
@@ -77,6 +78,9 @@ function populateCatalog(products,section){
    function getProductDetails(){
     const main = document.querySelector('main');
     const price = this.price;
+    const id=this.product_id;
+    const username = document.querySelector('.username').innerText;
+    console.log(id);
     fetchCall(`inventory.php?id=${this.product_id}`,responseInventory.bind(this))
     function responseInventory(data){
        //get howmany instock
@@ -105,16 +109,20 @@ function populateCatalog(products,section){
        const title = document.createElement('div');
        title.textContent = this.name;
        modalDesc.appendChild(title);     
+      
        //Submit Review section that will only be shown if user is logged and has a order id with product id in it
        //so from here we would need to do a fetch for user credentials to get orders then check to see if product id of card is in one of the orders.
        //select order_id and user id from ordered_item where order_product_id = product_id;
        //if true show this section or even just create the section
        const review = document.createElement('button');
-       review.addEventListener('click',submitReview);
+       review.addEventListener('click', function(event) {
+        submitReview(id,username ,event);
+    });
        review.textContent = 'leave review';
        review.className ='cart-button';
        const reviewText = document.createElement('input');
        reviewText.type = 'text';
+       reviewText.name='review';
        reviewText.className ='review_text';
        reviewText.setAttribute("placeholder", "Enter text here");
        const reviewTextLabel = document.createElement('h2');
@@ -149,8 +157,10 @@ function populateCatalog(products,section){
        buttonContainer.appendChild(cart);
        buttonContainer.appendChild(wishlist);
        itemsForCartSection.appendChild(buttonContainer);
-       modal.appendChild(itemsForCartSection)
-       modal.appendChild(review_container);
+       modal.appendChild(itemsForCartSection);
+       if(username!='username'){
+            modal.appendChild(review_container);
+       }
        modal.appendChild(pastReviews);
        review_container.appendChild(ratingDiv);
        review_container.appendChild(review);
@@ -223,6 +233,19 @@ function fetchCall(resource, callBack, method="GET",data = undefined){
     callBack(data);
     }).catch((err)=>console.log(err));
 }
+function displayOverlay(modal){
+    //overlay
+const main = document.querySelector('main');
+const overlay = document.createElement('div');
+overlay.className ='overlay';
+overlay.addEventListener('click',removeOverlay);
+main.appendChild(overlay);
+//modal container
+const modalContainer = document.createElement('div');
+modalContainer.className = 'modal-container';
+modalContainer.appendChild(modal)
+main.appendChild(modalContainer);
+}
  function addRatingClickEvent(){
     const ratingCards = document.querySelectorAll('.rating-container');
     ratingCards.forEach((card)=>{
@@ -232,28 +255,35 @@ function fetchCall(resource, callBack, method="GET",data = undefined){
         });
     })
 }
-function submitReview(e){
+function submitReview(product_id,username,e){
     let ratingConversion = {
         'one' : 1 ,'two' : 2, 'three' : 3,'four' : 4,'five' : 5
     };
-    const parentElement = e.target.parentNode;
+    console.log(username);
+    console.log(product_id);
+    const parentElement =e.target.parentNode;
     let num_stars = document.querySelector('.star').classList.toString();
     num_stars = num_stars.replace('star ','');
     const textBox = parentElement.querySelector('.review_text');
     const text = textBox.value;
-    
     if(text) console.log(text);
     else console.log("No review entered!".toUpperCase());
     
     if(ratingConversion[num_stars]) console.log(`rating ${ratingConversion[num_stars]}`);
     else console.log("No rating entered!".toUpperCase());
-    const data = {review : text, rating: ratingConversion[num_stars]}; 
-    /*logic for submiting to backend call method for post
+    const  data = new FormData();
+    data.append('review',text);
+    data.append('rating',ratingConversion[num_stars]);
+    data.append('product_id',product_id);
+    data.append('user_name',username);
+
+    //logic for submiting to backend call method for post
+    //inthe request i will need to select the user_id based on name
     fetchCall('product_review.php',responseSubmit,"POST",data)
     function responseSubmit(data){
         console.log(data);
     }
-    */
+    
 }
 function getReviews(product){
     const reviewSection = document.querySelector('.past-reviews-container');
