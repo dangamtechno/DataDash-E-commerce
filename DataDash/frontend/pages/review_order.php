@@ -62,54 +62,83 @@ function createOrder($userId, $selectedProducts, $selectedQuantities, $shippingA
     $orderDate = date('Y-m-d H:i:s');
     $totalPrice = 0;
 
-    // Calculate total price
-    foreach ($selectedProducts as $productId) {
-        $quantity = $selectedQuantities[$productId];
-        $sql = "SELECT price FROM product WHERE product_id = ?";
+    // Begin transaction to ensure atomicity
+    $conn->begin_transaction();
+
+    try {
+        // Calculate total price and check inventory before order creation
+        foreach ($selectedProducts as $productId) {
+            $quantity = $selectedQuantities[$productId];
+            // Fetch price and quantity from the `inventory` table
+            $sql = "SELECT p.price, i.quantity FROM product p JOIN inventory i ON p.product_id = i.product_id WHERE p.product_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $productId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+
+            if ($row['quantity'] >= $quantity) {
+                $productPrice = $row['price'];
+                $totalPrice += $productPrice * $quantity;
+            } else {
+                // Insufficient inventory
+                throw new Exception("Insufficient inventory for product ID: " . $productId);
+            }
+        }
+
+        // Insert order into orders table
+        $sql = "INSERT INTO orders (user_id, order_date, total_amount, status)
+                VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $productId);
+        $statusp = 'processing';
+        $stmt->bind_param("isds", $userId, $orderDate, $totalPrice, $statusp);
         $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        $productPrice = $row['price'];
-        $totalPrice += $productPrice * $quantity;
+
+        // Get the order ID
+        $orderId = $conn->insert_id;
+
+        // Insert order details into order_items table
+        foreach ($selectedProducts as $productId) {
+            $quantity = $selectedQuantities[$productId];
+            $sql = "SELECT price FROM product WHERE product_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $productId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $productPrice = $row['price'];
+
+            $sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, status, order_date)
+                    VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $orderStatus = 'processing';
+            $stmt->bind_param("iiidss", $orderId, $productId, $quantity, $productPrice, $orderStatus, $orderDate);
+            $stmt->execute();
+
+            // Update inventory for the specific product
+            $sql = "UPDATE inventory SET quantity = quantity - ? WHERE product_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ii", $quantity, $productId);
+            $stmt->execute();
+        }
+
+        // Remove items from cart (for selected products)
+        foreach ($selectedProducts as $productId) {
+            $sql = "DELETE FROM cart_product WHERE cart_id IN (SELECT cart_id FROM cart WHERE user_id = ?) AND product_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ii", $userId, $productId);
+            $stmt->execute();
+        }
+
+        $conn->commit(); // Commit transaction if everything succeeded
+
+    } catch (Exception $e) {
+        // Rollback transaction if any error occurred
+        $conn->rollback();
+        echo "Error: " . $e->getMessage();
     }
 
-    // Insert order into orders table
-    $sql = "INSERT INTO orders (user_id, order_date, total_amount, status)
-            VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $statusp = 'processing';
-    $stmt->bind_param("isds", $userId, $orderDate, $totalPrice, $statusp);
-    $stmt->execute();
-
-    // Get the order ID
-    $orderId = $conn->insert_id;
-
-    // Insert order details into order_items table
-    foreach ($selectedProducts as $productId) {
-        $quantity = $selectedQuantities[$productId];
-        $sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, status, order_date)
-                VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $orderStatus = 'processing';
-        $stmt->bind_param("iiidss", $orderId, $productId, $quantity, $productPrice, $orderStatus, $orderDate);
-        $stmt->execute();
-
-        // Update inventory for the specific product
-        $sql = "UPDATE inventory SET quantity = quantity - ? WHERE product_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ii", $quantity, $productId);
-        $stmt->execute();
-    }
-
-    // Remove items from cart (for selected products)
-    foreach ($selectedProducts as $productId) {
-        $sql = "DELETE FROM cart_product WHERE cart_id IN (SELECT cart_id FROM cart WHERE user_id = ?) AND product_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ii", $userId, $productId);
-        $stmt->execute();
-    }
+    $conn->close();
 }
 
 $conn->close();

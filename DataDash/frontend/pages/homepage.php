@@ -11,7 +11,6 @@
 
     <title>Document</title>
     <style>
-        /* ... (Your existing styles) ... */
         .product-grid {
             display: flex;
             flex-wrap: wrap;
