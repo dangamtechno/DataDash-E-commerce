@@ -173,4 +173,5 @@ background-color: #45a049;
     </div>
     2024 DataDash, All Rights Reserved.
 </footer>
+<script src="../js/search.js"></script>
 </html>

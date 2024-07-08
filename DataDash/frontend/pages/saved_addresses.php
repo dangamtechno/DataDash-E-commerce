@@ -381,6 +381,7 @@ if (isset($_GET['delete_id'])) {
     </div>
         2024 DataDash, All Rights Reserved.
 </footer>
-    <script src="../js/saved_addresses.js"></script>
+<script src="../js/saved_addresses.js"></script>
+<script src="../js/search.js"></script>
 </body>
 </html>

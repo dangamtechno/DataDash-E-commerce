@@ -209,9 +209,10 @@
             </ul>
         </div>
         <div class="location">
+            <p>123 Main Street, City, Country</p>
         <ul>
-                <h3>admin login</h3>     
-                <li>  
+                <h3>admin login</h3>
+                <li>
                     <a href="../../admin/frontend/index.html">
                         <i class="fas fa-users-cog"></i>
                     </a>
@@ -223,10 +224,12 @@
             <ul>
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-            </ul>
+            </ul> <br>
+                2024 DataDash, All Rights Reserved.
+
         </div>
+
     </div>
-    2024 DataDash, All Rights Reserved.
 </footer>
 <script src = "../js/global.js" defer ></script>
 <script src="../js/navbar.js"></script>
@@ -237,16 +240,6 @@
 <script src = "../js/newArrivals.js"></script>
 <script src = "../js/starRatingSystem.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script>
-$(document).ready(function() {
-    $("#search-form").submit(function(event) {
-        event.preventDefault();
-        var searchTerm = $("#search-input").val();
-
-        // Redirect to shop.php with search term as a query parameter
-        window.location.href = "shop.php?search=" + searchTerm;
-    });
-});
-</script>
+<script src="../js/search.js"></script>
 </body>
 </html>

@@ -235,5 +235,6 @@ require_once '../../backend/include/database_config.php';
     </div>
     2024 DataDash, All Rights Reserved.
 </footer>
+<script src="../js/search.js"></script>
 </body>
 </html>

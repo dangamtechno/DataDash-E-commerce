@@ -1,6 +1,5 @@
 <?php
 require_once '../../backend/utils/session.php';
-require_once '../../backend/include/database_config.php';
 
 $conn = new mysqli("localhost", "root", "", "datadash");
 
@@ -372,16 +371,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         // Initial total price (when no items are selected)
         updateTotalPrice();
     </script>
-    <script>
-    $(document).ready(function() {
-        $("#search-form").submit(function(event) {
-            event.preventDefault();
-            var searchTerm = $("#search-input").val();
-
-            // Redirect to shop.php with search term as a query parameter
-            window.location.href = "shop.php?search=" + searchTerm;
-        });
-    });
-    </script>
+<script src="../js/search.js"></script>
 </body>
 </html>

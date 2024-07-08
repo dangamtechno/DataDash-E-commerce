@@ -1,6 +1,5 @@
 <?php
 require_once '../../backend/utils/session.php';
-require_once '../../backend/include/database_config.php';
 
 // Establish database connection using the configured credentials
 $conn = new mysqli("localhost", "root", "", "datadash");
@@ -546,15 +545,5 @@ $conn->close();
         </div>
         2024 DataDash, All Rights Reserved.
     </footer>
-    <script>
-    $(document).ready(function() {
-        $("#search-form").submit(function(event) {
-            event.preventDefault();
-            var searchTerm = $("#search-input").val();
-
-            // Redirect to shop.php with search term as a query parameter
-            window.location.href = "shop.php?search=" + searchTerm;
-        });
-    });
-    </script>
+<script src="../js/search.js"></script>
 </html>

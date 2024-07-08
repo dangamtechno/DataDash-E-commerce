@@ -175,5 +175,6 @@ $conn->close();
         </div>
         2024 DataDash, All Rights Reserved.
     </footer>
+<script src="../js/search.js"></script>
 </body>
 </html>

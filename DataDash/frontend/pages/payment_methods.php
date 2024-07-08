@@ -364,7 +364,8 @@ $conn->close();
     </div>
      2024 DataDash, All Rights Reserved.
 </footer>
-    <script src="../js/payment_methods.js"></script>
+<script src="../js/payment_methods.js"></script>
+<script src="../js/search.js"></script>
 </body>
 </html>
 
