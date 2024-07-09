@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.5,minimum-scale=1.0">
     <script src="https://kit.fontawesome.com/d0ce752c6a.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
     <?php require_once '../../backend/utils/session.php'; ?>
 
@@ -40,9 +42,14 @@
             text-decoration: underline;
         }
 
+        .shop-button-container {
+        text-align: center; /* Center the button horizontally */
+        margin-top: 10px; /* Add some space above the button */
+        }
+
         .shop-button {
             display: inline-block;
-            padding: 17px 40px;
+            padding: 10px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */

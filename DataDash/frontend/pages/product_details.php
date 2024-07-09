@@ -33,17 +33,21 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5,minimum-scale=1.0">
     <script src="https://kit.fontawesome.com/d0ce752c6a.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
+    <?php require_once '../../backend/utils/session.php'; ?>
     <title>Product Details - DataDash</title>
     <style>
-        /* Add some styles to make it look like Amazon */
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
+
         .product-details {
             max-width: 800px;
             margin: 40px auto;
@@ -52,6 +56,7 @@ $conn->close();
             display: flex;
             align-items: center;
         }
+
         .product-image {
             width: 400px;
             height: 400px;
@@ -59,25 +64,31 @@ $conn->close();
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .product-information {
             margin-left: 20px;
             padding: 20px;
             border-left: 1px solid #ddd;
         }
+
         .product-information h2 {
             margin-top: 0;
         }
+
         .product-information ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
+
         .product-information li {
             margin-bottom: 10px;
         }
+
         .product-information li:last-child {
             margin-bottom: 0;
         }
+
         .add-to-cart {
             background-color: #0ad4f8;
             border: none;
@@ -88,6 +99,7 @@ $conn->close();
         .add-to-cart:hover {
             background-color: #07d2ff;
         }
+
         .add-to-wishlist {
             background-color: #baae3e;
             border: none;
@@ -95,19 +107,15 @@ $conn->close();
             font-size: 16px;
             cursor: pointer;
         }
+
         .add-to-cart:hover {
             background-color: #ece800;
         }
 
-        .shop-button-container {
-            text-align: center; /* Center the button horizontally */
-            margin-top: 10px; /* Add some space above the button */
-        }
-
         .shop-button {
             display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 15px 15px; /* Reduced padding for smaller size */
+            font-size: 14px; /* Smaller font size */
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
             border: none;
@@ -119,6 +127,7 @@ $conn->close();
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
         }
+
     </style>
 </head>
 <body>

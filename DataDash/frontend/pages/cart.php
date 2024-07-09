@@ -158,7 +158,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     </style>
 </head>
 <body>
-    <header> <div class="heading">
+    <header>
+        <div class="heading">
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
@@ -166,11 +167,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     </a>
                 </div>
                 <div class="search-bar">
-                    <form class="search-form">
+                    <form id="search-form" method="GET" action="shop.php">
                         <label>
-                            <input type="search" name="search" placeholder="search...">
+                            <input type="search" name="search" id="search-input" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class ="search-button">
+                        <input type="submit" value="Search">
                     </form>
                 </div>
             </div> <br>

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <?php require_once '../../backend/utils/session.php'; ?>
 
-    <title>Document</title>
+    <title>Home</title>
     <style>
         .product-grid {
             display: flex;
@@ -34,10 +34,11 @@
         .new-products .product-grid .product:first-child {
             margin-left: 3%;
         }
+
         .shop-button-container {
         text-align: center; /* Center the button horizontally */
         margin-top: 10px; /* Add some space above the button */
-}
+        }
 
         .shop-button {
             display: inline-block;

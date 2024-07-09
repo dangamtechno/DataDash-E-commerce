@@ -147,9 +147,12 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5,minimum-scale=1.0">
+    <script src="https://kit.fontawesome.com/d0ce752c6a.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
+    <?php require_once '../../backend/utils/session.php'; ?>
     <title>Checkout</title>
     <style>
         /* Style for the checkout page */
@@ -220,8 +223,6 @@ $conn->close();
             box-sizing: border-box;
         }
 
-
-
         .order-details {
             margin-top: 20px;
             padding: 15px;
@@ -287,9 +288,14 @@ $conn->close();
         justify-content: center; /* Center content horizontally */
         }
 
+        .shop-button-container {
+        text-align: center; /* Center the button horizontally */
+        margin-top: 10px; /* Add some space above the button */
+        }
+
         .shop-button {
             display: inline-block;
-            padding: 17px 40px;
+            padding: 10px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
@@ -320,11 +326,11 @@ $conn->close();
                     </a>
                 </div>
                 <div class="search-bar">
-                    <form class="search-form">
+                    <form id="search-form" method="GET" action="shop.php">
                         <label>
-                            <input type="search" name="search" placeholder="search...">
+                            <input type="search" name="search" id="search-input" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class ="search-button">
+                        <input type="submit" value="Search">
                     </form>
                 </div>
             </div> <br>
