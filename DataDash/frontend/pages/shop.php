@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.5,minimum-scale=1.0">
     <script src="https://kit.fontawesome.com/d0ce752c6a.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
     <?php require_once '../../backend/utils/session.php'; ?>
 
@@ -40,9 +42,14 @@
             text-decoration: underline;
         }
 
+        .shop-button-container {
+        text-align: center; /* Center the button horizontally */
+        margin-top: 10px; /* Add some space above the button */
+        }
+
         .shop-button {
             display: inline-block;
-            padding: 17px 40px;
+            padding: 10px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
@@ -208,39 +215,39 @@
             </div>
         </section>
     </main>
-    <footer>
-        <div class="social-media">
-            <br><br>
+<footer>
+    <div class="social-media">
+        <br><br>
+        <ul>
+            <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
+            <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
+            <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
+            <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
+            <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
+        </ul>
+    </div>
+    <div class="general-info">
+        <div class="help">
+            <h3>Help</h3>
             <ul>
-                <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
-                <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
-                <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
-                <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
-                <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
+                <li><a href="faq.php">Frequently Asked Questions</a></li>
+                <li><a href="returns.php">Returns</a></li>
+                <li><a href="customer_service.php">Customer Service</a></li>
             </ul>
         </div>
-        <div class="general-info">
-            <div class="help">
-                <h3>Help</h3>
-                <ul>
-                    <li><a href="faq.php">Frequently Asked Questions</a></li>
-                    <li><a href="returns.php">Returns</a></li>
-                    <li><a href="customer_service.php">Customer Service</a></li>
-                </ul>
-            </div>
-            <div class="location">
-                <p>123 Main Street, City, Country</p>
-            </div>
-            <div class="legal">
-                <h3>Privacy & Legal</h3>
-                <ul>
-                    <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
-                    <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-                </ul>
-            </div>
+        <div class="location">
+            <p>123 Main Street, City, Country</p>
         </div>
-        2024 DataDash, All Rights Reserved.
-    </footer>
+        <div class="legal">
+            <h3>Privacy & Legal</h3>
+            <ul>
+                <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
+                <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
+            </ul> <br>
+                2024 DataDash, All Rights Reserved.
+        </div>
+    </div>
+</footer>
      <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Load initial products

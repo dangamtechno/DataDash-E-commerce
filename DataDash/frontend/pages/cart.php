@@ -1,6 +1,5 @@
 <?php
 require_once '../../backend/utils/session.php';
-require_once '../../backend/include/database_config.php';
 
 $conn = new mysqli("localhost", "root", "", "datadash");
 
@@ -159,7 +158,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     </style>
 </head>
 <body>
-    <header> <div class="heading">
+    <header>
+        <div class="heading">
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
@@ -167,11 +167,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     </a>
                 </div>
                 <div class="search-bar">
-                    <form class="search-form">
+                    <form id="search-form" method="GET" action="shop.php">
                         <label>
-                            <input type="search" name="search" placeholder="search...">
+                            <input type="search" name="search" id="search-input" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class ="search-button">
+                        <input type="submit" value="Search">
                     </form>
                 </div>
             </div> <br>
@@ -282,7 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             ?>
         </div>
     </main>
-    <footer>
+<footer>
     <div class="social-media">
         <br><br>
         <ul>
@@ -310,10 +310,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             <ul>
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-            </ul>
+            </ul> <br>
+                2024 DataDash, All Rights Reserved.
         </div>
     </div>
-    2024 DataDash, All Rights Reserved.
 </footer>
     <script src="../js/navbar.js"></script>
     <script src="../js/slider.js"></script>
@@ -372,16 +372,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         // Initial total price (when no items are selected)
         updateTotalPrice();
     </script>
-    <script>
-    $(document).ready(function() {
-        $("#search-form").submit(function(event) {
-            event.preventDefault();
-            var searchTerm = $("#search-input").val();
-
-            // Redirect to shop.php with search term as a query parameter
-            window.location.href = "shop.php?search=" + searchTerm;
-        });
-    });
-    </script>
+<script src="../js/search.js"></script>
 </body>
 </html>

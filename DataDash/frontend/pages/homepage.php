@@ -9,9 +9,8 @@
     <link rel="stylesheet" href="../css/style.css">
     <?php require_once '../../backend/utils/session.php'; ?>
 
-    <title>Document</title>
+    <title>Home</title>
     <style>
-        /* ... (Your existing styles) ... */
         .product-grid {
             display: flex;
             flex-wrap: wrap;
@@ -35,10 +34,11 @@
         .new-products .product-grid .product:first-child {
             margin-left: 3%;
         }
+
         .shop-button-container {
         text-align: center; /* Center the button horizontally */
         margin-top: 10px; /* Add some space above the button */
-}
+        }
 
         .shop-button {
             display: inline-block;
@@ -189,7 +189,7 @@
             </div>
         </section>
     </main>
-    <footer>
+<footer>
     <div class="social-media">
         <br><br>
         <ul>
@@ -210,24 +210,25 @@
             </ul>
         </div>
         <div class="location">
-        <ul>
-                <h3>admin login</h3>     
-                <li>  
-                    <a href="../../admin/frontend/index.html">
-                        <i class="fas fa-users-cog"></i>
-                    </a>
-                </li>
-            </ul>
+            <p>123 Main Street, City, Country</p>
         </div>
         <div class="legal">
             <h3>Privacy & Legal</h3>
             <ul>
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
+            </ul> <br>
+                2024 DataDash, All Rights Reserved.
+            <ul>
+                <h3>admin login</h3>
+                <li>
+                    <a href="../../admin/frontend/index.html">
+                        <i class="fas fa-users-cog"></i>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
-    2024 DataDash, All Rights Reserved.
 </footer>
 <script src = "../js/global.js" defer ></script>
 <script src="../js/navbar.js"></script>
@@ -238,16 +239,6 @@
 <script src = "../js/newArrivals.js"></script>
 <script src = "../js/starRatingSystem.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script>
-$(document).ready(function() {
-    $("#search-form").submit(function(event) {
-        event.preventDefault();
-        var searchTerm = $("#search-input").val();
-
-        // Redirect to shop.php with search term as a query parameter
-        window.location.href = "shop.php?search=" + searchTerm;
-    });
-});
-</script>
+<script src="../js/search.js"></script>
 </body>
 </html>

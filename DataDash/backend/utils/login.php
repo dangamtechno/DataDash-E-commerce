@@ -3,6 +3,8 @@
 
 // Include the functions file
 require_once 'session.php';
+require_once '../include/database_config.php';
+
 
 // Connect to database
 $conn = new mysqli("localhost", "root", "", "datadash");

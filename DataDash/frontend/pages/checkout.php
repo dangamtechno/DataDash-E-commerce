@@ -1,6 +1,5 @@
 <?php
 require_once '../../backend/utils/session.php';
-require_once '../../backend/include/database_config.php';
 
 // Establish database connection using the configured credentials
 $conn = new mysqli("localhost", "root", "", "datadash");
@@ -216,21 +215,6 @@ $conn->close();
             margin: 5px 0;
         }
 
-        .continue-shopping-btn {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: #337ab7;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .continue-shopping-btn:hover {
-            background-color: #21618C;
-        }
 
         /* Style for radio button labels */
         .form-group label {
@@ -265,9 +249,15 @@ $conn->close();
             background-color: #0056b3;
         }
 
+        /* Ensure shop button styles are consistent with homepage */
+        .shop-button-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
         .shop-button {
             display: inline-block;
-            padding: 17px 40px;
+            padding: 10px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
@@ -280,6 +270,7 @@ $conn->close();
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
         }
+
     </style>
 </head>
 <body>
@@ -293,11 +284,11 @@ $conn->close();
                     </a>
                 </div>
                 <div class="search-bar">
-                    <form class="search-form">
+                    <form id="search-form" method="GET" action="shop.php">
                         <label>
-                            <input type="search" name="search" placeholder="search...">
+                            <input type="search" name="search" id="search-input" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class ="search-button">
+                        <input type="submit" value="Search">
                     </form>
                 </div>
             </div> <br>
@@ -606,22 +597,12 @@ $conn->close();
             <ul>
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-            </ul>
+            </ul> <br>
+                2024 DataDash, All Rights Reserved.
         </div>
     </div>
-    2024 DataDash, All Rights Reserved.
 </footer>
-<script>
-$(document).ready(function() {
-    $("#search-form").submit(function(event) {
-        event.preventDefault();
-        var searchTerm = $("#search-input").val();
-
-        // Redirect to shop.php with search term as a query parameter
-        window.location.href = "shop.php?search=" + searchTerm;
-    });
-});
-</script>
+<script src="../js/search.js"></script>
 </html>
 
 
