@@ -56,24 +56,9 @@
     </form>
 </div>
 
-<script>
-    const form = document.getElementById('create-account-form');
-    const passwordInput = document.getElementById('pass');
-    const confirmPasswordInput = document.getElementById('confirm-pass');
-    const passwordMismatchError = document.getElementById('password-mismatch-error');
-
-    form.addEventListener('submit', function(event) {
-        if (passwordInput.value !== confirmPasswordInput.value) {
-            event.preventDefault(); // Prevent form submission
-            passwordMismatchError.style.display = 'block'; // Show error message
-        } else {
-            passwordMismatchError.style.display = 'none'; // Hide error message
-        }
-    });
-</script>
-
 <footer>
     <div class="social-media">
+        <br><br>
         <ul>
             <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
             <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
@@ -99,11 +84,26 @@
             <ul>
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-            </ul>
+            </ul> <br>
+                2024 DataDash, All Rights Reserved.
         </div>
     </div>
-    2024 DataDash, All Rights Reserved.
 </footer>
+<script>
+    const form = document.getElementById('create-account-form');
+    const passwordInput = document.getElementById('pass');
+    const confirmPasswordInput = document.getElementById('confirm-pass');
+    const passwordMismatchError = document.getElementById('password-mismatch-error');
+
+    form.addEventListener('submit', function(event) {
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            event.preventDefault(); // Prevent form submission
+            passwordMismatchError.style.display = 'block'; // Show error message
+        } else {
+            passwordMismatchError.style.display = 'none'; // Hide error message
+        }
+    });
+</script>
 <script src="../js/search.js"></script>
 </body>
 </html>

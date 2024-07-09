@@ -1,10 +1,7 @@
 <?php
 require_once '../../backend/utils/session.php';
-require_once '../../backend/include/database_config.php';
 
 $conn = new mysqli("localhost", "root", "", "datadash");
-
-
 
 // Retrieve the product ID from the query parameter
 $product_id = isset($_GET['id']) ? $_GET['id'] : null;
@@ -226,10 +223,10 @@ $conn->close();
             <ul>
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-            </ul>
+            </ul> <br>
+                2024 DataDash, All Rights Reserved.
         </div>
     </div>
-    2024 DataDash, All Rights Reserved.
 </footer>
 <script src="../js/navbar.js"></script>
 <script src="../js/search.js"></script>

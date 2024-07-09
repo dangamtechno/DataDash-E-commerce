@@ -2,6 +2,7 @@
 session_start();
 
 require_once '../utils/session.php';
+require_once '../include/database_config.php';
 
 // Connect to database
 $conn = new mysqli("localhost", "root", "", "datadash");
