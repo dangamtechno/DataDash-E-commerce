@@ -1,6 +1,5 @@
 <?php
 require_once '../../backend/utils/session.php';
-require_once '../../backend/include/database_config.php';
 
 // Check if the user is logged in
 if (!sessionExists()) {
@@ -63,9 +62,9 @@ if ($result->num_rows > 0) {
     exit;
 } else {
     // Product does not exist in the wishlist, insert a new row
-    $insert_query = "INSERT INTO wishlist_products (wishlist_id, product_id) VALUES (?, ?)";
+    $insert_query = "INSERT INTO wishlist_products (wishlist_id, product_id, user_id) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($insert_query);
-    $stmt->bind_param("ii", $wishlist_id, $product_id);
+    $stmt->bind_param("iii", $wishlist_id, $product_id, $user_id);
     if ($stmt->execute()) {
         header('Location: ../../frontend/pages/wishlist.php');
     } else {
