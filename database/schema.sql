@@ -142,7 +142,7 @@ CREATE TABLE cart_product (
 CREATE TABLE wishlist (
     wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    wishlist_name VARCHAR(50),
+    wishlist_name VARCHAR(50) NOT NULL DEFAULT 'Shopping List',
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 

@@ -26,6 +26,20 @@ if ($product->num_rows > 0) {
     header('Location: shop.php'); // Redirect to shop page if product not found
     exit;
 }
+
+// Fetch wishlists for the current user
+$wishlists = [];
+if (sessionExists()) {
+    $user_id = getSessionUserId();
+    $stmt = $conn->prepare("SELECT w.wishlist_id, w.wishlist_name FROM wishlist w WHERE w.user_id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $wishlists[] = $row;
+    }
+}
+
 $conn->close();
 ?>
 
@@ -128,6 +142,29 @@ $conn->close();
             background-color: #0056b3; /* Darker shade for hover effect */
         }
 
+        .custom-dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .custom-dropdown select {
+            display: inline-block;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: #fff url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTEiIGhlaWdodD0iNiIgdmlld0JveD0iMCAwIDExIDYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEuNzkyNDQsMEw1LjUwMDIzLDIuNTE1MjFMMTAuMTIwMSwwTDExLDAuNzA4NzA4TDUsNi4wNzU4NUwwLjAwMDAyMzI0LDAuNzA4NzA4TDEuNzkyNDQsMFoiIGZpbGw9IiM2NjYiLz48L3N2Zz4=') no-repeat right 10px center;
+            background-size: 10px 5px;
+        }
+
+        .custom-dropdown select:focus {
+            outline: none;
+            border-color: #009dff;
+        }
     </style>
 </head>
 <body>
@@ -196,10 +233,19 @@ $conn->close();
                 <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
                 <button type="submit" class="add-to-cart">Add to Cart</button>
             </form>
-            <form action="../../backend/utils/add_to_wishlist.php" method="post">
-                <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
-                <button type="submit" class="add-to-wishlist">Add to wishlist</button>
+            
+            <form action="../../backend/utils/add_to_wishlist.php" method="post" class="custom-dropdown">
+                <label for="wishlist">Add to Wishlist:</label>
+                <select id="wishlist" name="wishlist_id">
+                    <option value="select">Select</option>
+                    <?php foreach ($wishlists as $wishlist): ?>
+                        <option value="<?= htmlspecialchars($wishlist['wishlist_id']) ?>"><?= htmlspecialchars($wishlist['wishlist_name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <input type="hidden" name="product_id" value="<?= htmlspecialchars($product_data['product_id']) ?>">
+                <button type="submit" class="add-to-wishlist">Add to Wishlist</button>
             </form>
+
         </div>
     </section>
 </main>

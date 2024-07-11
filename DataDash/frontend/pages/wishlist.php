@@ -22,6 +22,8 @@ $user_id = getSessionUserId();
 // Fetch wishlist items from the database
 $wishlist_items = $conn->query("
     SELECT 
+        w.wishlist_name,
+        w.wishlist_id,
         p.product_id, 
         p.image, 
         p.name, 
@@ -30,8 +32,12 @@ $wishlist_items = $conn->query("
         product p
     JOIN 
         wishlist_products wp ON p.product_id = wp.product_id
+    JOIN 
+        wishlist w ON wp.wishlist_id = w.wishlist_id
     WHERE 
         wp.user_id = $user_id
+    ORDER BY 
+        w.wishlist_name
 ");
 
 $conn->close();
@@ -187,40 +193,50 @@ $conn->close();
     <h2>Wishlist</h2>
 
     <section class="wishlist-container">
-        <div class="wishlist-grid" id="wishlist-grid">
-            <?php
-            if ($wishlist_items->num_rows == 0) {  // Check if there are no products
-                echo '<div class="wishlist-container">';
-                echo '<p> Your wishlist is empty </p>';
-                echo '</div>';
-            } else {
-                echo '<div> 
-                        <h1> Wishlist </h1>
-                    </div>';
-                while ($product = $wishlist_items->fetch_assoc()) {
-                    echo '<div class="wishlist">';
-                    echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
-                    echo '<img src="../images/electronic_products/' . $product['image'] . '" alt="' . $product['name'] . '">';
-                    echo '<h3>' . $product['name'] . '</h3>';
-                    echo '<p>$' . $product['price'] . '</p>';
-                    echo '</a>';
-                    // Add to Cart Form
-                    echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
-                    echo '<input type="hidden" name="product_id" value="' . $product['product_id'] . '">';
-                    echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
-                    echo '</form>';
-                    // Delete from Wishlist Form
-                    echo '<form action="../../backend/utils/delete_from_wishlist.php" method="post">';
-                    echo '<input type="hidden" name="product_id" value="' . $product['product_id'] . '">';
-                    echo '<button type="submit" class="delete-from-wishlist">';
-                    echo '<img src="../images/bin.png" alt="Delete"></button>';
-                    echo '</form>';
-                    echo '</div>';
+    <div class="wishlist-grid" id="wishlist-grid">
+        <?php
+        if ($wishlist_items->num_rows == 0) {  // Check if there are no products
+            echo '<div class="wishlist-container">';
+            echo '<p> Your wishlist is empty </p>';
+            echo '</div>';
+        } else {
+            $current_wishlist = null;
+            while ($product = $wishlist_items->fetch_assoc()) {
+                if ($current_wishlist != $product['wishlist_name']) {
+                    if ($current_wishlist !== null) {
+                        echo '</div>'; // Close the previous wishlist section
+                    }
+                    $current_wishlist = $product['wishlist_name'];
+                    echo '<div> 
+                            <h3>' . $current_wishlist . '</h3>
+                            <div class="wishlist-grid">';
                 }
+                echo '<div class="wishlist">';
+                echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
+                echo '<img src="../images/electronic_products/' . $product['image'] . '" alt="' . $product['name'] . '">';
+                echo '<h3>' . $product['name'] . '</h3>';
+                echo '<p>$' . $product['price'] . '</p>';
+                echo '</a>';
+                // Add to Cart Form
+                echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
+                echo '<input type="hidden" name="product_id" value="' . $product['product_id'] . '">';
+                echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
+                echo '</form>';
+                // Delete from Wishlist Form
+                echo '<form action="../../backend/utils/delete_from_wishlist.php" method="post">';
+                echo '<input type="hidden" name="product_id" value="' . $product['product_id'] . '">';
+                echo '<input type="hidden" name="wishlist_id" value="' . $product['wishlist_id'] . '">';
+                echo '<button type="submit" class="delete-from-wishlist">';
+                echo '<img src="../images/bin.png" alt="Delete"></button>';
+                echo '</form>';
+                echo '</div>';
             }
-            ?>
-        </div>
-    </section>
+            echo '</div>'; // Close the last wishlist section
+        }
+        ?>
+    </div>
+</section>
+
 <footer>
     <div class="social-media">
         <br><br>

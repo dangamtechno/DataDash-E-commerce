@@ -10,6 +10,10 @@ if (!sessionExists()) {
 
 // Get the product ID from the form submission
 $product_id = isset($_POST['product_id']) ? $_POST['product_id'] : null;
+$wishlist_id = isset($_POST['wishlist_id']) ? $_POST['wishlist_id'] : null;
+
+//var_dump($wishlist_id); // Should print the wishlist ID
+//exit; // Exit after printing for testing
 
 // Check if the product ID is provided and valid
 if ($product_id === null) {
@@ -31,7 +35,7 @@ if (!$user_id) {
     exit;
 }
 
-// Get the wishlist ID from the wishlist table
+/*/ Get the wishlist ID from the wishlist table
 $sql = "SELECT wishlist_id FROM wishlist WHERE user_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
@@ -46,6 +50,8 @@ if ($result->num_rows > 0) {
     header('Location: ../../frontend/pages/shop.php'); // Redirect to shop page if no wishlist exists
     exit;
 }
+*/
+
 
 // Check if the product exists in the wishlist
 $sql = "SELECT * FROM wishlist_products WHERE wishlist_id = ? AND product_id = ?";
