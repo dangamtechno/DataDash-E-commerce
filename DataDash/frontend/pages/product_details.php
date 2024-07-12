@@ -110,20 +110,13 @@ $conn->close();
             font-size: 16px;
             cursor: pointer;
         }
-        .add-to-cart:hover {
-            background-color: #07d2ff;
-        }
 
         .add-to-wishlist {
-            background-color: #baae3e;
+            background-color: #dac81d;
             border: none;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-        }
-
-        .add-to-cart:hover {
-            background-color: #ece800;
         }
 
         .shop-button {
@@ -142,6 +135,15 @@ $conn->close();
             background-color: #0056b3; /* Darker shade for hover effect */
         }
 
+        .buy-now {
+            background-color: #aa00ff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 121px;
+      }
+      
         .custom-dropdown {
             position: relative;
             display: inline-block;
@@ -227,13 +229,33 @@ $conn->close();
                 <li>Brand: <?= $product_data['brand_name'] ?></li>
                 <li>Available Quantity: <?= $product_data['inventory'] ?></li>
             </ul>
+            <br>
+
             <form action="../../backend/utils/add_to_cart.php" method="post">
-                <label for="quantity">Quantity:</label>
-                <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
-                <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
-                <button type="submit" class="add-to-cart">Add to Cart</button>
+              <label for="quantity">Quantity:</label>
+              <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
+              <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>"> <br>
+              <button type="submit" class="add-to-cart">Add to Cart</button>
             </form>
-            
+            <br>
+
+
+            <form id="form1" <form action="../../backend/utils/add_to_cart.php" method="post">
+              <label for="quantity">Quantity:</label>
+              <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
+              <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
+            </form>
+
+            <form id="form2" <form action="checkout.php" method="post" id="buy-now-form">
+                <input type="hidden" name="action" value="checkout">
+                <input type="hidden" name="selected_products" value='[<?= $product_data['product_id'] ?>]'>
+                <input type="hidden" name="selected_quantities" id="selected-quantities">
+                <button type="submit" class="buy-now" onclick="submitForms('form1', 'form2')">Buy Now</button>
+            </form>
+
+
+            <br><br>
+      
             <form action="../../backend/utils/add_to_wishlist.php" method="post" class="custom-dropdown">
                 <label for="wishlist">Add to Wishlist:</label>
                 <select id="wishlist" name="wishlist_id">
@@ -285,5 +307,7 @@ $conn->close();
 </footer>
 <script src="../js/navbar.js"></script>
 <script src="../js/search.js"></script>
+<script src="../js/buy_now.js"></script>
+
 </body>
 </html>
