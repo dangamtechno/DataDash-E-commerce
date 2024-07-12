@@ -15,8 +15,8 @@ require_once '../../backend/utils/session.php';
     <style>
 
         .shop-button-container {
-        text-align: center; /* Center the button horizontally */
-        margin-top: 10px; /* Add some space above the button */
+            text-align: center; /* Center the button horizontally */
+            margin-top: 10px; /* Add some space above the button */
 }
 
         .shop-button {
