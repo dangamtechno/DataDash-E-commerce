@@ -98,7 +98,7 @@ $conn->close();
         }
 
         .add-to-wishlist {
-            background-color: #d3c227;
+            background-color: #dac81d;
             border: none;
             padding: 10px 20px;
             font-size: 16px;
@@ -191,10 +191,12 @@ $conn->close();
                 <li>Brand: <?= $product_data['brand_name'] ?></li>
                 <li>Available Quantity: <?= $product_data['inventory'] ?></li>
             </ul>
+            <br>
+
             <form action="../../backend/utils/add_to_cart.php" method="post">
               <label for="quantity">Quantity:</label>
               <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
-              <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
+              <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>"> <br>
               <button type="submit" class="add-to-cart">Add to Cart</button>
             </form>
             <br>
@@ -202,19 +204,19 @@ $conn->close();
 
             <form id="form1" <form action="../../backend/utils/add_to_cart.php" method="post">
               <label for="quantity">Quantity:</label>
+              <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
               <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
-                <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
             </form>
 
-            <form id="form2" <form action="checkout.php" method="post">
-             <input type="hidden" name="action" value="checkout">
-             <input type="hidden" name="selected_products" id="selected-products">
-             <input type="hidden" name="selected_quantities" id="selected-quantities">
-             <button type="submit" class="buy-now" onclick="submitForm('form1', 'form2')">Buy Now</button>
+            <form id="form2" <form action="checkout.php" method="post" id="buy-now-form">
+                <input type="hidden" name="action" value="checkout">
+                <input type="hidden" name="selected_products" value='[<?= $product_data['product_id'] ?>]'>
+                <input type="hidden" name="selected_quantities" id="selected-quantities">
+                <button type="submit" class="buy-now" onclick="submitForms('form1', 'form2')">Buy Now</button>
             </form>
 
 
-            <br>
+            <br><br>
             <form action="../../backend/utils/add_to_wishlist.php" method="post">
                 <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
                 <button type="submit" class="add-to-wishlist">Add to wishlist</button>
@@ -258,22 +260,7 @@ $conn->close();
 </footer>
 <script src="../js/navbar.js"></script>
 <script src="../js/search.js"></script>
-<script>
-  function submitForm(formId) {
-    const form = document.getElementById(formId);
-    const formData = new FormData(form);
+<script src="../js/buy_now.js"></script>
 
-    fetch(form.action, {
-      method: form.method,
-      body: formData
-    })
-    .then(response => {
-      // Handle response from server
-    })
-    .catch(error => {
-      // Handle error
-    });
-  }
-</script>
 </body>
 </html>
