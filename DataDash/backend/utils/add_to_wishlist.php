@@ -59,6 +59,7 @@ $result = $stmt->get_result();
 if ($result->num_rows > 0) {
     // Product already exists in the wishlist
     header('Location: ../../frontend/pages/product_details.php?id=' . $product_id . '&wishlist_exists=true');
+    echo "Product already exist in the wishlist";
     exit;
 } else {
     // Product does not exist in the wishlist, insert a new row
@@ -66,7 +67,7 @@ if ($result->num_rows > 0) {
     $stmt = $conn->prepare($insert_query);
     $stmt->bind_param("iii", $wishlist_id, $product_id, $user_id);
     if ($stmt->execute()) {
-        header('Location: ../../frontend/pages/wishlist.php');
+        header('Location: ../../frontend/pages/wishlist_details.php?wishlist_id=' . $wishlist_id);
     } else {
         echo "Error adding to wishlist: " . $conn->error;
     }

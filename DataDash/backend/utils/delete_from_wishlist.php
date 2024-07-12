@@ -12,9 +12,6 @@ if (!sessionExists()) {
 $product_id = isset($_POST['product_id']) ? $_POST['product_id'] : null;
 $wishlist_id = isset($_POST['wishlist_id']) ? $_POST['wishlist_id'] : null;
 
-//var_dump($wishlist_id); // Should print the wishlist ID
-//exit; // Exit after printing for testing
-
 // Check if the product ID is provided and valid
 if ($product_id === null) {
     header('Location: ../../frontend/pages/shop.php'); // Redirect to shop page if product ID is not provided
@@ -78,6 +75,6 @@ if ($result->num_rows == 0) {
 $conn->close();
 
 // Redirect to the wishlist page
-header('Location: ../../frontend/pages/wishlist.php');
+header('Location: ../../frontend/pages/wishlist_details.php?wishlist_id=' . $wishlist_id);
 exit;
 ?>

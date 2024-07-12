@@ -144,7 +144,7 @@ require_once '../../backend/utils/session.php';
 
             <!-- Wishlist -->
             <section>
-                <h2><a href="wishlist.php">Wishlist</a></h2>
+                <h2><a href="wishlists.php">Wishlists</a></h2>
             </section>
 
         <?php else: ?>
