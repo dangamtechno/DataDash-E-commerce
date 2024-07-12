@@ -7,8 +7,9 @@ if (!sessionExists()) {
     exit;
 }
 
-// Get the product ID from the form submission
+// Get the product ID and wishlist ID from the form submission
 $product_id = isset($_POST['product_id']) ? $_POST['product_id'] : null;
+$wishlist_id = isset($_POST['wishlist_id']) ? $_POST['wishlist_id'] : null;
 
 // Check if the product ID is provided and valid
 if ($product_id === null) {
@@ -30,23 +31,22 @@ if (!$user_id) {
     exit;
 }
 
-// Get the wishlist ID or create a new wishlist
-$sql = "SELECT wishlist_id FROM wishlist WHERE user_id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    $wishlist = $result->fetch_assoc();
-    $wishlist_id = $wishlist['wishlist_id'];
+// Check if the wishlist ID is provided and valid, if not create a new wishlist
+if ($wishlist_id === 'select') {
+    header('Location: ../../frontend/pages/product_details.php?id=' . $product_id . '&wishlist_exists=true'); 
 } else {
-    // If no wishlist exists, create a new one
-    $insert_wishlist_query = "INSERT INTO wishlist (user_id) VALUES (?)";
-    $stmt = $conn->prepare($insert_wishlist_query);
-    $stmt->bind_param("i", $user_id);
+    // Validate the provided wishlist ID belongs to the user
+    $sql = "SELECT wishlist_id FROM wishlist WHERE wishlist_id = ? AND user_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $wishlist_id, $user_id);
     $stmt->execute();
-    $wishlist_id = $conn->insert_id;
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        // If the wishlist does not belong to the user, redirect to shop
+        header('Location: ../../frontend/pages/cart.php');
+        exit;
+    }
 }
 
 // Check if the product already exists in the wishlist
