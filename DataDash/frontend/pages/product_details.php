@@ -1,10 +1,7 @@
 <?php
 require_once '../../backend/utils/session.php';
-require_once '../../backend/include/database_config.php';
 
 $conn = new mysqli("localhost", "root", "", "datadash");
-
-
 
 // Retrieve the product ID from the query parameter
 $product_id = isset($_GET['id']) ? $_GET['id'] : null;
@@ -29,6 +26,20 @@ if ($product->num_rows > 0) {
     header('Location: shop.php'); // Redirect to shop page if product not found
     exit;
 }
+
+// Fetch wishlists for the current user
+$wishlists = [];
+if (sessionExists()) {
+    $user_id = getSessionUserId();
+    $stmt = $conn->prepare("SELECT w.wishlist_id, w.wishlist_name FROM wishlist w WHERE w.user_id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $wishlists[] = $row;
+    }
+}
+
 $conn->close();
 ?>
 
@@ -36,17 +47,21 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5,minimum-scale=1.0">
     <script src="https://kit.fontawesome.com/d0ce752c6a.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
+    <?php require_once '../../backend/utils/session.php'; ?>
     <title>Product Details - DataDash</title>
     <style>
-        /* Add some styles to make it look like Amazon */
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
+
         .product-details {
             max-width: 800px;
             margin: 40px auto;
@@ -55,6 +70,7 @@ $conn->close();
             display: flex;
             align-items: center;
         }
+
         .product-image {
             width: 400px;
             height: 400px;
@@ -62,25 +78,31 @@ $conn->close();
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .product-information {
             margin-left: 20px;
             padding: 20px;
             border-left: 1px solid #ddd;
         }
+
         .product-information h2 {
             margin-top: 0;
         }
+
         .product-information ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
+
         .product-information li {
             margin-bottom: 10px;
         }
+
         .product-information li:last-child {
             margin-bottom: 0;
         }
+
         .add-to-cart {
             background-color: #0ad4f8;
             border: none;
@@ -88,29 +110,19 @@ $conn->close();
             font-size: 16px;
             cursor: pointer;
         }
-        .add-to-cart:hover {
-            background-color: #07d2ff;
-        }
+
         .add-to-wishlist {
-            background-color: #baae3e;
+            background-color: #dac81d;
             border: none;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
         }
-        .add-to-cart:hover {
-            background-color: #ece800;
-        }
-
-        .shop-button-container {
-            text-align: center; /* Center the button horizontally */
-            margin-top: 10px; /* Add some space above the button */
-        }
 
         .shop-button {
             display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 15px 15px; /* Reduced padding for smaller size */
+            font-size: 14px; /* Smaller font size */
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
             border: none;
@@ -121,6 +133,39 @@ $conn->close();
 
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
+        }
+
+        .buy-now {
+            background-color: #aa00ff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 121px;
+      }
+      
+        .custom-dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .custom-dropdown select {
+            display: inline-block;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: #fff url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTEiIGhlaWdodD0iNiIgdmlld0JveD0iMCAwIDExIDYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEuNzkyNDQsMEw1LjUwMDIzLDIuNTE1MjFMMTAuMTIwMSwwTDExLDAuNzA4NzA4TDUsNi4wNzU4NUwwLjAwMDAyMzI0LDAuNzA4NzA4TDEuNzkyNDQsMFoiIGZpbGw9IiM2NjYiLz48L3N2Zz4=') no-repeat right 10px center;
+            background-size: 10px 5px;
+        }
+
+        .custom-dropdown select:focus {
+            outline: none;
+            border-color: #009dff;
         }
     </style>
 </head>
@@ -184,16 +229,45 @@ $conn->close();
                 <li>Brand: <?= $product_data['brand_name'] ?></li>
                 <li>Available Quantity: <?= $product_data['inventory'] ?></li>
             </ul>
+            <br>
+
             <form action="../../backend/utils/add_to_cart.php" method="post">
-                <label for="quantity">Quantity:</label>
-                <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
-                <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
-                <button type="submit" class="add-to-cart">Add to Cart</button>
+              <label for="quantity">Quantity:</label>
+              <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
+              <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>"> <br>
+              <button type="submit" class="add-to-cart">Add to Cart</button>
             </form>
-            <form action="../../backend/utils/add_to_wishlist.php" method="post">
-                <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
-                <button type="submit" class="add-to-wishlist">Add to wishlist</button>
+            <br>
+
+
+            <form id="form1" <form action="../../backend/utils/add_to_cart.php" method="post">
+              <label for="quantity">Quantity:</label>
+              <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
+              <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
             </form>
+
+            <form id="form2" <form action="checkout.php" method="post" id="buy-now-form">
+                <input type="hidden" name="action" value="checkout">
+                <input type="hidden" name="selected_products" value='[<?= $product_data['product_id'] ?>]'>
+                <input type="hidden" name="selected_quantities" id="selected-quantities">
+                <button type="submit" class="buy-now" onclick="submitForms('form1', 'form2')">Buy Now</button>
+            </form>
+
+
+            <br><br>
+      
+            <form action="../../backend/utils/add_to_wishlist.php" method="post" class="custom-dropdown">
+                <label for="wishlist">Add to Wishlist:</label>
+                <select id="wishlist" name="wishlist_id">
+                    <option value="select">Select</option>
+                    <?php foreach ($wishlists as $wishlist): ?>
+                        <option value="<?= htmlspecialchars($wishlist['wishlist_id']) ?>"><?= htmlspecialchars($wishlist['wishlist_name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <input type="hidden" name="product_id" value="<?= htmlspecialchars($product_data['product_id']) ?>">
+                <button type="submit" class="add-to-wishlist">Add to Wishlist</button>
+            </form>
+
         </div>
     </section>
 </main>
@@ -226,22 +300,14 @@ $conn->close();
             <ul>
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-            </ul>
+            </ul> <br>
+                2024 DataDash, All Rights Reserved.
         </div>
     </div>
-    2024 DataDash, All Rights Reserved.
 </footer>
 <script src="../js/navbar.js"></script>
-<script>
-$(document).ready(function() {
-    $("#search-form").submit(function(event) {
-        event.preventDefault();
-        var searchTerm = $("#search-input").val();
+<script src="../js/search.js"></script>
+<script src="../js/buy_now.js"></script>
 
-        // Redirect to shop.php with search term as a query parameter
-        window.location.href = "shop.php?search=" + searchTerm;
-    });
-});
-</script>
 </body>
 </html>

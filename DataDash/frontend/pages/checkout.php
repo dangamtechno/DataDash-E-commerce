@@ -1,6 +1,5 @@
 <?php
 require_once '../../backend/utils/session.php';
-require_once '../../backend/include/database_config.php';
 
 // Establish database connection using the configured credentials
 $conn = new mysqli("localhost", "root", "", "datadash");
@@ -31,6 +30,38 @@ function getCartItems($userId) {
         }
     }
     return $cartItems;
+}
+
+// Function to validate coupon code
+function validateCoupon($couponCode) {
+
+    $conn = new mysqli("localhost", "root", "", "datadash");
+
+    $sql = "SELECT discount_amount FROM coupons WHERE coupon_code = ? AND expiration_date >= CURDATE() AND active = TRUE";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $couponCode);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $coupon = $result->fetch_assoc();
+        $stmt->close();
+        return $coupon['discount_amount'];
+    }
+    $stmt->close();
+    return false;
+}
+
+//Function to deactivate coupon code
+function deactivateCoupon($couponCode){
+
+    $conn = new mysqli("localhost", "root", "", "datadash");
+
+    $sql = "UPDATE coupons SET active = FALSE WHERE coupon_code = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $couponCode);
+        $stmt->execute();
+        $stmt->close();
+
 }
 
 // Function to retrieve user's shipping addresses
@@ -184,21 +215,6 @@ $conn->close();
             margin: 5px 0;
         }
 
-        .continue-shopping-btn {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: #337ab7;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .continue-shopping-btn:hover {
-            background-color: #21618C;
-        }
 
         /* Style for radio button labels */
         .form-group label {
@@ -233,9 +249,15 @@ $conn->close();
             background-color: #0056b3;
         }
 
+        /* Ensure shop button styles are consistent with homepage */
+        .shop-button-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
         .shop-button {
             display: inline-block;
-            padding: 17px 40px;
+            padding: 10px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
@@ -248,6 +270,7 @@ $conn->close();
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
         }
+
     </style>
 </head>
 <body>
@@ -261,11 +284,11 @@ $conn->close();
                     </a>
                 </div>
                 <div class="search-bar">
-                    <form class="search-form">
+                    <form id="search-form" method="GET" action="shop.php">
                         <label>
-                            <input type="search" name="search" placeholder="search...">
+                            <input type="search" name="search" id="search-input" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class ="search-button">
+                        <input type="submit" value="Search">
                     </form>
                 </div>
             </div> <br>
@@ -359,6 +382,19 @@ $conn->close();
                                             <th colspan="3">Subtotal:</th>
                                             <th>$<?php echo number_format($totalPrice, 2); ?></th>
                                         </tr>
+                                        <?php
+                                            if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'apply_coupon') {
+                                                $couponCode = $_POST['coupon_code'];
+                                                $discountAmount = validateCoupon($couponCode);
+                                                if ($discountAmount !== false) {
+                                                    $totalPrice -= $discountAmount;
+                                                    echo "<tr>
+                                                        <th colspan='3'>Discount:</th>
+                                                        <th>$" . number_format($discountAmount, 2) . "</th>
+                                                    </tr>";
+                                                }
+                                            }
+                                            ?>
                                         <tr>
                                             <th colspan="3">Shipping:</th>
                                             <th>$0.00 (Free)</th>
@@ -369,6 +405,33 @@ $conn->close();
                                         </tr>
                                     </tfoot>
                                 </table>
+                            </div>
+
+                            <div class="checkout-section">
+                                <h3>Apply Coupon</h3>
+                                <form action="checkout.php" method="post" id="coupon-form">
+                                    <input type="hidden" name="action" value="apply_coupon">
+                                    <input type="hidden" name="selected_products" value="<?php echo json_encode($selectedProductIds); ?>">
+                                    <input type="hidden" name="selected_quantities" value="<?php echo json_encode($selectedQuantities); ?>">
+                                    <div class="form-group">
+                                        <label for="coupon-code">Coupon Code:</label>
+                                        <input type="text" name="coupon_code" id="coupon-code" required>
+                                    </div>
+                                    <button type="submit" class="checkout-button">Apply Coupon</button>
+                                    <?php
+                                if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'apply_coupon') {
+                                    $couponCode = $_POST['coupon_code'];
+                                    $discountAmount = validateCoupon($couponCode);
+                                    if ($discountAmount !== false) {
+                                        deactivateCoupon($couponCode);
+                                        echo '<p style="color: green;">Coupon applied! Discount: $' . number_format($discountAmount, 2) . '</p>';
+                                    } else {
+                                        echo '<p style="color: red;">Invalid or expired coupon code.</p>';
+                                    }
+                                }
+                                
+                            ?>
+                                </form>
                             </div>
 
                             <div class="checkout-section">
@@ -456,55 +519,6 @@ $conn->close();
             ?>
         </div>
     </main>
-    <script>
-        // Disable Review Order button initially
-        document.getElementById('review-order-button').disabled = true;
-
-        // Add event listeners to radio buttons
-        const shippingAddressRadios = document.querySelectorAll('input[name="shipping-address"]');
-        const paymentMethodRadios = document.querySelectorAll('input[name="payment-method"]');
-
-        // Check if all required fields are filled out
-        function checkRequiredFields() {
-            let allFieldsFilled = true;
-
-            // Check shipping address fields
-            if (shippingAddressRadios.length > 0) {
-                if (!document.querySelector('input[name="shipping-address"]:checked')) {
-                    allFieldsFilled = false;
-                }
-            }
-
-            // Check payment method fields
-            if (paymentMethodRadios.length > 0) {
-                if (!document.querySelector('input[name="payment-method"]:checked')) {
-                    allFieldsFilled = false;
-                }
-            }
-
-            // Enable Review Order button if all fields are filled
-            if (allFieldsFilled) {
-                document.getElementById('review-order-button').disabled = false;
-            } else {
-                document.getElementById('review-order-button').disabled = true;
-            }
-        }
-
-        // Add event listeners to radio buttons to enable Review Order button
-        shippingAddressRadios.forEach(radio => {
-            radio.addEventListener('change', () => {
-                document.getElementById('shipping_address_id').value = radio.value;
-                checkRequiredFields();
-            });
-        });
-
-        paymentMethodRadios.forEach(radio => {
-            radio.addEventListener('change', () => {
-                document.getElementById('payment_method_id').value = radio.value;
-                checkRequiredFields();
-            });
-        });
-    </script>
 </body>
 <footer>
     <div class="social-media">
@@ -534,22 +548,13 @@ $conn->close();
             <ul>
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-            </ul>
+            </ul> <br>
+                2024 DataDash, All Rights Reserved.
         </div>
     </div>
-    2024 DataDash, All Rights Reserved.
 </footer>
-<script>
-$(document).ready(function() {
-    $("#search-form").submit(function(event) {
-        event.preventDefault();
-        var searchTerm = $("#search-input").val();
-
-        // Redirect to shop.php with search term as a query parameter
-        window.location.href = "shop.php?search=" + searchTerm;
-    });
-});
-</script>
+<script src="../js/search.js"></script>
+<script src="../js/checkout_form_validation.js"></script>
 </html>
 
 

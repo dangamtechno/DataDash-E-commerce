@@ -1,58 +1,39 @@
 <?php
 require_once '../../backend/utils/session.php';
-require_once '../../backend/include/database_config.php';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5,minimum-scale=1.0">
+    <script src="https://kit.fontawesome.com/d0ce752c6a.js" crossorigin="anonymous"></script>
     <title>Account Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
-
     <style>
-        /* Header */
-        header {
-            background-color: #232f3e;
+
+        .shop-button-container {
+            text-align: center; /* Center the button horizontally */
+            margin-top: 10px; /* Add some space above the button */
+}
+
+        .shop-button {
+            display: inline-block;
+            padding: 10px 40px;
+            font-size: 16px;
             color: #fff;
-            border-bottom: 2px solid #febd69
-            max-width: 1000px;
-            padding-top: -70px; /* Add padding to create space for the header */
-        }
-
-        .heading {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo img {
-            height: 60px;
-        }
-
-        .login-status {
-            margin-left: 20px;
-            font-size: 14px;
-        }
-
-        .navigation ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-        }
-
-        .navigation li {
-            margin-right: 20px;
-        }
-
-        .navigation a {
-            color: #fff;
+            background-color: #009dff; /* Bootstrap primary color */
+            border: none;
+            border-radius: 5px;
             text-decoration: none;
-            font-size: 14px;
+            transition: background-color 0.3s ease;
         }
 
+        .shop-button:hover {
+            background-color: #0056b3; /* Darker shade for hover effect */
+        }
         /* Main Content */
         main {
             max-width: 1000px;
@@ -83,67 +64,16 @@ require_once '../../backend/include/database_config.php';
             text-decoration: none;
         }
 
-        /* Footer */
-        footer {
-            background-color: #232f3e;
-            color: #fff;
-            padding: 20px 0;
-            text-align: center;
-        }
-
-        .social-media ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
-
-        .social-media li {
-            margin: 0 10px;
-        }
-
-        .social-media a {
-            color: #fff;
-            font-size: 20px;
-        }
-
-        .general-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .help,
-        .legal {
-            text-align: left;
-        }
-
-        .help ul,
-        .legal ul {
-            padding: 0;
-            list-style-type: none;
-        }
-
-        .help h3,
-        .legal h3 {
-            color: #fff;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .help a,
-        .legal a {
-            color: #fff;
+        /* Styling for account, logout, and cart buttons */
+        .right-heading .icons a {
+            color: white; /* Set text color to white */
             text-decoration: none;
-            font-size: 14px;
         }
 
-        .location {
-            flex-grow: 1;
-            text-align: center;
+        .right-heading .icons i {
+            color: white; /* Set icon color to white */
         }
+
     </style>
 </head>
 <body>
@@ -151,24 +81,45 @@ require_once '../../backend/include/database_config.php';
         <div class="heading">
             <div class="left-heading">
                 <div class="logo">
+                    <a href="homepage.php">
                         <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
+                    </a>
                 </div>
+                <div class="search-bar">
+                    <form id="search-form" method="GET" action="shop.php">
+                        <label>
+                            <input type="search" name="search" id="search-input" placeholder="search...">
+                        </label>
+                        <input type="submit" value="Search">
+                    </form>
+                </div>
+            </div> <br>
+            <div class="shop-button-container">
+                <a href="shop.php" class="shop-button">Shop</a>
+            </div>
+            <div class="right-heading">
                 <div class="login-status">
                     <?php if (sessionExists()): ?>
-                        <p class="hello-message">Hello, <?php echo getSessionUsername(); ?>!</p>
+                        <div class="hello-message">
+                            <span>Hello, <?php echo getSessionUsername(); ?></span>
+                        </div>
+                        <div class="icons">
+                            <a href="account.php"><i class="fas fa-user-check fa-2x"></i>Account</a>
+                            <a href="cart.php"><i class="fas fa-shopping-cart fa-2x"></i>Cart</a>
+                            <a href="../../backend/utils/logout.php"><i class="fas fa-sign-out-alt fa-2x"></i>Logout</a>
+                        </div>
+                    <?php else: ?>
+                        <div class="login" title="login">
+                            <a href="login_page.php"><i class="fas fa-sign-in-alt fa-2x"></i>Login</a>
+                        </div>
+                        <div class="register" title="register">
+                            <a href="create_account.php"><i class="fas fa-user-times fa-2x"></i>Register</a>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
-            <nav class="navigation">
-                <ul>
-                    <li><a href="homepage.php">Home</a></li>
-                    <li><a href="shop.php">Shop</a></li>
-                    <li><a href="cart.php">Cart</a></li>
-                </ul>
-            </nav>
         </div>
     </header>
-
     <main>
         <?php if (sessionExists()): ?>
         <!-- Login and Security -->
@@ -193,11 +144,9 @@ require_once '../../backend/include/database_config.php';
 
             <!-- Wishlist -->
             <section>
-                <h2><a href="wishlist.php">Wishlist</a></h2>
+                <h2><a href="wishlists.php">Wishlists</a></h2>
             </section>
 
-            <!-- Logout -->
-            <a href="../../backend/utils/logout.php">Logout</a>
         <?php else: ?>
             <p>You need to be logged in to access this page.</p>
         <?php endif; ?>
@@ -205,6 +154,7 @@ require_once '../../backend/include/database_config.php';
 
 <footer>
     <div class="social-media">
+        <br><br>
         <ul>
             <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
             <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
@@ -230,10 +180,13 @@ require_once '../../backend/include/database_config.php';
             <ul>
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-            </ul>
+            </ul> <br>
+                2024 DataDash, All Rights Reserved.
         </div>
     </div>
-    2024 DataDash, All Rights Reserved.
 </footer>
+<script src="../js/search.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 </body>
 </html>

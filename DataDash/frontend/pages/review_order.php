@@ -1,6 +1,5 @@
 <?php
 require_once '../../backend/utils/session.php';
-require_once '../../backend/include/database_config.php';
 
 // Establish database connection using the configured credentials
 $conn = new mysqli("localhost", "root", "", "datadash");
@@ -62,54 +61,83 @@ function createOrder($userId, $selectedProducts, $selectedQuantities, $shippingA
     $orderDate = date('Y-m-d H:i:s');
     $totalPrice = 0;
 
-    // Calculate total price
-    foreach ($selectedProducts as $productId) {
-        $quantity = $selectedQuantities[$productId];
-        $sql = "SELECT price FROM product WHERE product_id = ?";
+    // Begin transaction to ensure atomicity
+    $conn->begin_transaction();
+
+    try {
+        // Calculate total price and check inventory before order creation
+        foreach ($selectedProducts as $productId) {
+            $quantity = $selectedQuantities[$productId];
+            // Fetch price and quantity from the `inventory` table
+            $sql = "SELECT p.price, i.quantity FROM product p JOIN inventory i ON p.product_id = i.product_id WHERE p.product_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $productId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+
+            if ($row['quantity'] >= $quantity) {
+                $productPrice = $row['price'];
+                $totalPrice += $productPrice * $quantity;
+            } else {
+                // Insufficient inventory
+                throw new Exception("Insufficient inventory for product ID: " . $productId);
+            }
+        }
+
+        // Insert order into orders table
+        $sql = "INSERT INTO orders (user_id, order_date, total_amount, status)
+                VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $productId);
+        $statusp = 'processing';
+        $stmt->bind_param("isds", $userId, $orderDate, $totalPrice, $statusp);
         $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        $productPrice = $row['price'];
-        $totalPrice += $productPrice * $quantity;
+
+        // Get the order ID
+        $orderId = $conn->insert_id;
+
+        // Insert order details into order_items table
+        foreach ($selectedProducts as $productId) {
+            $quantity = $selectedQuantities[$productId];
+            $sql = "SELECT price FROM product WHERE product_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $productId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $productPrice = $row['price'];
+
+            $sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, status, order_date)
+                    VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $orderStatus = 'processing';
+            $stmt->bind_param("iiidss", $orderId, $productId, $quantity, $productPrice, $orderStatus, $orderDate);
+            $stmt->execute();
+
+            // Update inventory for the specific product
+            $sql = "UPDATE inventory SET quantity = quantity - ? WHERE product_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ii", $quantity, $productId);
+            $stmt->execute();
+        }
+
+        // Remove items from cart (for selected products)
+        foreach ($selectedProducts as $productId) {
+            $sql = "DELETE FROM cart_product WHERE cart_id IN (SELECT cart_id FROM cart WHERE user_id = ?) AND product_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ii", $userId, $productId);
+            $stmt->execute();
+        }
+
+        $conn->commit(); // Commit transaction if everything succeeded
+
+    } catch (Exception $e) {
+        // Rollback transaction if any error occurred
+        $conn->rollback();
+        echo "Error: " . $e->getMessage();
     }
 
-    // Insert order into orders table
-    $sql = "INSERT INTO orders (user_id, order_date, total_amount, status)
-            VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $statusp = 'processing';
-    $stmt->bind_param("isds", $userId, $orderDate, $totalPrice, $statusp);
-    $stmt->execute();
-
-    // Get the order ID
-    $orderId = $conn->insert_id;
-
-    // Insert order details into order_items table
-    foreach ($selectedProducts as $productId) {
-        $quantity = $selectedQuantities[$productId];
-        $sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, status, order_date)
-                VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $orderStatus = 'processing';
-        $stmt->bind_param("iiidss", $orderId, $productId, $quantity, $productPrice, $orderStatus, $orderDate);
-        $stmt->execute();
-
-        // Update inventory for the specific product
-        $sql = "UPDATE inventory SET quantity = quantity - ? WHERE product_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ii", $quantity, $productId);
-        $stmt->execute();
-    }
-
-    // Remove items from cart (for selected products)
-    foreach ($selectedProducts as $productId) {
-        $sql = "DELETE FROM cart_product WHERE cart_id IN (SELECT cart_id FROM cart WHERE user_id = ?) AND product_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ii", $userId, $productId);
-        $stmt->execute();
-    }
+    $conn->close();
 }
 
 $conn->close();
@@ -119,9 +147,12 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5,minimum-scale=1.0">
+    <script src="https://kit.fontawesome.com/d0ce752c6a.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
+    <?php require_once '../../backend/utils/session.php'; ?>
     <title>Checkout</title>
     <style>
         /* Style for the checkout page */
@@ -192,8 +223,6 @@ $conn->close();
             box-sizing: border-box;
         }
 
-
-
         .order-details {
             margin-top: 20px;
             padding: 15px;
@@ -259,9 +288,14 @@ $conn->close();
         justify-content: center; /* Center content horizontally */
         }
 
+        .shop-button-container {
+        text-align: center; /* Center the button horizontally */
+        margin-top: 10px; /* Add some space above the button */
+        }
+
         .shop-button {
             display: inline-block;
-            padding: 17px 40px;
+            padding: 10px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
@@ -292,11 +326,11 @@ $conn->close();
                     </a>
                 </div>
                 <div class="search-bar">
-                    <form class="search-form">
+                    <form id="search-form" method="GET" action="shop.php">
                         <label>
-                            <input type="search" name="search" placeholder="search...">
+                            <input type="search" name="search" id="search-input" placeholder="search...">
                         </label>
-                        <input type="submit" name="submit-search" class ="search-button">
+                        <input type="submit" value="Search">
                     </form>
                 </div>
             </div> <br>
@@ -484,48 +518,38 @@ $conn->close();
             ?>
         </div>
     </main>
-    <footer>
-        <div class="social-media">
-            <br><br>
+<footer>
+    <div class="social-media">
+        <br><br>
+        <ul>
+            <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
+            <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
+            <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
+            <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
+            <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
+        </ul>
+    </div>
+    <div class="general-info">
+        <div class="help">
+            <h3>Help</h3>
             <ul>
-                <li><a href="#"><i class="fab fa-facebook fa-1.5x"></i>Facebook</a></li>
-                <li><a href="#"><i class="fab fa-instagram fa-1.5x"></i>Instagram</a></li>
-                <li><a href="#"><i class="fab fa-youtube fa-1.5x"></i>YouTube</a></li>
-                <li><a href="#"><i class="fab fa-twitter fa-1.5x"></i>Twitter</a></li>
-                <li><a href="#"><i class="fab fa-pinterest fa-1.5x"></i>Pinterest</a></li>
+                <li><a href="faq.php">Frequently Asked Questions</a></li>
+                <li><a href="returns.php">Returns</a></li>
+                <li><a href="customer_service.php">Customer Service</a></li>
             </ul>
         </div>
-        <div class="general-info">
-            <div class="help">
-                <h3>Help</h3>
-                <ul>
-                    <li><a href="faq.php">Frequently Asked Questions</a></li>
-                    <li><a href="returns.php">Returns</a></li>
-                    <li><a href="customer_service.php">Customer Service</a></li>
-                </ul>
-            </div>
-            <div class="location">
-                <p>123 Main Street, City, Country</p>
-            </div>
-            <div class="legal">
-                <h3>Privacy & Legal</h3>
-                <ul>
-                    <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
-                    <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
-                </ul>
-            </div>
+        <div class="location">
+            <p>123 Main Street, City, Country</p>
         </div>
-        2024 DataDash, All Rights Reserved.
-    </footer>
-    <script>
-    $(document).ready(function() {
-        $("#search-form").submit(function(event) {
-            event.preventDefault();
-            var searchTerm = $("#search-input").val();
-
-            // Redirect to shop.php with search term as a query parameter
-            window.location.href = "shop.php?search=" + searchTerm;
-        });
-    });
-    </script>
+        <div class="legal">
+            <h3>Privacy & Legal</h3>
+            <ul>
+                <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
+                <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
+            </ul> <br>
+                2024 DataDash, All Rights Reserved.
+        </div>
+    </div>
+</footer>
+<script src="../js/search.js"></script>
 </html>

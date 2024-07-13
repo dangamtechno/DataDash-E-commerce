@@ -11,20 +11,30 @@ if ($conn->connect_error) {
 
 // Check if the user is logged in
 if (!sessionExists()) {
-    echo "<p class='error-message'>You must be logged in to reset your password.</p>";
+    echo "<p class='error-message'>You must be logged in to view your wishlist.</p>";
     echo "<a href='login_page.php'>Login</a>";
     exit;
 }
 
-// Get user_id from the session
-$user_id = $_SESSION['user_id'];
+// Get user ID from the session
+$user_id = getSessionUserId();
 
-// Get order history from database
-$sql = "SELECT * FROM orders WHERE user_id = $user_id";
-$result = $conn->query($sql);
-
+// Fetch wishlists for the current user
+$wishlists = [];
+if (sessionExists()) {
+    $stmt = $conn->prepare("SELECT w.wishlist_id, w.wishlist_name, COUNT(wp.product_id) AS product_count 
+                            FROM wishlist w 
+                            LEFT JOIN wishlist_products wp ON w.wishlist_id = wp.wishlist_id 
+                            WHERE w.user_id = ? 
+                            GROUP BY w.wishlist_id");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $wishlists[] = $row;
+    }
+}
 $conn->close();
-
 ?>
 
 <!DOCTYPE html>
@@ -36,8 +46,7 @@ $conn->close();
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
-    <?php require_once '../../backend/utils/session.php'; ?>
-    <title>Order History</title>
+    <title>Wishlist</title>
 
     <style>
         /* General Styles */
@@ -56,61 +65,9 @@ $conn->close();
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Table Styles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Add shadow */
-        }
-
-        th, td {
-            padding: 12px 15px; /* Increased padding */
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #680eea; /* Purple header */
-            color: white;
-            font-weight: bold;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2; /* Light grey alternate rows */
-        }
-
-        /* Heading Styles */
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        /* Order Items Table Styling */
-        .order-items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Add shadow */
-        }
-
-        .order-items-table th,
-        .order-items-table td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-
-        .order-items-table th {
-            background-color: #f5f5f5; /* Light grey header */
-            font-weight: bold;
-            color: black;
-        }
-
         .shop-button-container {
-        text-align: center; /* Center the button horizontally */
-        margin-top: 10px; /* Add some space above the button */
+            text-align: center; /* Center the button horizontally */
+            margin-top: 10px; /* Add some space above the button */
         }
 
         .shop-button {
@@ -127,6 +84,91 @@ $conn->close();
 
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Add shadow */
+        }
+
+        th, td {
+            padding: 12px 15px; /* Increased padding */
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* Light grey alternate rows */
+        }
+
+        /* Link Styles */
+        td a {
+            color: black; 
+            text-decoration: none; /* Remove underline */
+        }
+
+        td a:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
+
+        /* Heading Styles */
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-buttons button {
+            padding: 5px 10px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #009dff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .action-buttons button.delete {
+            background-color: #ff4d4d; /* Red color for delete */
+        }
+
+        .add-wishlist-form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .add-wishlist-form input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        .add-wishlist-form button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #009dff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-wishlist-form button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -175,68 +217,55 @@ $conn->close();
         </div>
     </header>
     <div class="container">
-        <h2>Order History</h2>
-        <?php if ($result->num_rows > 0): ?>
+        <h2>Wishlists</h2>
+        <?php if (count($wishlists) > 0): ?>
         <table>
             <thead>
                 <tr>
-                    <th>Order ID</th>
-                    <th>Order Date</th>
-                    <th>Total Amount</th>
-                    <th>Status</th>
+                    <th>Wishlist Name</th>
+                    <th>Number of Products</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <?php while ($row = $result->fetch_assoc()): ?>
+                <?php foreach ($wishlists as $wishlist): ?>
                     <tr>
-                        <td><?php echo $row['order_id']; ?></td>
-                        <td><?php echo $row['order_date']; ?></td>
-                        <td><?php echo "$" . number_format($row['total_amount'], 2); ?></td>
-                        <td><?php echo $row['status']; ?></td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">
-                            <table class="order-items-table">
-                                <thead>
-                                    <tr>
-                                        <th>Product Name</th>
-                                        <th>Quantity</th>
-                                        <th>Unit Price</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $conn = new mysqli("localhost", "root", "", "datadash");
-
-                                    // Fetch order items for the current order
-                                    $order_id = $row['order_id'];
-                                    $sql_order_items = "SELECT p.name AS product_name, oi.quantity, oi.unit_price, oi.status 
-                                                        FROM order_items oi
-                                                        JOIN product p ON oi.product_id = p.product_id
-                                                        WHERE oi.order_id = $order_id";
-                                    $result_order_items = $conn->query($sql_order_items);
-                                    while ($order_item = $result_order_items->fetch_assoc()):
-                                    ?>
-                                        <tr>
-                                            <td><?php echo $order_item['product_name']; ?></td>
-                                            <td><?php echo $order_item['quantity']; ?></td>
-                                            <td><?php echo "$" . number_format($order_item['unit_price'], 2); ?></td>
-                                            <td><?php echo $order_item['status']; ?></td>
-                                        </tr>
-                                    <?php endwhile;
-                                    $conn->close();
-                                    ?>
-                                </tbody>
-                            </table>
+                        <td><a href="wishlist_details.php?wishlist_id=<?php echo $wishlist['wishlist_id']; ?>"><?php echo htmlspecialchars($wishlist['wishlist_name']); ?></a></td>
+                        <td>
+                            <?php
+                            if ($wishlist['product_count'] < 1) {
+                                echo '<a href="wishlist_details.php?wishlist_id=' . $wishlist['wishlist_id'] . '">Empty</a>';
+                            } else {
+                                echo '<a href="wishlist_details.php?wishlist_id=' . $wishlist['wishlist_id'] . '">' . $wishlist['product_count'] . '</a>';
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <form action="../../backend/utils/rename_wishlist.php" method="post" class="rename-form" id="rename-form-<?php echo $wishlist['wishlist_id']; ?>" style="display: inline;">
+                                    <input type="hidden" name="wishlist_id" value="<?php echo $wishlist['wishlist_id']; ?>">
+                                    <input type="text" name="new_name" placeholder="New Wishlist Name" style="display: none;">
+                                    <button type="button" class="rename" onclick="showRenameInput(this, <?php echo $wishlist['wishlist_id']; ?>)">Rename</button>
+                                </form>
+                                <form action="../../backend/utils/delete_wishlist.php" method="post" style="display: inline;">
+                                    <input type="hidden" name="wishlist_id" value="<?php echo $wishlist['wishlist_id']; ?>">
+                                    <button type="submit" class="delete">Delete</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             </tbody>
         </table>
-    <?php else: ?>
-        <p>No orders found.</p>
-    <?php endif; ?>
+        <?php else: ?>
+            <p>No wishlists found.</p>
+        <?php endif; ?>
+        <div class="add-wishlist-form">
+            <form action="../../backend/utils/create_wishlist.php" method="post">
+                <input type="text" name="wishlist_name" placeholder="New Wishlist Name" required>
+                <button type="submit">Add Wishlist</button>
+            </form>
+        </div>
     </div>
 
 <footer>
@@ -268,11 +297,26 @@ $conn->close();
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
             </ul> <br>
-                2024 DataDash, All Rights Reserved.
+            2024 DataDash, All Rights Reserved.
         </div>
     </div>
 </footer>
 <script src="../js/payment_methods.js"></script>
 <script src="../js/search.js"></script>
+<script>
+    function showRenameInput(button, wishlistId) {
+        const form = document.getElementById(`rename-form-${wishlistId}`);
+        const input = form.querySelector('input[name="new_name"]');
+        if (input.style.display === 'none' || input.style.display === '') {
+            input.style.display = 'inline-block';
+            input.focus();
+            button.innerHTML = 'Submit';
+            
+        } else {
+            form.submit();
+        }
+    }
+</script>
+
 </body>
 </html>
