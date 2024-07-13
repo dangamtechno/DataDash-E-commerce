@@ -54,6 +54,7 @@ function addNewBrandSection(section){
 }
 
 function displayBrands(data) {
+    removeOverlay();
     const brandContainer = document.createElement('div');
     brandContainer.className="form-div";
     brandContainer.id= 'brandContainer';
@@ -132,6 +133,7 @@ function addBrand() {
             const data = JSON.parse(xhr.responseText);
             console.log(data.message);
             alert(data.message);
+            removeOverlay();
             requestBrands();
         } else {
             console.error('Error adding item:', xhr.statusText);
