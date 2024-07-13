@@ -66,7 +66,6 @@ function displayBrands(data) {
     const headerRow = document.createElement('tr');
     headerRow.innerHTML = `
         <th>Product Name</th>
-        <th>Quantity</th>
         <th>Actions</th>
     `;
     thead.appendChild(headerRow);
