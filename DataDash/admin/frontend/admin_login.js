@@ -81,9 +81,10 @@ function displayLoggedUser(user){
 function addAdminFunctions(){
     //here will be the existing item edit options for update and delete
     addInventoryButton();
-    getCategories();
+    addCategoryButton();
     getProducts();
     getBanners();
+    addBrandsUpdateButton();
     addProductButton();
     //add new item buttons will for forms for inserting new tupples into the db
 }

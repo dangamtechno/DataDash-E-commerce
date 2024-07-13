@@ -1,5 +1,5 @@
 
-function getCategories(){
+function addCategoryButton(){
     const username = document.querySelector('.username').textContent;
     //console.log(username);
     const adminButtons = document.querySelector('.admin-buttons');
