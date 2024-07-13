@@ -96,6 +96,10 @@ function displayBrands(data) {
 
 
 function updateName(id, name) {
+    if(name.length <= 1){
+        alert(`${name} does not have enough characters`);
+        return;
+    }
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `${backend_url}update_brand.php`, true);
     xhr.onload = function() {
@@ -112,6 +116,12 @@ function updateName(id, name) {
 
 function addBrand() {
     const name = document.getElementById('newBrandName').value;
+    
+    if(name.length <= 1){
+        alert(`${name} does not have enough characters`);
+        return;
+    }
+    
     console.log(name);
     //const quantity = document.getElementById('newItemQuantity').value;
 
