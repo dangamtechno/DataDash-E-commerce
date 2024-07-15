@@ -51,13 +51,13 @@ if (sessionExists()) {
     }
 }
 
-// Fetch reviews for this product (Move this after $conn->close())
+// Fetch reviews for this product
 $reviews_query = "SELECT reviews.*, users.first_name, users.last_name FROM reviews 
                   JOIN users ON reviews.user_id = users.user_id 
                   WHERE reviews.product_id = $product_id";
 $reviews = $conn->query($reviews_query);
 
-$conn->close(); // Close the connection AFTER fetching reviews
+$conn->close(); // Close the connection
 
 ?>
 
@@ -73,7 +73,6 @@ $conn->close(); // Close the connection AFTER fetching reviews
     <?php require_once '../../backend/utils/session.php'; ?>
     <title>Product Details - DataDash</title>
     <style>
-
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -478,6 +477,29 @@ $conn->close(); // Close the connection AFTER fetching reviews
 <script src="../js/navbar.js"></script>
 <script src="../js/search.js"></script>
 <script src="../js/buy_now.js"></script>
+<script src="starRatingSystem.js"></script>
+<script>
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('rating');
 
+    stars.forEach(star => {
+        star.addEventListener('click', manageStars(stars, parseInt(star.dataset.value)));
+        // Set the rating value in the hidden input field
+        ratingInput.value = parseInt(star.dataset.value);
+    });
+
+    // Get existing rating for the product from PHP
+    <?php
+    // Fetch the product's rating from the database
+    $product_rating_query = "SELECT rating FROM product WHERE product_id = $product_id";
+    $product_rating_result = $conn->query($product_rating_query);
+    if ($product_rating_result->num_rows > 0) {
+        $product_rating = $product_rating_result->fetch_assoc()['rating'];
+        ?>
+        setStarRating(stars, <?php echo $product_rating; ?>); // Set initial rating
+        <?php
+    }
+    ?>
+</script>
 </body>
 </html>
