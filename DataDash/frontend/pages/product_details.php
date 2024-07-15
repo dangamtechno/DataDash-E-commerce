@@ -40,7 +40,25 @@ if (sessionExists()) {
     }
 }
 
-$conn->close();
+// Check if user has already reviewed this product
+$existing_review = false;
+if (sessionExists()) {
+    $user_id = getSessionUserId();
+    $existing_review_query = "SELECT * FROM reviews WHERE user_id = $user_id AND product_id = $product_id";
+    $existing_review_result = $conn->query($existing_review_query);
+    if ($existing_review_result->num_rows > 0) {
+        $existing_review = true;
+    }
+}
+
+// Fetch reviews for this product (Move this after $conn->close())
+$reviews_query = "SELECT reviews.*, users.first_name, users.last_name FROM reviews 
+                  JOIN users ON reviews.user_id = users.user_id 
+                  WHERE reviews.product_id = $product_id";
+$reviews = $conn->query($reviews_query);
+
+$conn->close(); // Close the connection AFTER fetching reviews
+
 ?>
 
 <!DOCTYPE html>
@@ -143,7 +161,7 @@ $conn->close();
             cursor: pointer;
             width: 121px;
       }
-      
+
         .custom-dropdown {
             position: relative;
             display: inline-block;
@@ -167,6 +185,107 @@ $conn->close();
             outline: none;
             border-color: #009dff;
         }
+
+        .review-container {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .review-container h2 {
+            margin-bottom: 10px;
+        }
+
+        .review-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .review-form label {
+            margin-bottom: 5px;
+        }
+
+        .review-form textarea {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        .review-form input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .review-form input[type="submit"]:hover {
+            background-color: #3e8e41;
+        }
+
+        .past-reviews-container {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .past-reviews-container h2 {
+            margin-bottom: 10px;
+        }
+
+        .past-review {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f5f5f5;
+        }
+
+        .past-review .user-info {
+            margin-bottom: 10px;
+        }
+
+        .past-review .review-text {
+            margin-bottom: 5px;
+        }
+
+        .rating-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .star {
+            font-size: 2em;
+            color: #ddd;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
+        .star.one {
+            color: rgb(255, 0, 0);
+        }
+
+        .star.two {
+            color: rgb(255, 106, 0);
+        }
+
+        .star.three {
+            color: rgb(251, 255, 120);
+        }
+
+        .star.four {
+            color: rgb(255, 255, 0);
+        }
+
+        .star.five {
+            color: rgb(24, 159, 14);
+        }
+
     </style>
 </head>
 <body>
@@ -255,7 +374,7 @@ $conn->close();
 
 
             <br><br>
-      
+
             <form action="../../backend/utils/add_to_wishlist.php" method="post" class="custom-dropdown">
                 <label for="wishlist">Add to Wishlist:</label>
                 <select id="wishlist" name="wishlist_id">
@@ -267,9 +386,60 @@ $conn->close();
                 <input type="hidden" name="product_id" value="<?= htmlspecialchars($product_data['product_id']) ?>">
                 <button type="submit" class="add-to-wishlist">Add to Wishlist</button>
             </form>
-
         </div>
     </section>
+        <div class="review-container">
+                    <h2>Leave a Review!</h2>
+                    <?php if (sessionExists() && !$existing_review): ?>
+                        <form class="review-form" action="../../backend/models/reviews.php" method="POST">
+                            <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
+                            <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+                            <label for="review-text">Your Review:</label>
+                            <textarea id="review-text" name="review_text" placeholder="Write your review here..."></textarea>
+                            <div class="rating-container">
+                                <label for="rating">Rating:</label>
+                                <span class="star" data-value="1">★</span>
+                                <span class="star" data-value="2">★</span>
+                                <span class="star" data-value="3">★</span>
+                                <span class="star" data-value="4">★</span>
+                                <span class="star" data-value="5">★</span>
+                                <input type="hidden" name="rating" id="rating" value="">
+                            </div>
+                            <input type="submit" value="Submit Review">
+                        </form>
+                    <?php elseif (sessionExists() && $existing_review): ?>
+                        <p>You have already left a review for this product.</p>
+                    <?php else: ?>
+                        <p>Please log in to leave a review.</p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="past-reviews-container">
+                    <h2>Past Reviews</h2>
+                    <?php
+                    // Display the reviews
+                    if ($reviews->num_rows > 0) {
+                        while ($review = $reviews->fetch_assoc()) {
+                            echo '<div class="past-review">';
+                            echo '<div class="user-info">';
+                            echo '<p><strong>' . $review['first_name'] . ' ' . $review['last_name'] . '</strong></p>';
+                            echo '<p>' . $review['review_date'] . '</p>';
+                            echo '</div>';
+                            echo '<div class="rating-container">';
+                            echo '<span class="star" data-value="' . $review['rating'] . '">★</span>';
+                            echo '<span class="star" data-value="' . $review['rating'] . '">★</span>';
+                            echo '<span class="star" data-value="' . $review['rating'] . '">★</span>';
+                            echo '<span class="star" data-value="' . $review['rating'] . '">★</span>';
+                            echo '<span class="star" data-value="' . $review['rating'] . '">★</span>';
+                            echo '</div>';
+                            echo '<p class="review-text">' . $review['review_text'] . '</p>';
+                            echo '</div>';
+                        }
+                    } else {
+                        echo '<p>No reviews yet. Be the first to leave a review!</p>';
+                    }
+                    ?>
+                </div>
 </main>
 
 <footer>
