@@ -4,7 +4,8 @@ $conn = new mysqli("localhost", "root", "", "datadash");
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
     $product_id = $_GET['product_id'];
 
-    $sql = "SELECT reviews.*, users.first_name, users.last_name FROM reviews 
+    $sql = "SELECT reviews.*, users.first_name, users.last_name 
+            FROM reviews 
             JOIN users ON reviews.user_id = users.user_id 
             WHERE reviews.product_id = ?";
     $stmt = $conn->prepare($sql);
