@@ -326,43 +326,5 @@ BEGIN
     UPDATE orders SET status = 'processing' WHERE order_id = NEW.order_id;
 END//
 
--- Calculate the average rating for each product.
-CREATE TRIGGER calculate_average_rating AFTER INSERT ON reviews
-FOR EACH ROW
-BEGIN
-  UPDATE product
-  SET rating = (
-    SELECT AVG(rating)
-    FROM reviews
-    WHERE product_id = NEW.product_id
-  )
-  WHERE product_id = NEW.product_id;
-END//
 
--- Trigger to update average rating on update of a review
-CREATE TRIGGER update_average_rating AFTER UPDATE ON reviews
-FOR EACH ROW
-BEGIN
-  UPDATE product
-  SET rating = (
-    SELECT AVG(rating)
-    FROM reviews
-    WHERE product_id = NEW.product_id
-  )
-  WHERE product_id = NEW.product_id;
-END//
-
--- Trigger to update average rating on delete of a review
-CREATE TRIGGER delete_average_rating AFTER DELETE ON reviews
-FOR EACH ROW
-BEGIN
-  UPDATE product
-  SET rating = (
-    SELECT AVG(rating)
-    FROM reviews
-    WHERE product_id = OLD.product_id
-  )
-  WHERE product_id = OLD.product_id;
-END//
-DELIMITER ;
 

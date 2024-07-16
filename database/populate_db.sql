@@ -60,30 +60,29 @@ VALUES
   (1, 4, 'Google Pixel 8 Pro', 'A premium Android smartphone with advanced camera features.', 1099.99, 'google_pixel_8_pro.jpg', 1);
 
 -- Insert inventory records for the products
--- Products 1 and 5 will have a quantity greater than 1
 INSERT INTO inventory (product_id, quantity, last_updated_date)
 VALUES
   (1, 5, NOW()),
-  (2, 1, NOW()),
-  (3, 1, NOW()),
-  (4, 1, NOW()),
+  (2, 10, NOW()),
+  (3, 2, NOW()),
+  (4, 15, NOW()),
   (5, 3, NOW()),
-  (6, 1, NOW()),
+  (6, 8, NOW()),
   (7, 1, NOW()),
-  (8, 1, NOW()),
-  (9, 1, NOW()),
+  (8, 4, NOW()),
+  (9, 12, NOW()),
   (10, 1, NOW()),
-  (11, 1, NOW()),
+  (11, 7, NOW()),
   (12, 1, NOW()),
-  (13, 1, NOW()),
+  (13, 3, NOW()),
   (14, 1, NOW()),
-  (15, 1, NOW()),
+  (15, 9, NOW()),
   (16, 1, NOW()),
-  (17, 1, NOW()),
+  (17, 6, NOW()),
   (18, 1, NOW()),
-  (19, 1, NOW()),
+  (19, 2, NOW()),
   (20, 1, NOW()),
-  (21, 1, NOW());
+  (21, 5, NOW());
 
 -- Populate the coupons table
 INSERT INTO coupons (coupon_code, discount_amount, expiration_date)
@@ -158,6 +157,29 @@ VALUES
   (1, 1, 1),
   (2, 2, 1),
   (3, 3, 1);
+
+-- Populate the reviews table with ratings and reviews for each product
+INSERT INTO reviews (user_id, product_id, rating, review_text) VALUES
+    (1, 1, 5, 'Excellent phone with great camera and performance!'),
+    (1, 2, 4, 'Love the tablet for reading and browsing the web.'),
+    (1, 3, 3, 'Decent headphones, but the noise cancellation could be better.'),
+    (1, 4, 5, 'A powerful laptop that handles everything I throw at it.'),
+    (1, 5, 4, 'Stylish watch with good battery life and fitness tracking features.'),
+    (1, 6, 5, 'Amazing camera for capturing stunning photos and videos.'),
+    (1, 7, 4, 'Good earbuds with comfortable fit and decent sound quality.'),
+    (1, 8, 5, 'Exceptional TV with incredible picture quality and sound.'),
+    (1, 9, 4, 'Great gaming console with impressive graphics and performance.'),
+    (1, 10, 3, 'Compact speaker with decent sound but lacks bass.'),
+    (1, 11, 4, 'Convenient wireless charger that works well with most phones.'),
+    (1, 12, 4, 'Comfortable keyboard with good typing experience.'),
+    (1, 13, 5, 'Amazing mouse for gaming with precise tracking and responsive buttons.'),
+    (1, 14, 4, 'Fast SSD with ample storage space.'),
+    (1, 15, 5, 'Immersive VR experience with good graphics and controls.'),
+    (1, 16, 4, 'Reliable WiFi router with good coverage and speed.'),
+    (1, 17, 4, 'Good tablet for everyday use, but not as powerful as the Galaxy Tab S8.'),
+    (1, 18, 5, 'Excellent earbuds with fantastic noise cancellation and sound quality.'),
+    (1, 19, 4, 'Solid laptop for everyday tasks and light gaming.'),
+    (1, 20, 3, 'Decent fitness watch but could use some improvements on the GPS accuracy.');
 
 
 

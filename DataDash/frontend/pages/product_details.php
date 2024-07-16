@@ -61,13 +61,12 @@ if (sessionExists()) {
 }
 
 // Fetch reviews for this product
-$reviews_query = "SELECT reviews.*, users.first_name, users.last_name FROM reviews 
+$reviews_query = "SELECT reviews.*, users.username FROM reviews 
                   JOIN users ON reviews.user_id = users.user_id 
                   WHERE reviews.product_id = $product_id";
 $reviews = $conn->query($reviews_query);
 
 $conn->close(); // Close the connection
-
 ?>
 
 <!DOCTYPE html>
@@ -368,15 +367,18 @@ $conn->close(); // Close the connection
                 <li>Category: <?= $product_data['category_name'] ?></li>
                 <li>Brand: <?= $product_data['brand_name'] ?></li>
                 <li>Available Quantity: <?= $product_data['inventory'] ?></li>
-                <li>Rating:
-                    <?php
-                    if (!is_null($product_data['average_rating'])) {
-                        echo $product_data['average_rating'];
-                    } else {
-                        echo 'N/A';
-                    }
-                    ?>
-                </li>
+                <?php
+                if (!is_null($product_data['average_rating'])) {
+                    echo '<div class="rating" style="color: rgb(211,194,39);">';
+                    echo '<i class="fas fa-star"></i>' . number_format($product_data['average_rating'], 1); // Display average rating
+                    echo '</div>';
+                } else {
+                    echo '<div class="rating" style="color: rgb(211,194,39);">';
+                    echo '<i class="fas fa-star"></i>';
+                    echo 'N/A'; // Display a message if no ratings
+                    echo '</div>';
+                }
+                ?>
             </ul>
             <br>
 
@@ -420,36 +422,43 @@ $conn->close(); // Close the connection
     </section>
     <div class="review-container">
         <h2>Leave a Review!</h2>
-        <?php function getStarColorClass(int $i)
+        <?php
+        function getStarColorClass(int $i)
         {
-
+            switch ($i) {
+            case 1: return 'one';
+            case 2: return 'two';
+            case 3: return 'three';
+            case 4: return 'four';
+            case 5: return 'five';
+            default: return '';
         }
-
+        }
         if (sessionExists() && !$existing_review): ?>
             <form class="review-form" action="../../backend/models/reviews.php" method="POST">
                 <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
                 <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
                 <label for="review-text">Your Review:</label>
                 <textarea id="review-text" name="review_text" placeholder="Write your review here..."></textarea>
-                <div class="rating-container">
+                <div class="rating-container" data-product-id="<?= $product_data['product_id'] ?>">
                     <label for="rating">Rating:</label>
-                    <span class="star" data-value="1">★</span>
-                    <span class="star" data-value="2">★</span>
-                    <span class="star" data-value="3">★</span>
-                    <span class="star" data-value="4">★</span>
-                    <span class="star" data-value="5">★</span>
-                    <input type="hidden" name="rating" id="rating" value="">
+                    <span class="star" data-value="1" id="star-<?= $product_data['product_id'] ?>-1">★</span>
+                    <span class="star" data-value="2" id="star-<?= $product_data['product_id'] ?>-2">★</span>
+                    <span class="star" data-value="3" id="star-<?= $product_data['product_id'] ?>-3">★</span>
+                    <span class="star" data-value="4" id="star-<?= $product_data['product_id'] ?>-4">★</span>
+                    <span class="star" data-value="5" id="star-<?= $product_data['product_id'] ?>-5">★</span>
+                    <input type="hidden" name="rating" id="rating-<?= $product_data['product_id'] ?>">
                 </div>
                 <input type="submit" value="Submit Review" disabled>
             </form>
         <?php elseif (sessionExists() && $existing_review): ?>
             <p>You have already left a review for this product.</p>
-            <div class="rating-container">
+            <div class="rating-container" data-product-id="<?= $product_data['product_id'] ?>">
                 <?php
                 // Display the user's existing rating with disabled stars
                 for ($i = 1; $i <= 5; $i++) {
                     $starClass = ($i <= $user_rating) ? 'star ' . getStarColorClass($i) : 'star disabled-star';
-                    echo '<span class="' . $starClass . '" data-value="' . $i . '">★</span>';
+                    echo '<span class="' . $starClass . '" data-value="' . $i . '" id="star-' . $product_data['product_id'] . '-' . $i . '">★</span>';
                 }
                 ?>
             </div>
@@ -467,13 +476,13 @@ $conn->close(); // Close the connection
             while ($review = $reviews->fetch_assoc()) {
                 echo '<div class="past-review">';
                 echo '<div class="user-info">';
-                echo '<p><strong>' . $review['first_name'] . ' ' . $review['last_name'] . '</strong></p>';
+                echo '<p><strong>' . $review['username']. '</strong></p>';
                 echo '<p>' . date("j M Y", strtotime($review['review_date'])) . '</p>';
                 echo '</div>';
-                echo '<div class="rating-container">';
+                echo '<div class="rating-container" data-product-id="' . $product_id . '">';
                 for ($i = 1; $i <= 5; $i++) {
-                    $starClass = ($i <= $review['rating']) ? 'star ' . getStarColorClass($i) : 'star';
-                    echo '<span class="' . $starClass . '" data-value="' . $i . '">★</span>';
+                    $starClass = ($i <= $review['rating']) ? 'star ' . getStarColorClass($i) : 'star disabled-star';
+                    echo '<span class="' . $starClass . '" data-value="' . $i . '" id="star-' . $product_id . '-' . $i . '">★</span>';
                 }
                 echo '</div>';
                 echo '<p class="review-text">' . $review['review_text'] . '</p>';
@@ -523,40 +532,31 @@ $conn->close(); // Close the connection
 <script src="../js/search.js"></script>
 <script src="../js/buy_now.js"></script>
 <script>
-    const stars = document.querySelectorAll('.star');
-    const ratingInput = document.getElementById('rating');
-    const submitButton = document.querySelector('.review-form input[type="submit"]');
-    const reviewText = document.getElementById('review-text');
+    const ratingContainers = document.querySelectorAll('.rating-container');
 
-    // If user has already reviewed, disable stars and make them reflect their rating
-    <?php if (sessionExists() && $existing_review): ?>
+    ratingContainers.forEach(container => {
+        const stars = container.querySelectorAll('.star');
+        const productId = container.dataset.productId;
+
         stars.forEach(star => {
-            star.classList.add('disabled-star');
-            star.removeEventListener('click', setStarRating); // Remove click listener
-        });
-        setStarRating(stars, <?php echo $user_rating; ?>); // Set initial rating based on existing review
-    <?php endif; ?>
-
-    stars.forEach(star => {
-        star.addEventListener('click', (event) => {
-            let rating = parseInt(event.target.dataset.value);
-            setStarRating(stars, rating);
-            ratingInput.value = rating;
-            checkSubmitButton();
+            star.addEventListener('click', (event) => {
+                let rating = parseInt(event.target.dataset.value);
+                setStarRating(stars, rating, productId);
+                document.getElementById(`rating-${productId}`).value = rating;
+                checkSubmitButton(productId); // Update submit button state based on product ID
+            });
         });
     });
 
-    function setStarRating(stars, rating) {
+    function setStarRating(stars, rating, productId) {
         stars.forEach(star => {
-            star.classList.remove('one', 'two', 'three', 'four', 'five'); // Reset all stars
+            star.classList.remove('one', 'two', 'three', 'four', 'five');
             if (parseInt(star.dataset.value) <= rating) {
-                // Apply gold color class based on rating
                 star.classList.add(getStarColorClass(star.dataset.value));
             }
         });
     }
 
-    // Helper function to map rating to color class
     function getStarColorClass(rating) {
         switch (parseInt(rating)) {
             case 1: return 'one';
@@ -568,8 +568,11 @@ $conn->close(); // Close the connection
         }
     }
 
-    function checkSubmitButton() {
-        if (ratingInput.value !== '' && reviewText.value.trim() !== '') {
+    function checkSubmitButton(productId) {
+        const reviewText = document.getElementById('review-text');
+        const submitButton = document.querySelector(`.review-form input[type="submit"]`);
+
+        if (document.getElementById(`rating-${productId}`).value !== '' && reviewText.value.trim() !== '') {
             submitButton.disabled = false;
             submitButton.style.opacity = 1;
             submitButton.style.pointerEvents = 'auto';
@@ -580,7 +583,21 @@ $conn->close(); // Close the connection
         }
     }
 
-    reviewText.addEventListener('input', checkSubmitButton);
+    // Disable stars for past reviews
+    const pastReviewStars = document.querySelectorAll('.past-review .star');
+    pastReviewStars.forEach(star => {
+        star.classList.add('disabled-star');
+    });
+
+    // If user has already reviewed, disable stars and make them reflect their rating
+    <?php if (sessionExists() && $existing_review): ?>
+        const existingStars = document.querySelectorAll(`#star-<?= $product_id ?>-*`);
+        existingStars.forEach(star => {
+            star.classList.add('disabled-star');
+            star.removeEventListener('click', setStarRating);
+        });
+        setStarRating(existingStars, <?php echo $user_rating; ?>, <?= $product_id ?>);
+    <?php endif; ?>
 </script>
 </body>
 </html>
