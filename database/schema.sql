@@ -70,7 +70,6 @@ CREATE TABLE product (
     price DECIMAL(10, 2) DEFAULT NULL,
     image VARCHAR(255) DEFAULT NULL,
     status TINYINT NOT NULL DEFAULT 0,
-    rating DECIMAL(2, 1) DEFAULT NULL,
     date_added DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY name_unique (name),
     KEY idx_product_category_id (category_id),
@@ -169,22 +168,11 @@ CREATE TABLE banner (
 CREATE TABLE reviews (
     review_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    order_id INT NOT NULL,
     product_id INT NOT NULL,
-    rating DECIMAL(2, 1) NOT NULL,
+    rating INT NOT NULL,  -- Rating from 1 to 5
     review_text TEXT,
-    review_date DATETIME NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (product_id) REFERENCES product(product_id),
-    FOREIGN KEY (order_id) REFERENCES order_items(order_id)
-);
-
-CREATE TABLE ratings (
-    rating_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    product_id INT NOT NULL,
-    rating_value DECIMAL(2, 1) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    review_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
@@ -194,6 +182,14 @@ CREATE TABLE coupons (
     discount_amount DECIMAL(10, 2) NOT NULL,
     expiration_date DATE NOT NULL,
     active BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE sessions (
+    session_id VARCHAR(33) PRIMARY KEY,
+    user_id INT NOT NULL,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE messages (
@@ -298,8 +294,6 @@ CREATE INDEX idx_wishlist_user_id ON wishlist (user_id);
 CREATE INDEX idx_wishlist_product_id ON wishlist_products (product_id);
 CREATE INDEX idx_reviews_user_id ON reviews (user_id);
 CREATE INDEX idx_reviews_product_id ON reviews (product_id);
-CREATE INDEX idx_ratings_user_id ON ratings (user_id);
-CREATE INDEX idx_ratings_product_id ON ratings (product_id);
 CREATE INDEX idx_messages_sender_id ON messages (sender_id);
 CREATE INDEX idx_messages_receiver_id ON messages (receiver_id);
 CREATE INDEX idx_notifications_user_id ON notifications (user_id);
@@ -331,12 +325,6 @@ FOR EACH ROW
 BEGIN
     UPDATE orders SET status = 'processing' WHERE order_id = NEW.order_id;
 END//
-DELIMITER ;
 
-CREATE TABLE sessions (
-    session_id VARCHAR(33) PRIMARY KEY,
-    user_id INT NOT NULL,
-    start_time DATETIME NOT NULL,
-    end_time DATETIME,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
+
+

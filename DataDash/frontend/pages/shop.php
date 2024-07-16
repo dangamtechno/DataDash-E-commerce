@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <?php require_once '../../backend/utils/session.php'; ?>
 
+
     <title>Shop - DataDash</title>
     <style>
         .product-grid {
@@ -188,12 +189,28 @@
                     // Display the results
                     if (mysqli_num_rows($results) > 0) {
                         while ($row = mysqli_fetch_assoc($results)) {
-                            // ... (HTML to display each product, matching shop.php) ...
                             echo '<div class="product">';
                             echo '<a href="product_details.php?id=' . $row['product_id'] . '">';
                             echo '<img src="../images/electronic_products/' . $row['image'] . '" alt="' . $row['name'] . '">';
+
+                            // Get average rating for the product
+                            $sql = "SELECT AVG(rating) AS average_rating FROM reviews WHERE product_id = " . $row['product_id'];
+                            $result = $conn->query($sql);
+                            $rating = $result->fetch_assoc();
+                            $average_rating = $rating['average_rating'];
+                            if ($result->num_rows > 0 && $average_rating > 0) {
+                                echo '<div class="rating" style="color: rgb(7,210,255);">';
+                                echo '<i class="fas fa-star"></i>' . number_format($average_rating, 1); // Display average rating
+                                echo '</div>';
+                            } else {
+                                echo '<div class="rating" style="color: rgb(7,210,255);">';
+                                echo '<i class="fas fa-star"></i>';
+                                echo 'N/A'; // Display a message if no ratings
+                                echo '</div>';
+                            }
                             echo '<h3>' . $row['name'] . '</h3>';
                             echo '<p>$' . $row['price'] . '</p>';
+
                             echo '</a>';
                             if (sessionExists()) {
                                 echo '<form action="../../backend/utils/add_to_cart.php" method="post">';
@@ -248,6 +265,63 @@
         </div>
     </div>
 </footer>
-<script src="../js/product_list_management.js"></script>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load initial products
+            fetch('../../backend/utils/filter_and_sort.php')
+                .then(response => response.text())
+                .then(data => {
+                    const productGrid = document.getElementById('product-grid');
+                    // Append the new products to the existing grid
+                })
+                .catch(error => console.error('Error loading products:', error));
+
+            // Search functionality
+            const searchForm = document.querySelector('.search-form');
+            searchForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const searchTerm = document.querySelector('input[name="search"]').value;
+                fetch(`../../backend/utils/search.php?submit-search=1&search=${searchTerm}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        const productGrid = document.getElementById('product-grid');
+                        // Clear existing products and append the new ones
+                        productGrid.innerHTML = ''; // Clear existing content
+                        productGrid.innerHTML += data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+            // Filtering
+            const filterDropdown = document.getElementById('filter-dropdown');
+            filterDropdown.addEventListener('change', function() {
+                const selectedCategory = this.value;
+                const sortOrder = document.getElementById('sort-dropdown').value;
+                fetch(`../../backend/utils/filter_and_sort.php?category=${selectedCategory}&sort=${sortOrder}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        const productGrid = document.getElementById('product-grid');
+                        productGrid.innerHTML = '';
+                        productGrid.innerHTML += data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+
+            // Sorting
+            const sortDropdown = document.getElementById('sort-dropdown');
+            sortDropdown.addEventListener('change', function() {
+                const selectedCategory = document.getElementById('filter-dropdown').value;
+                const sortOrder = this.value;
+                fetch(`../../backend/utils/filter_and_sort.php?category=${selectedCategory}&sort=${sortOrder}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        const productGrid = document.getElementById('product-grid');
+                        productGrid.innerHTML = '';
+                        productGrid.innerHTML += data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+    </script>
 </body>
 </html>

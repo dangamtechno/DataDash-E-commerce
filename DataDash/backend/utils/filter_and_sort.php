@@ -25,11 +25,16 @@ if ($sortOrder === 'price-asc') {
 } elseif ($sortOrder === 'price-desc') {
     $orderByClause = "ORDER BY price DESC";
 } elseif ($sortOrder === 'rating') {
-    $orderByClause = "ORDER BY rating DESC";
+    $orderByClause = "ORDER BY avg_rating DESC"; // Sort by average rating
 }
 
 // Combine WHERE and ORDER BY clauses
-$query = "SELECT * FROM product $whereClause $orderByClause";
+$query = "SELECT p.*, AVG(r.rating) AS avg_rating
+          FROM product p
+          LEFT JOIN reviews r ON p.product_id = r.product_id
+          $whereClause
+          GROUP BY p.product_id
+          $orderByClause";
 
 // Execute the query and fetch results
 $results = mysqli_query($conn, $query);
@@ -40,6 +45,19 @@ if (mysqli_num_rows($results) > 0) {
         echo '<div class="product">';
         echo '<a href="product_details.php?id=' . $row['product_id'] . '">';
         echo '<img src="../images/electronic_products/' . $row['image'] . '" alt="' . $row['name'] . '">';
+
+        // Display average rating
+        if ($row['avg_rating'] > 0) {
+            echo '<div class="rating" style="color: rgb(7,210,255);">';
+            echo '<i class="fas fa-star"></i>' . number_format($row['avg_rating'], 1); // Display average rating
+            echo '</div>';
+        } else {
+            echo '<div class="rating" style="color: rgb(7,210,255);">';
+            echo '<i class="fas fa-star"></i>';
+            echo 'N/A'; // Display a message if no ratings
+            echo '</div>';
+        }
+
         echo '<h3>' . $row['name'] . '</h3>';
         echo '<p>$' . $row['price'] . '</p>';
         echo '</a>';

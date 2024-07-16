@@ -11,6 +11,10 @@
 
     <title>Home</title>
     <style>
+        .featured-products {
+            background-color: salmon;
+        }
+
         .product-grid {
             display: flex;
             flex-wrap: wrap;
@@ -57,7 +61,7 @@
         }
 
         .add-to-cart {
-            background-color: #0ad4f8;
+            background-color: #03d3f8;
             border: none;
             padding: 10px 20px;
             font-size: 16px;
@@ -134,6 +138,23 @@
                     echo '<div class="product">';
                     echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
                     echo '<img src="../images/electronic_products/' . $product['image'] . '" alt="' . $product['name'] . '">';
+
+                    // Get average rating for the product
+                    $sql = "SELECT AVG(rating) AS average_rating FROM reviews WHERE product_id = " . $product['product_id'];
+                    $result = $conn->query($sql);
+                    $row = $result->fetch_assoc();
+                    $average_rating = $row['average_rating'];
+                    if ($result->num_rows > 0 && $average_rating > 0) {
+                        echo '<div class="rating" style="color: rgb(7,210,255);">';
+                        echo '<i class="fas fa-star"></i>' . number_format($average_rating, 1); // Display average rating
+                        echo '</div>';
+                    } else {
+                        echo '<div class="rating" style="color: rgb(7,210,255);">';
+                        echo '<i class="fas fa-star"></i>';
+                        echo 'N/A'; // Display a message if no ratings
+                        echo '</div>';
+                    }
+
                     echo '<div class="product-details">';
                     echo '<h3 style="color: #000;">' . $product['name'] . '</h3>';
                     echo '<p style="color: #000;">$' . $product['price'] . '</p>';
@@ -145,10 +166,9 @@
                          echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
                          echo '</form>';
                     } else {
-                        echo '<a href="login_page.php" class="add-to-cart-link">Add to Cart</a>';
-                    }
-                    echo '</div>';
-                    echo '</div>';
+                        echo '<a href="login_page.php" class="add-to-cart-link" style="color: cyan;">Add to Cart</a>';                    }
+                        echo '</div>';
+                        echo '</div>';
                 }
                 $conn->close();
                 ?>
@@ -168,6 +188,23 @@
                     echo '<div class="product">';
                     echo '<a href="product_details.php?id=' . $product['product_id'] . '">';
                     echo '<img src="../images/electronic_products/' . $product['image'] . '" alt="' . $product['name'] . '">';
+
+                    // Get average rating for the product
+                    $sql = "SELECT AVG(rating) AS average_rating FROM reviews WHERE product_id = " . $product['product_id'];
+                    $result = $conn->query($sql);
+                    $row = $result->fetch_assoc();
+                    $average_rating = $row['average_rating'];
+                    if ($result->num_rows > 0 && $average_rating > 0) {
+                        echo '<div class="rating" style="color: rgb(7,210,255);">';
+                        echo '<i class="fas fa-star"></i>' . number_format($average_rating, 1); // Display average rating
+                        echo '</div>';
+                    } else {
+                        echo '<div class="rating" style="color: rgb(7,210,255);">';
+                        echo '<i class="fas fa-star"></i>';
+                        echo 'N/A'; // Display a message if no ratings
+                        echo '</div>';
+                    }
+
                     echo '<div class="product-details">';
                     echo '<h3 style="color: #000;">' . $product['name'] . '</h3>';
                     echo '<p style="color: #000;">$' . $product['price'] . '</p>';
@@ -179,8 +216,7 @@
                         echo '<button type="submit" class="add-to-cart">Add to Cart</button>';
                         echo '</form>';
                     } else {
-                        echo '<a href="login_page.php" class="add-to-cart-link">Add to Cart</a>';
-                    }
+                        echo '<a href="login_page.php" class="add-to-cart-link" style="color: #07eaff;">Add to Cart</a>';                    }
                     echo '</div>';
                     echo '</div>';
                 }
@@ -237,7 +273,6 @@
 <script src = "../js/banner.js"></script>
 <script src = "../js/featured.js"></script>
 <script src = "../js/newArrivals.js"></script>
-<script src = "../js/starRatingSystem.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="../js/search.js"></script>
 </body>
