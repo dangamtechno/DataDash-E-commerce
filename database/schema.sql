@@ -172,7 +172,7 @@ CREATE TABLE reviews (
     rating INT NOT NULL,  -- Rating from 1 to 5
     review_text TEXT,
     review_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 

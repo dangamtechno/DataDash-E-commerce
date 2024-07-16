@@ -139,10 +139,10 @@ VALUES
 
 
 -- Populate user table
+-- Hashing the password using SHA-256
 INSERT INTO users (first_name, last_name, username, email, password_hash, favorite_movie, phone)
-VALUES
-  ('John', 'Doe', 'johndoe', 'johndoe@example.com', 'pass1234', 'The Matrix', '123-456-7890');
-
+VALUES ('John', 'Doe', 'johndoe', 'johndoe@example.com', PASSWORD('pass1234'), 'The Matrix', '123-456-7890'
+);
 
 -- Populate wishlist table
 INSERT INTO wishlist (user_id, wishlist_name)
