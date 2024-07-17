@@ -412,18 +412,18 @@ $conn->close();
                                             <th>$<?php echo number_format($totalPrice, 2); ?></th>
                                         </tr>
                                         <?php
-                                            if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'apply_coupon') {
-                                                $couponCode = $_POST['coupon_code'];
-                                                $discountAmount = validateCoupon($couponCode);
-                                                if ($discountAmount !== false) {
-                                                    $totalPrice -= $discountAmount;
-                                                    echo "<tr>
-                                                        <th colspan='3'>Discount:</th>
-                                                        <th>$" . number_format($discountAmount, 2) . "</th>
-                                                    </tr>";
-                                                }
+                                        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'apply_coupon') {
+                                            $couponCode = $_POST['coupon_code'];
+                                            $discountAmount = validateCoupon($couponCode);
+                                            if ($discountAmount !== false) {
+                                                $totalPrice -= $discountAmount;
+                                                echo "<tr>
+                                                    <th colspan='3'>Discount:</th>
+                                                    <th>$" . number_format($discountAmount, 2) . "</th>
+                                                </tr>";
                                             }
-                                            ?>
+                                        }
+                                        ?>
                                         <tr>
                                             <th colspan="3">Shipping:</th>
                                             <th>$0.00 (Free)</th>
@@ -438,37 +438,36 @@ $conn->close();
 
                             <div class="checkout-section">
                                 <h3>Apply Coupon</h3>
-                                <form action="checkout.php" method="post" id="coupon-form">
+                                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="coupon-form">
                                     <input type="hidden" name="action" style="border-radius: 30px;" value="apply_coupon">
-                                    <input type="hidden" style="border-radius: 30px;" name="selected_products" value="<?php echo json_encode($selectedProductIds); ?>">
-                                    <input type="hidden" style="border-radius: 30px;" name="selected_quantities" value="<?php echo json_encode($selectedQuantities); ?>">
+                                    <input type="hidden" style="border-radius: 30px;" name="selected_products" value="<?php echo htmlspecialchars(json_encode($selectedProductIds)); ?>">
+                                    <input type="hidden" style="border-radius: 30px;" name="selected_quantities" value="<?php echo htmlspecialchars(json_encode($selectedQuantities)); ?>">
                                     <div class="form-group">
                                         <label style="border-radius: 30px;" for="coupon-code">Coupon Code:</label>
                                         <input style="border-radius: 30px;" type="text" name="coupon_code" id="coupon-code" required>
                                     </div>
                                     <button type="submit" style="border-radius: 30px;" class="checkout-button"> Apply Coupon</button>
                                     <?php
-                                if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'apply_coupon') {
-                                    $couponCode = $_POST['coupon_code'];
-                                    $discountAmount = validateCoupon($couponCode);
-                                    if ($discountAmount !== false) {
-                                        deactivateCoupon($couponCode);
-                                        echo '<p style="color: green;">Coupon applied! Discount: $' . number_format($discountAmount, 2) . '</p>';
-                                    } else {
-                                        echo '<p style="color: red;">Invalid or expired coupon code.</p>';
+                                    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'apply_coupon') {
+                                        $couponCode = $_POST['coupon_code'];
+                                        $discountAmount = validateCoupon($couponCode);
+                                        if ($discountAmount !== false) {
+                                            echo '<p style="color: green;">Coupon applied! Discount: $' . number_format($discountAmount, 2) . '</p>';
+                                        } else {
+                                            echo '<p style="color: red;">Invalid or expired coupon code.</p>';
+                                        }
                                     }
-                                }
-                                
-                            ?>
+                                    ?>
                                 </form>
                             </div>
 
                             <div class="checkout-section">
                                 <h3>Shipping Address</h3>
                                 <form action="review_order.php" method="post" id="checkout-form">
-                                    <input type="hidden" name="action" style="border-radius: 30px;" value="checkout">
-                                    <input type="hidden" name="selected_products" style="border-radius: 30px;" value="<?php echo json_encode($selectedProductIds); ?>">
-                                    <input type="hidden" name="selected_quantities" style="border-radius: 30px;" value="<?php echo json_encode($selectedQuantities); ?>">
+                                <input type="hidden" name="action" style="border-radius: 30px;" value="checkout">
+                                    <input type="hidden" name="selected_products" style="border-radius: 30px;" value="<?php echo htmlspecialchars(json_encode($selectedProductIds)); ?>">
+                                    <input type="hidden" name="selected_quantities" style="border-radius: 30px;" value="<?php echo htmlspecialchars(json_encode($selectedQuantities)); ?>">
+                                    <input type="hidden" name="coupon_code" style="border-radius: 30px;" id="coupon_code" value="<?php echo htmlspecialchars($couponCode); ?>">
                                     <input type="hidden" name="shipping_address_id" style="border-radius: 30px;" id="shipping_address_id" value="">
                                     <input type="hidden" name="payment_method_id" style="border-radius: 30px;" id="payment_method_id" value="">
 

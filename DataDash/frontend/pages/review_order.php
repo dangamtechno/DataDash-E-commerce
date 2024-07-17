@@ -1,5 +1,10 @@
 <?php
 require_once '../../backend/utils/session.php';
+require '../../backend/vendor/autoload.php'; 
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 
 // Establish database connection using the configured credentials
 $conn = new mysqli("localhost", "root", "", "datadash");
@@ -55,7 +60,7 @@ function getPaymentMethodById($paymentMethodId) {
 }
 
 // Function to create a new order
-function createOrder($userId, $selectedProducts, $selectedQuantities, $shippingAddressId, $paymentMethodId) {
+function createOrder($userId, $selectedProducts, $selectedQuantities, $shippingAddressId, $paymentMethodId, $discountAmount) {
     $conn = new mysqli("localhost", "root", "", "datadash");
 
     $orderDate = date('Y-m-d H:i:s');
@@ -90,7 +95,8 @@ function createOrder($userId, $selectedProducts, $selectedQuantities, $shippingA
                 VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $statusp = 'processing';
-        $stmt->bind_param("isds", $userId, $orderDate, $totalPrice, $statusp);
+        $total_amount = $totalPrice - $discountAmount;
+        $stmt->bind_param("isds", $userId, $orderDate, ($total_amount), $statusp);
         $stmt->execute();
 
         // Get the order ID
@@ -131,6 +137,13 @@ function createOrder($userId, $selectedProducts, $selectedQuantities, $shippingA
 
         $conn->commit(); // Commit transaction if everything succeeded
 
+        // Send order summary email
+        if (sendOrderSummaryEmail($userId, $orderId, $totalPrice, $discountAmount)) {
+            echo '<p class="success-message">A summary of your order has been sent to the email in file.</p>';
+        } else {
+            echo '<p>Order placed, but failed to send email summary.</p>';
+        }
+
     } catch (Exception $e) {
         // Rollback transaction if any error occurred
         $conn->rollback();
@@ -139,6 +152,184 @@ function createOrder($userId, $selectedProducts, $selectedQuantities, $shippingA
 
     $conn->close();
 }
+
+function sendOrderSummaryEmail($userId, $orderId, $totalPrice, $discountAmount) {
+    $conn = new mysqli("localhost", "root", "", "datadash");
+    
+    // Fetch user email
+    $sql = "SELECT email FROM users WHERE user_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    $userEmail = $user['email'];
+    $stmt->close();
+
+    // Fetch order details
+    $sql = "SELECT oi.product_id, p.name, oi.quantity, oi.unit_price, p.image
+            FROM order_items oi
+            JOIN product p ON oi.product_id = p.product_id
+            WHERE oi.order_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $orderId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $orderDetails = "";
+    while ($row = $result->fetch_assoc()) {
+        $orderDetails .= "<tr>";
+        $orderDetails .= "<td>" . $row['name'] . "</td>";
+        $orderDetails .= "<td>" . $row['quantity'] . "</td>";
+        $orderDetails .= "<td>$" . number_format($row['unit_price'], 2) . "</td>";
+        $orderDetails .= "<td>$" . number_format($row['unit_price'] * $row['quantity'], 2) . "</td>";
+        $orderDetails .= "</tr>";
+    }
+
+    $subtotal = $totalPrice;
+    $shipping = 0.00; // Assuming free shipping
+    $finalTotal = $subtotal - $discountAmount + $shipping;
+
+    $subject = "Your Order Has Been Placed";
+
+    $message = "
+    <html>
+    <head>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            table, th, td {
+                border: 1px solid black;
+            }
+            th, td {
+                padding: 15px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            img {
+                max-width: 100px;
+                height: auto;
+            }
+            .footer {
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 1px solid #ccc;
+                font-size: 0.9em;
+                color: #666;
+            }
+            .footer h1 {
+                font-size: 1.2em;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Thank you for your order, " . getSessionUsername() . "!</h2>
+        <p>Order ID: " . $orderId . "</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                " . $orderDetails . "
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan='3'>Subtotal:</th>
+                    <th>$" . number_format($subtotal, 2) . "</th>
+                </tr>";
+
+    if ($discountAmount > 0) {
+        $message .= "
+                <tr>
+                    <th colspan='3'>Discount:</th>
+                    <th style=color: green>-$" . number_format($discountAmount, 2) . "</th>
+                </tr>";
+    }
+
+    $message .= "
+                <tr>
+                    <th colspan='3'>Shipping:</th>
+                    <th>$" . number_format($shipping, 2) . "</th>
+                </tr>
+                <tr>
+                    <th colspan='3'>Total:</th>
+                    <th>$" . number_format($finalTotal, 2) . "</th>
+                </tr>
+            </tfoot>
+        </table>
+        <div class='footer'>
+            <h1>Thank you for choosing Datadash Inc.</h1>
+            <p>This email was sent from a notification-only email address that does not accept incoming emails. Do not reply to this message.</p>
+        </div>
+    </body>
+    </html>";
+
+    // Create a new PHPMailer instance
+    $mail = new PHPMailer(true);
+
+    try {
+        // Set who the message is to be sent from
+        $mail->setFrom('no-reply@datadash.com', 'Datadash');
+        
+        // Set who the message is to be sent to
+        $mail->addAddress($userEmail);
+        
+        // Set the subject line
+        $mail->Subject = $subject;
+        $mail->Body    = $message;
+        $mail->isHTML(true); // Set email format to HTML
+
+        $mail->send();
+        return true;
+    } 
+    catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        return false;
+    }
+}
+
+
+// Function to validate coupon code
+function validateCoupon($couponCode) {
+
+    $conn = new mysqli("localhost", "root", "", "datadash");
+
+    $sql = "SELECT discount_amount FROM coupons WHERE coupon_code = ? AND expiration_date >= CURDATE() AND active = TRUE";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $couponCode);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $coupon = $result->fetch_assoc();
+        $stmt->close();
+        return $coupon['discount_amount'];
+    }
+    $stmt->close();
+    return false;
+}
+
+//Function to deactivate coupon code
+function deactivateCoupon($couponCode){
+
+    $conn = new mysqli("localhost", "root", "", "datadash");
+
+    $sql = "UPDATE coupons SET active = FALSE WHERE coupon_code = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $couponCode);
+        $stmt->execute();
+        $stmt->close();
+
+}
+
 
 $conn->close();
 ?>
@@ -401,6 +592,9 @@ $conn->close();
                 if (!empty($cartItems)) {
                     $selectedProductIds = [];
                     $selectedQuantities = [];
+
+                    $couponCode = isset($_POST['coupon_code']) ? $_POST['coupon_code'] : '';
+
                     if (isset($_POST['selected_products'])) {
                         $selectedProductsArray = json_decode($_POST['selected_products'], true);
                         if (isset($selectedProductsArray) && !empty($selectedProductsArray)) {
@@ -434,7 +628,7 @@ $conn->close();
                                                 $quantity = $selectedQuantities[$productId];
                                                 $productTotal = $product['price'] * $quantity;
                                                 $totalPrice += $productTotal;
-                                                ?>
+                                               ?>
                                                 <tr>
                                                     <td>
                                                         <img src="../images/electronic_products/<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>" class="product-image">
@@ -454,6 +648,19 @@ $conn->close();
                                             <th colspan="3">Subtotal:</th>
                                             <th>$<?php echo number_format($totalPrice, 2); ?></th>
                                         </tr>
+                                        <?php
+                                            $discountAmount = 0;
+                                            if (!empty($couponCode)) {
+                                                $discountAmount = validateCoupon($couponCode);
+                                                if ($discountAmount !== false) {
+                                                    $totalPrice -= $discountAmount;
+                                                    echo "<tr>
+                                                        <th colspan='3'>Discount:</th>
+                                                        <th>$" . number_format($discountAmount, 2) . "</th>
+                                                    </tr>";
+                                                }
+                                            }
+                                        ?>
                                         <tr>
                                             <th colspan="3">Shipping:</th>
                                             <th>$0.00 (Free)</th>
@@ -504,7 +711,7 @@ $conn->close();
                             if (isset($_POST['place_order'])) {
                                 // Call the createOrder function after validating product selection
                                 if (isset($_POST['selected_products']) && !empty($selectedProductIds)) {
-                                    createOrder($userId, $selectedProductIds, $selectedQuantities, $shippingAddressId, $paymentMethodId);
+                                    createOrder($userId, $selectedProductIds, $selectedQuantities, $shippingAddressId, $paymentMethodId, $discountAmount);
                                     echo '<p class="success-message">Thank you for your order!</p>';
                                 } else {
                                     echo '<p>Invalid product selection.</p>';
@@ -516,6 +723,7 @@ $conn->close();
                                   <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                                     <input type="hidden" name="selected_products" value='<?php echo json_encode($selectedProductIds); ?>' />
                                     <input type="hidden" name="shipping_address_id" value="<?php echo $shippingAddressId; ?>" />
+                                    <input type="hidden" name="coupon_code" value="<?php echo $couponCode; ?>" />
                                     <input type="hidden" name="payment_method_id" value="<?php echo $paymentMethodId; ?>" />
                                     <button type="submit" name="place_order" id="place-order-button" style="
                                     background-color: #009dff;
