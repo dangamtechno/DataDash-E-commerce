@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded',createAdminLogin);
 document.addEventListener('DOMContentLoaded',checkLoginStatus);
 
+const  backend_url='http://localhost:80/admin/backend/';
 function getStatus(i){
     let status = '';
     console.log(i);
@@ -37,7 +38,7 @@ modalContainer.appendChild(modal)
 main.appendChild(modalContainer);
 }
 function fetchCall(resource, callBack, method="GET",data = undefined){
-    const url ="http://localhost:8080/admin/backend/";
+    const url ="http://localhost:80/admin/backend/";
     fetch(url+resource,{
        method: method,
        mode:"cors",

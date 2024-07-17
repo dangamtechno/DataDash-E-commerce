@@ -1,5 +1,4 @@
 
-const  backend_url='http://localhost:8080/admin/backend/';
 function addInventoryButton(){
     const username = document.querySelector('.username').textContent;
     //console.log(username);

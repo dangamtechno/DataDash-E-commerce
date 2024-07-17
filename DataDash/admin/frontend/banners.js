@@ -70,7 +70,7 @@ function getBannerDetails(){
         const modalImage = document.createElement('div');
         modalImage.className='card-img';
         const img = document.createElement('img')
-        img.src = `http://localhost:8080${banner.image}`;
+        img.src = `http://localhost:80${banner.image}`;
         //name of banner
         const name = document.createElement('p');
         name.id = 'name';

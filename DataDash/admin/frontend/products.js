@@ -76,7 +76,7 @@ function getProductDetails(){
         const modalImage = document.createElement('div');
         modalImage.className='card-img';
         const img = document.createElement('img')
-        img.src = `http://localhost:8080${product.image}`;
+        img.src = `http://localhost:80${product.image}`;
         //name of prod
         const name = document.createElement('p');
         name.id = 'name';
