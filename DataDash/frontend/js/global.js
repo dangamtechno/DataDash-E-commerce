@@ -52,7 +52,7 @@ function populateCatalog(products,section){
           card.addEventListener('click',getProductDetails.bind(prod))
           //image element for product
           const img = document.createElement('img');
-          img.src = `http://localhost:8080${prod.image}`;
+          img.src = `http://localhost:80${prod.image}`;
           imgDiv.appendChild(img);
           //product name will be the name the for card
           const name = document.createElement("p");
@@ -101,7 +101,7 @@ function populateCatalog(products,section){
        main.appendChild(modalContainer);
        modalImageContainer.className = 'modalImage';
        const img = document.createElement('img');
-       img.src = `http://localhost:8080${this.image}`;
+       img.src = `http://localhost:80${this.image}`;
        modalImageContainer.appendChild(img);
        modal.appendChild(modalImageContainer);
        const modalDesc = document.createElement('div');
@@ -222,7 +222,7 @@ function getStockText(inStock,modal){
 
 
 function fetchCall(resource, callBack, method="GET",data = undefined){
-    const url ="http://localhost:8080/backend/utils/";
+    const url ="http://localhost:80/backend/utils/";
     fetch(url+resource,{
        method: method,
        body:data, 

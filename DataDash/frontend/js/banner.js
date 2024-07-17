@@ -7,7 +7,7 @@ function requestBanner(){
              console.log(banner.image);
              const slide = document.createElement("div")
              slide.className = "swiper-slide";
-             slide.style.backgroundImage=` url('http://localhost:8080${banner.image}')`;
+             slide.style.backgroundImage=` url('http://localhost:80${banner.image}')`;
              slide.style.backgroundSize = "cover";
              slide.style.height="50vh";
              const h3 = document.createElement('h3');
