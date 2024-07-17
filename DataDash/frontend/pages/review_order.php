@@ -262,7 +262,7 @@ function sendOrderSummaryEmail($userId, $orderId, $totalPrice, $discountAmount) 
                 </tr>
                 <tr>
                     <th colspan='3'>Total:</th>
-                    <th>$" . number_format($finalTotal, 2) . "</th>
+                    <th><h3 id='total-price'>$" . number_format($finalTotal, 2) . "</h3></th>
                 </tr>
             </tfoot>
         </table>
@@ -712,6 +712,7 @@ $conn->close();
                                 // Call the createOrder function after validating product selection
                                 if (isset($_POST['selected_products']) && !empty($selectedProductIds)) {
                                     createOrder($userId, $selectedProductIds, $selectedQuantities, $shippingAddressId, $paymentMethodId, $discountAmount);
+                                    deactivateCoupon($couponCode);
                                     echo '<p class="success-message">Thank you for your order!</p>';
                                 } else {
                                     echo '<p>Invalid product selection.</p>';
