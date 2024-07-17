@@ -83,19 +83,21 @@ $conn->close();
 
         .shop-button-container {
         text-align: center; /* Center the button horizontally */
-        margin-top: 10px; /* Add some space above the button */
+        margin-top: 0px;
+        border-radius: 30px; /* Rounded corners */
         }
 
         .shop-button {
             display: inline-block;
-            padding: 10px 40px;
+            padding: 15px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            margin-left: 45px; /* Add 45px left margin */
         }
 
         .shop-button:hover {
@@ -154,28 +156,56 @@ $conn->close();
             font-weight: bold;
             margin-bottom: 20px;
         }
+
+        /* Search Bar Styling */
+        .search-bar {
+            position: relative; /* To position the search icon */
+            width: 400px; /* Adjust width as needed */
+            margin: 8px auto; /* Center the search bar */
+        }
+
+        .search-bar input[type="search"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 30px; /* Rounded corners */
+            font-size: 16px;
+        }
+
+        .search-bar input[type="submit"] {
+            position: absolute;
+            left: 400px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #7909f1; /* Bootstrap primary color */
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <header>
-        <div class="heading">
+<div class="heading">
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
                         <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                     </a>
                 </div>
-                <div class="search-bar">
-                    <form id="search-form" method="GET" action="shop.php">
-                        <label>
-                            <input type="search" name="search" id="search-input" placeholder="search...">
-                        </label>
-                        <input type="submit" value="Search">
-                    </form>
+                <div class="shop-button-container">
+                <a href="shop.php" class="shop-button">Shop</a>
                 </div>
             </div> <br>
-            <div class="shop-button-container">
-                <a href="shop.php" class="shop-button">Shop</a>
+            <div class="search-bar">
+                <form id="search-form" method="GET" action="shop.php">
+                    <label>
+                        <input type="search" name="search" id="search-input" placeholder="search...">
+                    </label>
+                    <input type="submit" value="Search">
+                </form>
             </div>
             <div class="right-heading">
                 <div class="login-status">
@@ -205,15 +235,15 @@ $conn->close();
         <div class="form-container">
             <form method="post" id="forgot-password-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                 <label for="favorite_movie">Favorite Movie</label>
-                <input type="text" id="favorite_movie" name="favorite_movie" required>
+                <input type="text" style="border-radius: 30px;" id="favorite_movie" name="favorite_movie" required>
 
                 <label for="new_password">New Password</label>
-                <input type="password" id="new_password" name="new_password" required>
+                <input type="password" style="border-radius: 30px;" id="new_password" name="new_password" required>
 
                 <label for="confirm_password">Confirm Password</label>
-                <input type="password" id="confirm_password" name="confirm_password" required>
+                <input type="password" style="border-radius: 30px;" id="confirm_password" name="confirm_password" required>
 
-                <button type="submit">Reset Password</button>
+                <button style="border-radius: 30px;" type="submit">Reset Password</button>
             </form>
         </div>
     </div>
@@ -240,6 +270,7 @@ $conn->close();
         </div>
         <div class="location">
             <p>123 Main Street, City, Country</p>
+            <img src="../images/misc/DataDash.png" alt="Logo" style="border-radius: 50%;" width="210" height="110">
         </div>
         <div class="legal">
             <h3>Privacy & Legal</h3>

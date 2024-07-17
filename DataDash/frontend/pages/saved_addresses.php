@@ -201,46 +201,76 @@ if (isset($_GET['delete_id'])) {
 
         .shop-button-container {
         text-align: center; /* Center the button horizontally */
-        margin-top: 10px; /* Add some space above the button */
+        margin-top: 0px;
+        border-radius: 30px; /* Rounded corners */
         }
 
         .shop-button {
             display: inline-block;
-            padding: 10px 40px;
+            padding: 15px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            margin-left: 45px; /* Add 45px left margin */
         }
 
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
         }
+
+        /* Search Bar Styling */
+        .search-bar {
+            position: relative; /* To position the search icon */
+            width: 400px; /* Adjust width as needed */
+            margin: 8px auto; /* Center the search bar */
+        }
+
+        .search-bar input[type="search"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 30px; /* Rounded corners */
+            font-size: 16px;
+        }
+
+        .search-bar input[type="submit"] {
+            position: absolute;
+            left: 400px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #7909f1; /* Bootstrap primary color */
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <header>
-        <div class="heading">
+<div class="heading">
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
                         <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                     </a>
                 </div>
-                <div class="search-bar">
-                    <form id="search-form" method="GET" action="shop.php">
-                        <label2>
-                            <input type="search" name="search" id="search-input" placeholder="search...">
-                        </label2>
-                        <input type="submit" value="Search">
-                    </form>
+                <div class="shop-button-container">
+                <a href="shop.php" class="shop-button">Shop</a>
                 </div>
             </div> <br>
-            <div class="shop-button-container">
-                <a href="shop.php" class="shop-button">Shop</a>
+            <div class="search-bar">
+                <form id="search-form" method="GET" action="shop.php">
+                    <label>
+                        <input type="search" name="search" id="search-input" placeholder="search...">
+                    </label>
+                    <input type="submit" value="Search">
+                </form>
             </div>
             <div class="right-heading">
                 <div class="login-status">
@@ -265,6 +295,7 @@ if (isset($_GET['delete_id'])) {
             </div>
         </div>
     </header>
+<main>
     <div class="container">
         <h2>Saved Addresses</h2>
 
@@ -305,24 +336,24 @@ if (isset($_GET['delete_id'])) {
         <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="add-address-form">
             <input type="hidden" name="add_address" value="1">
             <label for="address_type">Address Type (Home, Business, etc.):</label>
-            <input type="text" name="address_type" required>
+            <input type="text" style="border-radius: 30px;" name="address_type" required>
 
             <label for="street_address">Street Address:</label>
-            <input type="text" name="street_address" required>
+            <input type="text" style="border-radius: 30px;" name="street_address" required>
 
             <label for="city">City:</label>
-            <input type="text" name="city" required>
+            <input type="text" style="border-radius: 30px;" name="city" required>
 
             <label for="state">State:</label>
-            <input type="text" name="state" required>
+            <input type="text" style="border-radius: 30px;" name="state" required>
 
             <label for="postal_code">Postal Code:</label>
-            <input type="text" name="postal_code" required>
+            <input type="text" style="border-radius: 30px;" name="postal_code" required>
 
             <label for="country">Country:</label>
-            <input type="text" name="country" required>
+            <input type="text" style="border-radius: 30px;" name="country" required>
 
-            <input type="submit" value="Add Address" id="add-address-submit">
+            <input type="submit" style="border-radius: 30px;" value="Add Address" id="add-address-submit">
         </form>
 
         <!-- Edit Address Form -->
@@ -330,26 +361,26 @@ if (isset($_GET['delete_id'])) {
             <h3>Edit Address</h3>
             <form id="edit-address-popup-form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="update_address" value="1">
-                <input type="hidden" name="address_id" id="edit-address-id">
+                <input type="hidden" name="address_id" style="border-radius: 30px;" id="edit-address-id">
                 <label for="edit-address-type">Address Type (Home, Business, etc.):</label>
-                <input type="text" name="address_type" id="edit-address-type" required>
+                <input type="text" name="address_type" style="border-radius: 30px;" id="edit-address-type" required>
 
                 <label for="edit-street-address">Street Address:</label>
-                <input type="text" name="street_address" id="edit-street-address" required>
+                <input type="text" name="street_address" style="border-radius: 30px;" id="edit-street-address" required>
 
                 <label for="edit-city">City:</label>
-                <input type="text" name="city" id="edit-city" required>
+                <input type="text" name="city" style="border-radius: 30px;" id="edit-city" required>
 
                 <label for="edit-state">State:</label>
-                <input type="text" name="state" id="edit-state" required>
+                <input type="text" name="state" style="border-radius: 30px;" id="edit-state" required>
 
                 <label for="edit-postal-code">Postal Code:</label>
-                <input type="text" name="postal_code" id="edit-postal-code" required>
+                <input type="text" name="postal_code" style="border-radius: 30px;" id="edit-postal-code" required>
 
                 <label for="edit-country">Country:</label>
-                <input type="text" name="country" id="edit-country" required>
+                <input type="text" name="country" style="border-radius: 30px;" id="edit-country" required>
 
-                <input type="submit" value="Update Address">
+                <input style="border-radius: 30px;" type="submit" value="Update Address">
                 <button type="button" onclick="hideEditForm()">Cancel</button>
             </form>
         </div>
@@ -358,7 +389,7 @@ if (isset($_GET['delete_id'])) {
     <?php
     $conn->close();
     ?>
-
+</main>
 <footer>
     <div class="social-media">
         <br><br>
@@ -381,6 +412,7 @@ if (isset($_GET['delete_id'])) {
         </div>
         <div class="location">
             <p>123 Main Street, City, Country</p>
+            <img src="../images/misc/DataDash.png" alt="Logo" style="border-radius: 50%;" width="210" height="110">
         </div>
         <div class="legal">
             <h3>Privacy & Legal</h3>

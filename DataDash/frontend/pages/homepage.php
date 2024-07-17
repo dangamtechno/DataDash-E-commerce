@@ -117,7 +117,7 @@
                 </div>
                 <div class="shop-button-container">
                 <a href="shop.php" class="shop-button">Shop</a>
-            </div>
+                </div>
             </div> <br>
             <div class="search-bar">
                 <form id="search-form" method="GET" action="shop.php">
@@ -281,6 +281,7 @@
         </div>
         <div class="location">
             <p>123 Main Street, City, Country</p>
+            <img src="../images/misc/DataDash.png" alt="Logo" style="border-radius: 50%;" width="210" height="150">
         </div>
         <div class="legal">
             <h3>Privacy & Legal</h3>

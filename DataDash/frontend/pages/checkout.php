@@ -249,28 +249,57 @@ $conn->close();
             background-color: #0056b3;
         }
 
-        /* Ensure shop button styles are consistent with homepage */
         .shop-button-container {
-            text-align: center;
-            margin-top: 10px;
+        text-align: center; /* Center the button horizontally */
+        margin-top: 0px;
+        border-radius: 30px; /* Rounded corners */
         }
 
         .shop-button {
             display: inline-block;
-            padding: 10px 40px;
+            padding: 15px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            margin-left: 45px; /* Add 45px left margin */
         }
 
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
         }
 
+
+        /* Search Bar Styling */
+        .search-bar {
+            position: relative; /* To position the search icon */
+            width: 400px; /* Adjust width as needed */
+            margin: 8px auto; /* Center the search bar */
+        }
+
+        .search-bar input[type="search"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 30px; /* Rounded corners */
+            font-size: 16px;
+        }
+
+        .search-bar input[type="submit"] {
+            position: absolute;
+            left: 400px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #7909f1; /* Bootstrap primary color */
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -283,17 +312,17 @@ $conn->close();
                         <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                     </a>
                 </div>
-                <div class="search-bar">
-                    <form id="search-form" method="GET" action="shop.php">
-                        <label>
-                            <input type="search" name="search" id="search-input" placeholder="search...">
-                        </label>
-                        <input type="submit" value="Search">
-                    </form>
+                <div class="shop-button-container">
+                <a href="shop.php" class="shop-button">Shop</a>
                 </div>
             </div> <br>
-            <div class="shop-button-container">
-                <a href="shop.php" class="shop-button">Shop</a>
+            <div class="search-bar">
+                <form id="search-form" method="GET" action="shop.php">
+                    <label>
+                        <input type="search" name="search" id="search-input" placeholder="search...">
+                    </label>
+                    <input type="submit" value="Search">
+                </form>
             </div>
             <div class="right-heading">
                 <div class="login-status">
@@ -410,14 +439,14 @@ $conn->close();
                             <div class="checkout-section">
                                 <h3>Apply Coupon</h3>
                                 <form action="checkout.php" method="post" id="coupon-form">
-                                    <input type="hidden" name="action" value="apply_coupon">
-                                    <input type="hidden" name="selected_products" value="<?php echo json_encode($selectedProductIds); ?>">
-                                    <input type="hidden" name="selected_quantities" value="<?php echo json_encode($selectedQuantities); ?>">
+                                    <input type="hidden" name="action" style="border-radius: 30px;" value="apply_coupon">
+                                    <input type="hidden" style="border-radius: 30px;" name="selected_products" value="<?php echo json_encode($selectedProductIds); ?>">
+                                    <input type="hidden" style="border-radius: 30px;" name="selected_quantities" value="<?php echo json_encode($selectedQuantities); ?>">
                                     <div class="form-group">
-                                        <label for="coupon-code">Coupon Code:</label>
-                                        <input type="text" name="coupon_code" id="coupon-code" required>
+                                        <label style="border-radius: 30px;" for="coupon-code">Coupon Code:</label>
+                                        <input style="border-radius: 30px;" type="text" name="coupon_code" id="coupon-code" required>
                                     </div>
-                                    <button type="submit" class="checkout-button">Apply Coupon</button>
+                                    <button type="submit" style="border-radius: 30px;" class="checkout-button"> Apply Coupon</button>
                                     <?php
                                 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'apply_coupon') {
                                     $couponCode = $_POST['coupon_code'];
@@ -437,14 +466,14 @@ $conn->close();
                             <div class="checkout-section">
                                 <h3>Shipping Address</h3>
                                 <form action="review_order.php" method="post" id="checkout-form">
-                                    <input type="hidden" name="action" value="checkout">
-                                    <input type="hidden" name="selected_products" value="<?php echo json_encode($selectedProductIds); ?>">
-                                    <input type="hidden" name="selected_quantities" value="<?php echo json_encode($selectedQuantities); ?>">
-                                    <input type="hidden" name="shipping_address_id" id="shipping_address_id" value="">
-                                    <input type="hidden" name="payment_method_id" id="payment_method_id" value="">
+                                    <input type="hidden" name="action" style="border-radius: 30px;" value="checkout">
+                                    <input type="hidden" name="selected_products" style="border-radius: 30px;" value="<?php echo json_encode($selectedProductIds); ?>">
+                                    <input type="hidden" name="selected_quantities" style="border-radius: 30px;" value="<?php echo json_encode($selectedQuantities); ?>">
+                                    <input type="hidden" name="shipping_address_id" style="border-radius: 30px;" id="shipping_address_id" value="">
+                                    <input type="hidden" name="payment_method_id" style="border-radius: 30px;" id="payment_method_id" value="">
 
                                     <div class="form-group">
-                                        <label for="shipping-address">Select Shipping Address:</label>
+                                        <label style="border-radius: 30px;" for="shipping-address">Select Shipping Address:</label>
                                         <div class="form-group">
                                             <?php
                                             $shippingAddresses = getUserShippingAddresses($userId);
@@ -453,7 +482,7 @@ $conn->close();
                                                     ?>
                                                     <div class="form-group">
                                                         <input type="radio" id="shipping-address-<?php echo $address['address_id']; ?>" name="shipping-address" value="<?php echo $address['address_id']; ?>" required>
-                                                        <label for="shipping-address-<?php echo $address['address_id']; ?>">
+                                                        <label style="border-radius: 30px;" for="shipping-address-<?php echo $address['address_id']; ?>">
                                                             <?php echo $address['street_address'] . ', ' . $address['city'] . ', ' . $address['state'] . ', ' . $address['postal_code'] . ', ' . $address['country']; ?>
                                                         </label>
                                                     </div>
@@ -462,7 +491,7 @@ $conn->close();
                                             } else {
                                                 ?>
                                                 <p>You have no saved addresses. You can add an address below.</p>
-                                                <button type="button" onclick="window.location.href='saved_addresses.php'">Create New Address</button>
+                                                <button style="border-radius: 30px;" type="button" onclick="window.location.href='saved_addresses.php'">Create New Address</button>
                                             <?php
                                             }
                                             ?>
@@ -472,7 +501,7 @@ $conn->close();
                                     <div class="checkout-section">
                                         <h3>Payment Information</h3>
                                         <div class="form-group">
-                                            <label for="payment-method">Select Payment Method:</label>
+                                            <label style="border-radius: 30px;" for="payment-method">Select Payment Method:</label>
                                             <div class="form-group">
                                                 <?php
                                                 $paymentMethods = getUserPaymentMethods($userId);
@@ -481,7 +510,7 @@ $conn->close();
                                                         ?>
                                                         <div class="form-group">
                                                             <input type="radio" id="payment-method-<?php echo $method['payment_method_id']; ?>" name="payment-method" value="<?php echo $method['payment_method_id']; ?>" required>
-                                                            <label for="payment-method-<?php echo $method['payment_method_id']; ?>">
+                                                            <label style="border-radius: 30px;" for="payment-method-<?php echo $method['payment_method_id']; ?>">
                                                                 <?php echo $method['method_type'] . ' (Ending in ' . substr($method['card_number'], -4) . ')'; ?>
                                                                 <br>
                                                                 <?php echo 'CVV: ' . $method['cvs_number'] . ', Expiration: ' . $method['expiration_date']; ?>
@@ -492,14 +521,14 @@ $conn->close();
                                                 } else {
                                                     ?>
                                                     <p>You have no saved payment methods. You can add a payment method below.</p>
-                                                    <button type="button" onclick="window.location.href='payment_methods.php'">Create New Payment Method</button>
+                                                    <button style="border-radius: 30px;" type="button" onclick="window.location.href='payment_methods.php'">Create New Payment Method</button>
                                                 <?php
                                                 }
                                                 ?>
                                             </div>
                                         </div>
                                         <br><br>
-                                            <button type="submit" id="review-order-button">Review Order</button>
+                                            <button type="submit" style="border-radius: 30px;" id="review-order-button">Review Order</button>
                                     </div>
                                 </form>
                             </div>
@@ -542,6 +571,7 @@ $conn->close();
         </div>
         <div class="location">
             <p>123 Main Street, City, Country</p>
+            <img src="../images/misc/DataDash.png" alt="Logo" style="border-radius: 50%;" width="210" height="110">
         </div>
         <div class="legal">
             <h3>Privacy & Legal</h3>

@@ -45,32 +45,38 @@
 
         .shop-button-container {
         text-align: center; /* Center the button horizontally */
-        margin-top: 10px; /* Add some space above the button */
+        margin-top: 0px;
+        border-radius: 30px; /* Rounded corners */
         }
 
         .shop-button {
             display: inline-block;
-            padding: 10px 40px;
+            padding: 15px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            margin-left: 45px; /* Add 45px left margin */
         }
 
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
         }
 
+
         .add-to-cart {
-            background-color: #0ad4f8;
+            background-color: #03d3f8;
             border: none;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
+            border-radius: 30px;
+
         }
+
         .add-to-cart:hover {
             background-color: #07eaff;
         }
@@ -81,26 +87,78 @@
             color: #666;
             margin-top: 20px;
         }
+
+        .filter-sort-dropdown {
+            position: relative;
+            display: inline-block;
+            width: 250px;
+        }
+
+        .filter-sort-dropdown select {
+            display: inline-block;
+            width: 250px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: #fff url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTEiIGhlaWdodD0iNiIgdmlld0JveD0iMCAwIDExIDYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEuNzkyNDQsMEw1LjUwMDIzLDIuNTE1MjFMMTAuMTIwMSwwTDExLDAuNzA4NzA4TDUsNi4wNzU4NUwwLjAwMDAyMzI0LDAuNzA4NzA4TDEuNzkyNDQsMFoiIGZpbGw9IiM2NjYiLz48L3N2Zz4=') no-repeat right 10px center;
+            background-size: 10px 5px;
+        }
+
+        .filter-sort-dropdown select:focus {
+            outline: none;
+            border-color: #009dff;
+        }
+
+        /* Search Bar Styling */
+        .search-bar {
+            position: relative; /* To position the search icon */
+            width: 400px; /* Adjust width as needed */
+            margin: 8px auto; /* Center the search bar */
+        }
+
+        .search-bar input[type="search"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 30px; /* Rounded corners */
+            font-size: 16px;
+        }
+
+        .search-bar input[type="submit"] {
+            position: absolute;
+            left: 400px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #7909f1; /* Bootstrap primary color */
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
     </style>
     <header>
-        <div class="heading">
+<div class="heading">
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
                         <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                     </a>
                 </div>
-                <div class="search-bar">
-                    <form id="search-form" method="GET" action="shop.php">
-                        <label>
-                            <input type="search" name="search" id="search-input" placeholder="search...">
-                        </label>
-                        <input type="submit" value="Search">
-                    </form>
-                </div>
-            </div>
-            <div class="shop-button-container">
+                <div class="shop-button-container">
                 <a href="shop.php" class="shop-button">Shop</a>
+                </div>
+            </div> <br>
+            <div class="search-bar">
+                <form id="search-form" method="GET" action="shop.php">
+                    <label>
+                        <input type="search" name="search" id="search-input" placeholder="search...">
+                    </label>
+                    <input type="submit" value="Search">
+                </form>
             </div>
             <div class="right-heading">
                 <div class="login-status">
@@ -129,7 +187,7 @@
 <body>
     <main>
         <section class="shop-products">
-            <div class="filter-sort">
+            <div class="filter-sort-dropdown">
                 <label>Filter by:</label>
                 <select id="filter-dropdown">
                     <option value="">All Categories</option>
@@ -254,6 +312,7 @@
         </div>
         <div class="location">
             <p>123 Main Street, City, Country</p>
+            <img src="../images/misc/DataDash.png" alt="Logo" style="border-radius: 50%;" width="210" height="110">
         </div>
         <div class="legal">
             <h3>Privacy & Legal</h3>
