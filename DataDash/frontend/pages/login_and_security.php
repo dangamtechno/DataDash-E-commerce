@@ -227,7 +227,7 @@ $conn->close();
 <label for="phone">Phone Number</label>
 <input type="text" style="border-radius: 30px;" id="phone" name="phone" value="<?php echo $phone; ?>">
 
-<button style="border-radius: 30px;" type="submit">Update</button>
+<button style="border-radius: 30px;" type="submit" id="submit-button>Update</button>
 
 <br><br><br>
 <a href="reset_password.php">
@@ -271,5 +271,10 @@ $conn->close();
         </div>
     </div>
 </footer>
+<script>
+    document.getElementById("submit-button").onclick = function(){
+        alert("Account has just been updated!");
+    };
+</script>
 <script src="../js/search.js"></script>
 </html>
