@@ -66,20 +66,22 @@ $conn->close();
         }
 
         .shop-button-container {
-            text-align: center; /* Center the button horizontally */
-            margin-top: 10px; /* Add some space above the button */
+        text-align: center; /* Center the button horizontally */
+        margin-top: 0px;
+        border-radius: 30px; /* Rounded corners */
         }
 
         .shop-button {
             display: inline-block;
-            padding: 10px 40px;
+            padding: 15px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            margin-left: 45px; /* Add 45px left margin */
         }
 
         .shop-button:hover {
@@ -170,28 +172,56 @@ $conn->close();
         .add-wishlist-form button:hover {
             background-color: #0056b3;
         }
+
+        /* Search Bar Styling */
+        .search-bar {
+            position: relative; /* To position the search icon */
+            width: 400px; /* Adjust width as needed */
+            margin: 8px auto; /* Center the search bar */
+        }
+
+        .search-bar input[type="search"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 30px; /* Rounded corners */
+            font-size: 16px;
+        }
+
+        .search-bar input[type="submit"] {
+            position: absolute;
+            left: 400px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #7909f1; /* Bootstrap primary color */
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <header>
-        <div class="heading">
+<div class="heading">
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
                         <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                     </a>
                 </div>
-                <div class="search-bar">
-                    <form id="search-form" method="GET" action="shop.php">
-                        <label>
-                            <input type="search" name="search" id="search-input" placeholder="search...">
-                        </label>
-                        <input type="submit" value="Search">
-                    </form>
+                <div class="shop-button-container">
+                <a href="shop.php" class="shop-button">Shop</a>
                 </div>
             </div> <br>
-            <div class="shop-button-container">
-                <a href="shop.php" class="shop-button">Shop</a>
+            <div class="search-bar">
+                <form id="search-form" method="GET" action="shop.php">
+                    <label>
+                        <input type="search" name="search" id="search-input" placeholder="search...">
+                    </label>
+                    <input type="submit" value="Search">
+                </form>
             </div>
             <div class="right-heading">
                 <div class="login-status">
@@ -216,6 +246,7 @@ $conn->close();
             </div>
         </div>
     </header>
+<main>
     <div class="container">
         <h2>Wishlists</h2>
         <?php if (count($wishlists) > 0): ?>
@@ -244,12 +275,12 @@ $conn->close();
                             <div class="action-buttons">
                                 <form action="../../backend/utils/rename_wishlist.php" method="post" class="rename-form" id="rename-form-<?php echo $wishlist['wishlist_id']; ?>" style="display: inline;">
                                     <input type="hidden" name="wishlist_id" value="<?php echo $wishlist['wishlist_id']; ?>">
-                                    <input type="text" name="new_name" placeholder="New Wishlist Name" style="display: none;">
-                                    <button type="button" class="rename" onclick="showRenameInput(this, <?php echo $wishlist['wishlist_id']; ?>)">Rename</button>
+                                    <input type="text" name="new_name" placeholder="New Wishlist Name" style="display: none; border-radius: 30px;"">
+                                    <button type="button" style="border-radius: 30px;" class="rename" onclick="showRenameInput(this, <?php echo $wishlist['wishlist_id']; ?>)">Rename</button>
                                 </form>
                                 <form action="../../backend/utils/delete_wishlist.php" method="post" style="display: inline;">
                                     <input type="hidden" name="wishlist_id" value="<?php echo $wishlist['wishlist_id']; ?>">
-                                    <button type="submit" class="delete">Delete</button>
+                                    <button style="border-radius: 30px;" type="submit" class="delete">Delete</button>
                                 </form>
                             </div>
                         </td>
@@ -262,12 +293,12 @@ $conn->close();
         <?php endif; ?>
         <div class="add-wishlist-form">
             <form action="../../backend/utils/create_wishlist.php" method="post">
-                <input type="text" name="wishlist_name" placeholder="New Wishlist Name" required>
-                <button type="submit">Add Wishlist</button>
+                <input type="text" style="border-radius: 30px;" name="wishlist_name" placeholder="New Wishlist Name" required>
+                <button style="border-radius: 30px;" type="submit">Add Wishlist</button>
             </form>
         </div>
     </div>
-
+</main>
 <footer>
     <div class="social-media">
         <br><br>
@@ -290,6 +321,7 @@ $conn->close();
         </div>
         <div class="location">
             <p>123 Main Street, City, Country</p>
+            <img src="../images/misc/DataDash.png" alt="Logo" style="border-radius: 50%;" width="210" height="110">
         </div>
         <div class="legal">
             <h3>Privacy & Legal</h3>

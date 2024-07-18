@@ -129,11 +129,17 @@ $conn->close(); // Close the connection
         }
 
         .add-to-cart {
-            background-color: #0ad4f8;
+            background-color: #03d3f8;
             border: none;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
+            border-radius: 30px;
+
+        }
+
+        .add-to-cart:hover {
+            background-color: #07eaff;
         }
 
         .add-to-wishlist {
@@ -144,16 +150,23 @@ $conn->close(); // Close the connection
             cursor: pointer;
         }
 
+        .shop-button-container {
+        text-align: center; /* Center the button horizontally */
+        margin-top: 0px;
+        border-radius: 30px; /* Rounded corners */
+        }
+
         .shop-button {
             display: inline-block;
-            padding: 15px 15px; /* Reduced padding for smaller size */
-            font-size: 14px; /* Smaller font size */
+            padding: 15px 10px;
+            font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            margin-left: 45px; /* Add 45px left margin */
         }
 
         .shop-button:hover {
@@ -167,6 +180,7 @@ $conn->close(); // Close the connection
             font-size: 16px;
             cursor: pointer;
             width: 121px;
+            border-radius: 30px;
       }
 
         .custom-dropdown {
@@ -306,30 +320,58 @@ $conn->close(); // Close the connection
             cursor: default; /* Remove pointer cursor */
             pointer-events: none; /* Disable interaction */
         }
+
+        /* Search Bar Styling */
+        .search-bar {
+            position: relative; /* To position the search icon */
+            width: 400px; /* Adjust width as needed */
+            margin: 8px auto; /* Center the search bar */
+        }
+
+        .search-bar input[type="search"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 30px; /* Rounded corners */
+            font-size: 16px;
+        }
+
+        .search-bar input[type="submit"] {
+            position: absolute;
+            left: 400px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #7909f1; /* Bootstrap primary color */
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <header>
     <div class="heading">
-        <div class="left-heading">
-            <div class="logo">
-                <a href="homepage.php">
+            <div class="left-heading">
+                <div class="logo">
+                    <a href="homepage.php">
                         <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
-                </a>
-            </div>
-            <div class="search-bar">
-                    <form id="search-form" method="GET" action="shop.php">
-                        <label>
-                            <input type="search" name="search" id="search-input" placeholder="search...">
-                        </label>
-                        <input type="submit" value="Search">
-                    </form>
+                    </a>
                 </div>
-        </div>
-        <div class="shop-button-container">
-            <a href="shop.php" class="shop-button">Continue Shopping</a>
-        </div>
-        <div class="right-heading">
+                <div class="shop-button-container">
+                <a href="shop.php" class="shop-button">Continue Shopping</a>
+                </div>
+            </div> <br>
+            <div class="search-bar">
+                <form id="search-form" method="GET" action="shop.php">
+                    <label>
+                        <input type="search" name="search" id="search-input" placeholder="search...">
+                    </label>
+                    <input type="submit" value="Search">
+                </form>
+            </div>
+            <div class="right-heading">
                 <div class="login-status">
                     <?php if (sessionExists()): ?>
                         <div class="hello-message">
@@ -350,7 +392,7 @@ $conn->close(); // Close the connection
                     <?php endif; ?>
                 </div>
             </div>
-    </div>
+        </div>
 </header>
 <main>
     <section class="product-details">
@@ -385,7 +427,7 @@ $conn->close(); // Close the connection
             <form action="../../backend/utils/add_to_cart.php" method="post">
               <label for="quantity">Quantity:</label>
               <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
-              <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>"> <br>
+              <input type="hidden" style="border-radius: 30px;" name="product_id" value="<?= $product_data['product_id'] ?>"> <br>
               <button type="submit" class="add-to-cart">Add to Cart</button>
             </form>
             <br>
@@ -394,12 +436,12 @@ $conn->close(); // Close the connection
             <form id="form1" <form action="../../backend/utils/add_to_cart.php" method="post">
               <label for="quantity">Quantity:</label>
               <input type="number" id="quantity" name="quantity" min="1" max="<?= $product_data['inventory'] ?>" value="1">
-              <input type="hidden" name="product_id" value="<?= $product_data['product_id'] ?>">
+              <input type="hidden" style="border-radius: 30px;" name="product_id" value="<?= $product_data['product_id'] ?>">
             </form>
 
             <form id="form2" <form action="checkout.php" method="post" id="buy-now-form">
-                <input type="hidden" name="action" value="checkout">
-                <input type="hidden" name="selected_products" value='[<?= $product_data['product_id'] ?>]'>
+                <input type="hidden" style="border-radius: 30px;" name="action" value="checkout">
+                <input type="hidden" style="border-radius: 30px;" name="selected_products" value='[<?= $product_data['product_id'] ?>]'>
                 <input type="hidden" name="selected_quantities" id="selected-quantities">
                 <button type="submit" class="buy-now" onclick="submitForms('form1', 'form2')">Buy Now</button>
             </form>
@@ -415,8 +457,8 @@ $conn->close(); // Close the connection
                         <option value="<?= htmlspecialchars($wishlist['wishlist_id']) ?>"><?= htmlspecialchars($wishlist['wishlist_name']) ?></option>
                     <?php endforeach; ?>
                 </select>
-                <input type="hidden" name="product_id" value="<?= htmlspecialchars($product_data['product_id']) ?>">
-                <button type="submit" class="add-to-wishlist">Add to Wishlist</button>
+                <input type="hidden" style="border-radius: 30px;" name="product_id" value="<?= htmlspecialchars($product_data['product_id']) ?>">
+                <button type="submit" style="border-radius: 30px;" class="add-to-wishlist">Add to Wishlist</button>
             </form>
         </div>
     </section>
@@ -449,7 +491,7 @@ $conn->close(); // Close the connection
                     <span class="star" data-value="5" id="star-<?= $product_data['product_id'] ?>-5">★</span>
                     <input type="hidden" name="rating" id="rating-<?= $product_data['product_id'] ?>">
                 </div>
-                <input type="submit" value="Submit Review" disabled>
+                <input style="border-radius: 30px;" type="submit" value="Submit Review" disabled>
             </form>
         <?php elseif (sessionExists() && $existing_review): ?>
             <p>You have already left a review for this product.</p>
@@ -517,6 +559,7 @@ $conn->close(); // Close the connection
         </div>
         <div class="location">
             <p>123 Main Street, City, Country</p>
+            <img src="../images/misc/DataDash.png" alt="Logo" style="border-radius: 50%;" width="210" height="110">
         </div>
         <div class="legal">
             <h3>Privacy & Legal</h3>

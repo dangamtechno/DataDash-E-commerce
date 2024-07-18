@@ -198,47 +198,76 @@ if (isset($_GET['delete_id'])) {
 
         .shop-button-container {
         text-align: center; /* Center the button horizontally */
-        margin-top: 10px; /* Add some space above the button */
+        margin-top: 0px;
+        border-radius: 30px; /* Rounded corners */
         }
 
         .shop-button {
             display: inline-block;
-            padding: 10px 40px;
+            padding: 15px 40px;
             font-size: 16px;
             color: #fff;
             background-color: #009dff; /* Bootstrap primary color */
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            margin-left: 45px; /* Add 45px left margin */
         }
 
         .shop-button:hover {
             background-color: #0056b3; /* Darker shade for hover effect */
         }
 
+        /* Search Bar Styling */
+        .search-bar {
+            position: relative; /* To position the search icon */
+            width: 400px; /* Adjust width as needed */
+            margin: 8px auto; /* Center the search bar */
+        }
+
+        .search-bar input[type="search"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 30px; /* Rounded corners */
+            font-size: 16px;
+        }
+
+        .search-bar input[type="submit"] {
+            position: absolute;
+            left: 400px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #7909f1; /* Bootstrap primary color */
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <header>
-        <div class="heading">
+<div class="heading">
             <div class="left-heading">
                 <div class="logo">
                     <a href="homepage.php">
                         <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
                     </a>
                 </div>
-                <div class="search-bar">
-                    <form id="search-form" method="GET" action="shop.php">
-                        <label>
-                            <input type="search" name="search" id="search-input" placeholder="search...">
-                        </label>
-                        <input type="submit" value="Search">
-                    </form>
+                <div class="shop-button-container">
+                <a href="shop.php" class="shop-button">Shop</a>
                 </div>
             </div> <br>
-            <div class="shop-button-container">
-                <a href="shop.php" class="shop-button">Shop</a>
+            <div class="search-bar">
+                <form id="search-form" method="GET" action="shop.php">
+                    <label>
+                        <input type="search" name="search" id="search-input" placeholder="search...">
+                    </label>
+                    <input type="submit" value="Search">
+                </form>
             </div>
             <div class="right-heading">
                 <div class="login-status">
@@ -263,6 +292,7 @@ if (isset($_GET['delete_id'])) {
             </div>
         </div>
     </header>
+<main>
     <div class="container">
         <h2>Payment Methods</h2>
 
@@ -299,18 +329,18 @@ if (isset($_GET['delete_id'])) {
         <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" id="add-payment-method-form">
             <input type="hidden" name="add_payment_method" value="1">
             <label for="method_type">Method Type (Credit Card, PayPal, etc.):</label>
-            <input type="text" name="method_type" required>
+            <input type="text" style="border-radius: 30px;" name="method_type" required>
 
             <label for="card_number">Card Number:</label>
-            <input type="text" name="card_number" required>
+            <input type="text" style="border-radius: 30px;" name="card_number" required>
 
             <label for="cvs_number">CVS Number:</label>
-            <input type="text" name="cvs_number" required>
+            <input type="text" style="border-radius: 30px;" name="cvs_number" required>
 
             <label for="expiration_date">Expiration Date:</label>
-            <input type="date" name="expiration_date" required>
+            <input type="date" style="border-radius: 30px;" name="expiration_date" required>
 
-            <input type="submit" value="Add Payment Method">
+            <input style="border-radius: 30px;" type="submit" value="Add Payment Method">
         </form>
 
         <!-- Edit Payment Method Form -->
@@ -318,20 +348,20 @@ if (isset($_GET['delete_id'])) {
             <h3>Edit Payment Method</h3>
             <form id="edit-payment-method-popup-form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="update_payment_method" value="1">
-                <input type="hidden" name="payment_method_id" id="edit-payment-method-id">
+                <input type="hidden" name="payment_method_id" style="border-radius: 30px;" id="edit-payment-method-id">
                 <label for="edit-method-type">Method Type (Credit Card, PayPal, etc.):</label>
-                <input type="text" name="method_type" id="edit-method-type" required>
+                <input type="text" name="method_type" style="border-radius: 30px;" id="edit-method-type" required>
 
                 <label for="edit-card-number">Card Number:</label>
-                <input type="text" name="card_number" id="edit-card-number" required>
+                <input type="text" name="card_number" style="border-radius: 30px;" id="edit-card-number" required>
 
                 <label for="edit-cvs-number">CVS Number:</label>
-                <input type="text" name="cvs_number" id="edit-cvs-number" required>
+                <input type="text" name="cvs_number" style="border-radius: 30px;" id="edit-cvs-number" required>
 
                 <label for="edit-expiration-date">Expiration Date:</label>
-                <input type="date" name="expiration_date" id="edit-expiration-date" required>
+                <input type="date" name="expiration_date" style="border-radius: 30px;" id="edit-expiration-date" required>
 
-                <input type="submit" value="Update Payment Method">
+                <input style="border-radius: 30px;" type="submit" value="Update Payment Method">
                 <button type="button" onclick="hideEditForm()">Cancel</button>
             </form>
         </div>
@@ -341,7 +371,7 @@ if (isset($_GET['delete_id'])) {
 // Close database connection
 $conn->close();
 ?>
-
+</main>
 <footer>
     <div class="social-media">
         <br><br>
@@ -364,6 +394,7 @@ $conn->close();
         </div>
         <div class="location">
             <p>123 Main Street, City, Country</p>
+            <img src="../images/misc/DataDash.png" alt="Logo" style="border-radius: 50%;" width="210" height="110">
         </div>
         <div class="legal">
             <h3>Privacy & Legal</h3>

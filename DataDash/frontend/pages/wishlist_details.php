@@ -72,24 +72,26 @@ $conn->close();
         }
 
         .shop-button-container {
-            text-align: center; 
-            margin-top: 10px; 
+        text-align: center; /* Center the button horizontally */
+        margin-top: 0px;
+        border-radius: 30px; /* Rounded corners */
         }
 
         .shop-button {
             display: inline-block;
-            padding: 10px 40px;
+            padding: 15px 40px;
             font-size: 16px;
             color: #fff;
-            background-color: #009dff; 
+            background-color: #009dff; /* Bootstrap primary color */
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            margin-left: 45px; /* Add 45px left margin */
         }
 
         .shop-button:hover {
-            background-color: #0056b3; 
+            background-color: #0056b3; /* Darker shade for hover effect */
         }
 
         .wishlist-container {
@@ -149,6 +151,7 @@ $conn->close();
         .add-to-cart {
             background-color: #0ad4f8;
             color: #fff;
+            border-radius: 30px;
         }
 
         .add-to-cart:hover {
@@ -158,6 +161,7 @@ $conn->close();
         .delete-from-wishlist {
             background-color: #e10000;
             color: #fff;
+            border-radius: 30px;
         }
 
         .delete-from-wishlist:hover {
@@ -178,17 +182,49 @@ $conn->close();
             text-decoration: underline; 
             color: black; 
         }
+
+        /* Search Bar Styling */
+        .search-bar {
+            position: relative; /* To position the search icon */
+            width: 400px; /* Adjust width as needed */
+            margin: 8px auto; /* Center the search bar */
+        }
+
+        .search-bar input[type="search"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 30px; /* Rounded corners */
+            font-size: 16px;
+        }
+
+        .search-bar input[type="submit"] {
+            position: absolute;
+            left: 400px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #7909f1; /* Bootstrap primary color */
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <header>
-    <div class="heading">
-        <div class="left-heading">
-            <div class="logo">
-                <a href="homepage.php">
-                    <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
-                </a>
-            </div>
+<div class="heading">
+            <div class="left-heading">
+                <div class="logo">
+                    <a href="homepage.php">
+                        <img src="../images/misc/DataDash.png" alt="Logo" width="105" height="500">
+                    </a>
+                </div>
+                <div class="shop-button-container">
+                <a href="shop.php" class="shop-button">Shop</a>
+                </div>
+            </div> <br>
             <div class="search-bar">
                 <form id="search-form" method="GET" action="shop.php">
                     <label>
@@ -197,34 +233,30 @@ $conn->close();
                     <input type="submit" value="Search">
                 </form>
             </div>
-        </div> <br>
-        <div class="shop-button-container">
-            <a href="shop.php" class="shop-button">Shop</a>
-        </div>
-        <div class="right-heading">
-            <div class="login-status">
-                <?php if (sessionExists()): ?>
-                    <div class="hello-message">
-                        <span>Hello, <?php echo getSessionUsername(); ?></span>
-                    </div>
-                    <div class="icons">
-                        <a href="account.php"><i class="fas fa-user-check fa-2x"></i>Account</a>
-                        <a href="cart.php"><i class="fas fa-shopping-cart fa-2x"></i>Cart</a>
-                        <a href="../../backend/utils/logout.php"><i class="fas fa-sign-out-alt fa-2x"></i>Logout</a>
-                    </div>
-                <?php else: ?>
-                    <div class="login" title="login">
-                        <a href="login_page.php"><i class="fas fa-sign-in-alt fa-2x"></i>Login</a>
-                    </div>
-                    <div class="register" title="register">
-                        <a href="create_account.php"><i class="fas fa-user-times fa-2x"></i>Register</a>
-                    </div>
-                <?php endif; ?>
+            <div class="right-heading">
+                <div class="login-status">
+                    <?php if (sessionExists()): ?>
+                        <div class="hello-message">
+                            <span>Hello, <?php echo getSessionUsername(); ?></span>
+                        </div>
+                        <div class="icons">
+                            <a href="account.php"><i class="fas fa-user-check fa-2x"></i>Account</a>
+                            <a href="cart.php"><i class="fas fa-shopping-cart fa-2x"></i>Cart</a>
+                            <a href="../../backend/utils/logout.php"><i class="fas fa-sign-out-alt fa-2x"></i>Logout</a>
+                        </div>
+                    <?php else: ?>
+                        <div class="login" title="login">
+                            <a href="login_page.php"><i class="fas fa-sign-in-alt fa-2x"></i>Login</a>
+                        </div>
+                        <div class="register" title="register">
+                            <a href="create_account.php"><i class="fas fa-user-times fa-2x"></i>Register</a>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
-    </div>
 </header>
-
+<main>
 <section class="wishlist-container">
 <div>
     <h2><a href="wishlists.php">Wishlists</a></h2>
@@ -258,7 +290,7 @@ $conn->close();
         <?php endif; ?>
     </div>
 </section>
-
+</main>
 <footer>
     <div class="social-media">
         <br><br>
@@ -281,6 +313,7 @@ $conn->close();
         </div>
         <div class="location">
             <p>123 Main Street, City, Country</p>
+            <img src="../images/misc/DataDash.png" alt="Logo" style="border-radius: 50%;" width="210" height="110">
         </div>
         <div class="legal">
             <h3>Privacy & Legal</h3>
