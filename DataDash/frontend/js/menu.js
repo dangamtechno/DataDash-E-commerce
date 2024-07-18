@@ -1,5 +1,5 @@
 function requestCategories(){
-    fetchCall("menu.php",responseCategories)
+    fetchCall("../../backend/utils/menu.php",responseCategories)
     function responseCategories(data){
         const nav = document.querySelector('.navigation');
         console.log(data);

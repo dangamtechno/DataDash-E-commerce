@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded',createAdminLogin);
 document.addEventListener('DOMContentLoaded',checkLoginStatus);
 
-const  backend_url='http://localhost:80/admin/backend/';
+const  backend_url='../../../admin/backend/';
+//utility function to update view status of item
 function getStatus(i){
     let status = '';
     console.log(i);
@@ -38,10 +39,10 @@ modalContainer.appendChild(modal)
 main.appendChild(modalContainer);
 }
 function fetchCall(resource, callBack, method="GET",data = undefined){
-    const url ="http://localhost:80/admin/backend/";
+    const url ="../../admin/backend/";
     fetch(url+resource,{
        method: method,
-       mode:"cors",
+       //mode:"cors",
        credentials:"include",
        body:data, 
     })
@@ -51,6 +52,7 @@ function fetchCall(resource, callBack, method="GET",data = undefined){
     callBack(data);
     }).catch((err)=>console.log(err+" "+ resource + ' resource '));
 }
+
 
 function categoryDropDown(){
     fetchCall("categories.php",fillDropdownResponse);

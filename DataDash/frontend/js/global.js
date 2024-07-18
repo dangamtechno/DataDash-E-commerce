@@ -4,8 +4,10 @@ document.addEventListener('DOMContentLoaded',checkLoginStatus);
 document.addEventListener('DOMContentLoaded',requestFeaturedProducts);
 document.addEventListener('DOMContentLoaded',requestNewArrivals);
 const searchSubmit = document.querySelector('.search-button');
+
+alert('test');
 searchSubmit.addEventListener('click',submitSearch);
-function submitSearch(e){
+function submitSearch(e){   
     e.preventDefault();
     const form = document.querySelector('.search-form');
     const formData = new FormData(form);
@@ -222,7 +224,7 @@ function getStockText(inStock,modal){
 
 
 function fetchCall(resource, callBack, method="GET",data = undefined){
-    const url ="http://localhost:80/backend/utils/";
+    const url ="../../backend/utils/";
     fetch(url+resource,{
        method: method,
        body:data, 

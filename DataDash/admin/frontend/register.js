@@ -33,7 +33,6 @@ function validateRegisterForm(){
 function registerUser(){
     fetchCall('register.php',responseRegister);
     function responseRegister(data){
-      
         const formDiv = document.createElement('div');
         formDiv.className = 'form-div';
         const formTitle = document.createElement('h2');
@@ -41,9 +40,10 @@ function registerUser(){
         formDiv.append(formTitle);
         const form = document.createElement('form');
         form.className = 'registration-form';
+        console.log(data);
         if(data.columns){
             console.log(data.columns);
-            const columns = data.columns;
+            const columns = data;
 
         columns.forEach(column => {
             const input = document.createElement('input');
@@ -62,8 +62,7 @@ function registerUser(){
             console.log(`${input.name}`);
             form.appendChild(label);
             form.appendChild(input);
-        });
-    
+        });    
         const submit = document.createElement('input');
         submit.type = 'submit';
         submit.name = 'register';
