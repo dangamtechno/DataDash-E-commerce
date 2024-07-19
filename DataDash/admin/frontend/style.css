@@ -262,7 +262,7 @@ label {
     padding: 10px;
 }
 .register-link{
-    margin-left: 27vw;
+    
     color: aliceblue;
     background-color: blue;
     border: none;
@@ -270,9 +270,8 @@ label {
    align-items: center ;
    justify-content: center;
    border-radius: 15px;
-   width: 35vw;
-   min-width: 200px;
-   height: 5vh;
+   width: 60%;
+   height: 6vh;
 }
 .register-link:hover{
     background-color: #3e8e41;
@@ -351,7 +350,6 @@ footer li:hover{
         grid-template-columns: 1fr;
 
     }
-
   }
 .form-div{
     display: grid ;
@@ -359,16 +357,15 @@ footer li:hover{
     width: 96%;
     overflow: auto;
 }
-.form-div form input {
-    width: 100px;
-}
 /* Login Page Styles */
   .login-form,.registration-form {
+    height: 55vh;
     display: flex; /* added */
     flex-direction: column; /* added */
     align-items: center; /* added */
     padding: 10px; /* added */
     font-size: large;
+    gap: 10px;
     width: inherit;
   }
   
