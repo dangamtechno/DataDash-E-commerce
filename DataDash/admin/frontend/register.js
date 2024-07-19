@@ -43,7 +43,7 @@ function registerUser(){
         console.log(data);
         if(data.columns){
             console.log(data.columns);
-            const columns = data;
+            const columns = data.columns;
 
         columns.forEach(column => {
             const input = document.createElement('input');

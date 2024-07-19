@@ -18,6 +18,7 @@ function requestCategories(){
    function responseCategories(data){
     console.log(data);
     const modal = document.createElement('div');
+    modal.className="form-div";
     const header = document.createElement('h2');
     header.textContent = 'Edit Categories';
     modal.appendChild(header);  
@@ -25,7 +26,7 @@ function requestCategories(){
     var  categories = data.categories;
     console.log(categories);    
     for(const category in categories){
-          //create card to hold product info
+    //create card to hold product info
     const card = document.createElement('div');
     card.className = "card";
     //product name price category and product desc
