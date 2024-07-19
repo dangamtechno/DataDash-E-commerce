@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded',createAdminLogin);
 document.addEventListener('DOMContentLoaded',checkLoginStatus);
 
-const  backend_url='../../../admin/backend/';
+//used for ajax fetch call
+const  backend_url='../backend/';
+//
 //utility function to update view status of item
 function getStatus(i){
     let status = '';
