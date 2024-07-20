@@ -16,6 +16,7 @@ if($_SERVER['REQUEST_METHOD']== "GET" && isset($_GET['id'])){
    }
    exit();
 }
+
 if($_SERVER['REQUEST_METHOD']=="GET"){
    $stmt = "SELECT * FROM banner;";
     if($result = $conn->query($stmt)){
@@ -31,7 +32,8 @@ if($_SERVER['REQUEST_METHOD']=="GET"){
    exit();
 }
 
-// Assuming database connection is established in $conn
+
+
 
 // Check if it's a POST request and 'id' parameter is set
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
@@ -39,10 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     $name = isset($_POST['name']) ? $_POST['name'] : '';
     $status = isset($_POST['status']) ? intval($_POST['status']) : 0;
     $desc = isset($_POST['description']) ? $_POST['description'] : '';
+    $image = isset($_POST['image']) ? $_POST['image'] : '';
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
     
     // Prepare the SQL statement
-    $stmt = "UPDATE banner SET name = ? ,description = ? , status = ? WHERE id = ?;";
+    $stmt = "UPDATE banner SET name = ? ,description = ? ,image = ?,status = ? WHERE id = ?;";
     
     // Prepare and execute the statement
     $prep_stmt = $conn->prepare($stmt);
@@ -59,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     }
     
     // Bind parameters
-    $prep_stmt->bind_param('ssii', $name,$desc,$status ,$id);
+    $prep_stmt->bind_param('sssii', $name,$desc,$image,$status ,$id);
     
     // Execute the statement
     $executeResult = $prep_stmt->execute();
@@ -84,6 +87,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     exit(); // Exit script after handling the request
 }
 
+//post method for inserting a new banner
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Retrieve and sanitize input data
+    $name = isset($_POST['name']) ? $_POST['name'] : '';
+    $status = isset($_POST['status']) ? intval($_POST['status']) : 0;
+    $desc = isset($_POST['description']) ? $_POST['description'] : '';
+    $image = isset($_POST['image']) ? $_POST['image'] : '';
+    // Prepare the SQL statement
+    $stmt = "INSERT INTO banner (name, description,image,status)
+    VALUES(?, ?, ?, ?)";
+    
+    // Prepare and execute the statement
+    $prep_stmt = $conn->prepare($stmt);
+    if (!$prep_stmt) {
+        // Handle prepare error
+        echo json_encode(['error' => 'Prepare statement failed: ' . $conn->error]);
+        exit();
+    }
+    
+    if (!$prep_stmt) {
+        // Handle prepare error
+        echo json_encode(['error' => 'Prepare statement failed: ' . $conn->error]);
+        exit();
+    }
+    
+    // Bind parameters
+    $prep_stmt->bind_param('sssi', $name,$desc,$image,$status);
+    
+    // Execute the statement
+    $executeResult = $prep_stmt->execute();
+    
+    if ($executeResult === false) {
+        // Handle the error, log it, etc.
+        echo json_encode(['error' => 'Execute statement failed: ' . $prep_stmt->error]);
+        exit();
+    } else {
+       $stmt='SELECT * FROM banner  WHERE  id = ?;';
+       $prep_stmt = $conn->prepare($stmt);
+       $id = $_POST['id'];
+       $prep_stmt->bind_param('i',$id);
+       $prep_stmt->execute();
+       if($res = $prep_stmt->get_result()){
+           echo json_encode(['banner'=>$res->fetch_assoc()]);
+       }
+    }
+    
+    // Close statement
+    $prep_stmt->close();
+    exit(); // Exit script after handling the request
+}
 
 
 ?>
