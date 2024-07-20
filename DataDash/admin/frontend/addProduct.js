@@ -15,7 +15,6 @@ function addProductButton(){
 function  addProductForm(){
     fetchCall("addProduct.php",responseAddProductForm);
     function   responseAddProductForm(data){
-        const  product  =   data;
         const formHeader = document.createElement('h3');
         formHeader.textContent = "Add Product"; 
         const formDiv = document.createElement('div');
@@ -28,6 +27,7 @@ function  addProductForm(){
         nameField.type = 'text';
         nameField.placeholder='name';
         nameField.name='name';
+        nameField.id  = 'product name';
      
         const nameLabel = document.createElement('label');
         nameLabel.innerText = "Product Name";
@@ -37,16 +37,18 @@ function  addProductForm(){
         descField.type= 'text';
         descField.placeholder = 'description';
         descField.name = 'description';
+        descField.id = 'description';
         const descLabel = document.createElement('label');
      
         descLabel.innerText = "Product description";
-        descField.setAttribute('for',descField.id);
+        descLabel.setAttribute('for',descField.id);
          //price
          const priceLabel = document.createElement('label');
          priceLabel.innerText = "Price";
          const price = document.createElement('input');
          price.type = "number";
          price.name = "price";
+         price.id = price.name;
          price.min = 0;
          price.value = 0;
          price.step = .01;
@@ -56,18 +58,19 @@ function  addProductForm(){
         //i will need to fetch the name and cat id the option text will be the name but the value will be the id
          const categoryLabel = document.createElement('label');
          categoryLabel.innerText = "Category Name";
-         categoryLabel.setAttribute('for',categoryLabel.id);
          const categoryList = document.createElement('select');
          categoryList.id = 'drop-down';
          categoryList.name = 'category';
+         categoryList.id = categoryList.name;
+         categoryLabel.setAttribute('for',categoryList.id);
          categoryDropDown();
          
     //image url
     const imageField= document.createElement('input');
-        
     imageField.type = 'text';
     imageField.placeholder='image src';
     imageField.name='image';
+    imageField.id=imageField.name;
 
     const imageLabel = document.createElement('label');
     imageLabel.innerText = "Image src";

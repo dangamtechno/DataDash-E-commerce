@@ -127,6 +127,7 @@ function updateProductForm(modal,product){
    nameField.type = 'text';
    nameField.placeholder='name';
    nameField.name='name';
+   nameField.id = 'name';
 
    const nameLabel = document.createElement('label');
    nameLabel.innerText = "Product Name";
@@ -136,30 +137,31 @@ function updateProductForm(modal,product){
    descField.type= 'text';
    descField.placeholder = 'description';
    descField.name = 'description';
+   descField.id = 'description';
    const descLabel = document.createElement('label');
 
    descLabel.innerText = "Product description";
    descField.setAttribute('for',descField.id);
     //price
     const priceLabel = document.createElement('label');
-    priceLabel.innerText = "Price";
+    priceLabel.innerText = 'Price';
     const price = document.createElement('input');
-    price.type = "number";
-    price.name = "price";
+    price.type = 'number';
+    price.name = 'price';
+    price.id = 'price';
     price.min = 0;
-    price.value = 0;
+    price.value = 0;  
     price.step = .01;
-    priceLabel.setAttribute("for",price.id);
-//category input will be here needs a select field that has options from the category
-// i will need to fetch the name and cat id the option text will be the name but the value will be the id
-const categoryLabel = document.createElement('label');
-   categoryLabel.innerText = "Category Name";
-   categoryLabel.setAttribute('for',categoryLabel.id);
-
-const categoryList = document.createElement('select');
-categoryList.id = 'drop-down';
-categoryList.name = 'category';
-categoryDropDown();
+    priceLabel.setAttribute('for',price.id);
+    //category input will be here needs a select field that has options from the category
+    // i will need to fetch the name and cat id the option text will be the name but the value will be the id
+    const categoryLabel = document.createElement('label');
+    categoryLabel.innerText = "Category Name";
+    const categoryList = document.createElement('select');
+    categoryList.id = 'drop-down';
+    categoryLabel.setAttribute('for',categoryList.id);
+    categoryList.name = 'category';
+    categoryDropDown();
 
 //image url field will come here
  //image url
@@ -168,8 +170,8 @@ categoryDropDown();
  imageField.type = 'text';
  imageField.placeholder='image src';
  imageField.name='image';
-imageField.value =  product.image;
-
+ imageField.id ='image'
+ imageField.value =  product.image;
  const imageLabel = document.createElement('label');
  imageLabel.innerText = "Image src";
  imageLabel.setAttribute('for',imageField.id);

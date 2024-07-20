@@ -9,7 +9,9 @@
     font-family: "Roboto", sans-serif;
 }
 body {
-   background-color: ivory;
+    min-width: 60vw;
+    max-width: 100%;
+    background-color: ivory;
 }
 .hidden{
     display: none;
@@ -177,16 +179,15 @@ input[type="submit"]{
 /*header*/
 /*main*/
 main{
+    background-color: darkgray;
     max-height: 60vh;
     min-height: 30vh;
     margin-top: 15vh;
 }
 .main-div{
+    padding-top: 10px;
     align-items: center;
     justify-content: center;
-}
-.main-div .form-div{
-padding-left: 15vw;
 }
 /**/
 .overlay{
@@ -207,7 +208,7 @@ padding-left: 15vw;
 
 .modal-container{
     position: fixed;
-    top: 5%;
+    top: 2%;
     left: 10%;
     right: 0;
     width: 80vw;
@@ -216,10 +217,7 @@ padding-left: 15vw;
     border: red solid 5px;
     border-radius: 15px;
     z-index:300;
-    overflow-y: auto;
-    overflow-x:hidden ;
-    margin-right: 5px;
-
+    overflow:auto ;
 }
 .modal{
     display: grid;
@@ -253,8 +251,6 @@ padding-left: 15vw;
     justify-content: center;
     align-items: center;
     display: grid;
-    padding-left: 25%;
-    padding-right: 25%;
     overflow-x:hidden ;
     overflow-y: auto;
 }
@@ -262,16 +258,15 @@ label {
     padding: 10px;
 }
 .register-link{
-    
     color: aliceblue;
     background-color: blue;
     border: none;
     cursor: pointer;
-   align-items: center ;
-   justify-content: center;
-   border-radius: 15px;
-   width: 60%;
-   height: 6vh;
+    align-items: center ;
+    justify-content: center;
+    border-radius: 15px;
+    width: 150px;
+    height: 50px;
 }
 .register-link:hover{
     background-color: #3e8e41;
@@ -281,21 +276,20 @@ label {
 
 .admin-buttons{
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     list-style: none;
-    padding: 10px;
-    height: 40vh;
-    margin: 10vw;
+    height: 55vh;
 }
 .admin-buttons button{
-   width: 40%;
+   width:  fit-content;
+   height: 6vh;
    margin: 10px;
    padding: 10px;
    border-radius: 15px;
    background-color:var(--primaryColor);
-    color: aliceblue;
-    cursor: pointer;
-    transform: all 2s ease-in-out;
+   color: aliceblue;
+   cursor: pointer;
+   transform:all 2s ease-in-out;
 }
 .admin-buttons button:hover{
     font-size: larger;
@@ -351,15 +345,27 @@ footer li:hover{
 
     }
   }
+.Add-products{
+    display: grid;
+    grid-row: 1fr;
+    width: 70%;
+}
 .form-div{
-    display: grid ;
-    height: 80vh;
+    margin-left: 2%;
+    display: grid;
+    height: fit-content;
     width: 96%;
     overflow: auto;
+    background-color: lightgray;
+    border: 2px solid black;
+    justify-content: center;
+    align-items: center;
+}
+form input{
+    text-align: center;
 }
 /* Login Page Styles */
   .login-form,.registration-form {
-    height: 55vh;
     display: flex; /* added */
     flex-direction: column; /* added */
     align-items: center; /* added */

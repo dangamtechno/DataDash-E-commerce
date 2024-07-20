@@ -1,6 +1,6 @@
 
 function createRegisterLink(){
-    const formDiv = document.querySelector('.form-div');
+    const formDiv = document.querySelector('.login-form');
     const register = document.createElement('button');
     register.className  = 'register-link';
     formDiv.appendChild(register);

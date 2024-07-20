@@ -15,7 +15,8 @@ function requestBanners(){
        const modal = document.createElement('div');
        console.log(data);
        var  banners = data.banners;
-       console.log(banners);    
+       console.log(banners);
+       //if banners is not empty    
        for(const banner in banners){
              //create card to hold product info
        const card = document.createElement('div');
@@ -41,6 +42,8 @@ function requestBanners(){
         //append to description container
         descDiv.appendChild(name);
         modal.appendChild(card);
+        //its empty display empty
+        //add insert banner here
      }
        displayOverlay(modal);
        //ADD BUTTON FOR ADD NEW ITEM HERE

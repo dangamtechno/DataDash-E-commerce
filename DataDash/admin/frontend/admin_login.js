@@ -65,15 +65,26 @@ function createAdminLogin(){
         createRegisterLink();   
 }
 function displayLoggedUser(user){
-   const main =  document.querySelector('.main-div');
+    const main_div =  document.querySelector('.main-div');
    //show logout
    showHideIcon(logout,false);
    showHideIcon(loggedUser,false);
    //update username to logged username
    const loggedUserSpan = document.querySelector('.username');
    loggedUserSpan.textContent = user.name;
-  
-   main.innerHTML=' <div class="admin-functions">\n<ul class="admin-buttons">\n</ul>\n</div>';
+   main_div.innerHTML  = '';
+    //' <div class="admin-functions">\n<ul class="admin-buttons">\n</ul>\n</div>';
+   const admin_functions = document.createElement('ul');
+   admin_functions.className='admin-functions';
+   const section_header = document.createElement('h2');
+   section_header.innerText=`Welcome ${user.name}`;
+   const admin_buttons = document.createElement('ul');
+   admin_buttons.className='admin-buttons';
+   admin_functions.appendChild(section_header);
+   admin_functions.appendChild(admin_buttons);
+   main_div.appendChild(admin_functions);
+
+   //main.appendChild();
    addAdminFunctions();
 }
 
