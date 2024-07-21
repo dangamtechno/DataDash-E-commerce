@@ -53,9 +53,9 @@ function requestBanners(){
                  
             }
             //button to show the create new banner
-            const showCreateBannerForm = document.createElement('button');
-            showCreateBannerForm.innerText="Create  New Banner";
-
+            const showCreateBannerForm = document.createElement('div');
+            showCreateBannerForm.className='card';
+            showCreateBannerForm.innerText="Create New Banner";
             modal.appendChild(showCreateBannerForm);
             showCreateBannerForm.addEventListener('click', function() {
                 // Call createNewBannerForm with an argument
