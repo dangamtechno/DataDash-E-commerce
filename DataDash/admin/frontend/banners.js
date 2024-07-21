@@ -50,9 +50,20 @@ function requestBanners(){
                 //append to description container
                 descDiv.appendChild(name);
                 modal.appendChild(card);
-                //its empty display empty
-                //add insert banner here
+                 
             }
+            //button to show the create new banner
+            const showCreateBannerForm = document.createElement('button');
+            showCreateBannerForm.innerText="Create  New Banner";
+
+            modal.appendChild(showCreateBannerForm);
+            showCreateBannerForm.addEventListener('click', function() {
+                // Call createNewBannerForm with an argument
+                const formContainer =   document.createElement('div');
+                createNewBannerForm(formContainer);
+                showCreateBannerForm.style.display = 'none';
+                modal.appendChild(formContainer);
+            });
        }
        displayOverlay(modal);
        //ADD BUTTON FOR ADD NEW ITEM HERE
