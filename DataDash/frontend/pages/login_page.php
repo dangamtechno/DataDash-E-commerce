@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
     <?php require_once '../../backend/utils/session.php'; ?>
+    <title>Login</title>
     <style>
     .shop-button-container {
         text-align: center; /* Center the button horizontally */

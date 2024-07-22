@@ -79,7 +79,7 @@ $conn->close(); // Close the connection
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
     <?php require_once '../../backend/utils/session.php'; ?>
-    <title>Product Details - DataDash</title>
+    <title>Product Details</title>
     <style>
         body {
             font-family: Arial, sans-serif;

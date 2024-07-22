@@ -46,7 +46,7 @@ $conn->close();
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
-    <title>Wishlist</title>
+    <title>Wishlists</title>
 
     <style>
         /* General Styles */
