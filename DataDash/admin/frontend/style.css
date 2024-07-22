@@ -257,21 +257,25 @@ main{
 label {
     padding: 10px;
 }
-.register-link{
+.register-link,.forgotPassword-link{
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 10px;
+    margin-bottom: 10px;
     color: aliceblue;
     background-color: blue;
     border: none;
     cursor: pointer;
     align-items: center ;
     justify-content: center;
-    border-radius: 15px;
-    width: 150px;
+    border-radius: 5px;
+    width: 175px;
     height: 50px;
 }
-.register-link:hover{
+.register-link:hover,.forgotPassword-link:hover{
     background-color: #3e8e41;
     font:larger;
-    color: magenta;
+    color:  yellow;
 }
 
 .admin-buttons{
@@ -364,8 +368,8 @@ footer li:hover{
 form input{
     text-align: center;
 }
-/* Login Page Styles */
-  .login-form,.registration-form {
+/* form Styles */
+  form {
     display: flex; /* added */
     flex-direction: column; /* added */
     align-items: center; /* added */
@@ -385,7 +389,7 @@ form input{
     font-size: 1.2rem; /* added */
   }
   
-  .login-form input[type='submit'],.registration-form input[type="submit"] {
+  input[type='submit']{
     background-color: #4CAF50; /* added */
     color: #fff; /* added */
     padding: 10px 20px; /* added */
@@ -396,6 +400,6 @@ form input{
     width: 60%; /* added */
     font-size: 1.2rem; /* added */
   }
-.login-form input[type='submit']:hover,.registration-form input[type="submit"]:hover {
+input[type='submit']:hover {
     background-color: #3e8e41; /* added */
   }

@@ -207,7 +207,15 @@
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
             </ul> <br>
-                2024 DataDash, All Rights Reserved.
+            <h3><strong>2024 DataDash, All Rights Reserved.</strong><h3>
+            <ul>
+                <h3>admin login</h3>
+                <li>
+                    <a href="../../admin/frontend/index.html">
+                        <i class="fas fa-users-cog"></i>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </footer>

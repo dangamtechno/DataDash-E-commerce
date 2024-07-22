@@ -61,7 +61,6 @@ function  addProductForm(){
          const categoryList = document.createElement('select');
          categoryList.id = 'drop-down';
          categoryList.name = 'category';
-         categoryList.id = categoryList.name;
          categoryLabel.setAttribute('for',categoryList.id);
          categoryDropDown();
          

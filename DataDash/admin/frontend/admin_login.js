@@ -62,7 +62,8 @@ function createAdminLogin(){
         loginForm.appendChild(submit);
         formDiv.appendChild(loginForm);
         main.appendChild(formDiv);
-        createRegisterLink();   
+        createRegisterLink();
+        getPasswordButton(formDiv);   
 }
 function displayLoggedUser(user){
     const main_div =  document.querySelector('.main-div');
@@ -126,4 +127,68 @@ function displayLoginRegisterIcons(){
       //update username to logged username
    const loggedUserSpan = document.querySelector('.username');
    loggedUserSpan.textContent = 'Guest';
+}
+
+
+function getPasswordButton(container){
+    const forgotPasswordButton = document.createElement('button');
+    forgotPasswordButton.innerText='Forgot Password ?';
+    forgotPasswordButton.className='forgotPassword-link';
+    container.appendChild(forgotPasswordButton);
+    forgotPasswordButton.addEventListener('click',forgotPasswordForm);
+}
+function forgotPasswordForm(){
+    const  modal = document.createElement('div');
+    modal.className='modal-container';
+    const  formContainer = document.createElement('div');
+    formContainer.className='form-div';
+    const form =  document.createElement('form');
+    form.className='forgot-password-form';
+    formContainer.appendChild(form);
+
+    //form header
+    const header = document.createElement('h2');
+    header.innerText = "Forgot Password";
+    form.appendChild(header);
+    //email
+    const emailInput = document.createElement('input');
+    const emailLabel = document.createElement('label');
+    emailInput.type='email';
+    emailInput.name='email'
+    emailLabel.textContent='Email';
+
+    //phone number
+    const phoneInput = document.createElement('input');
+    const phoneLabel = document.createElement('label');
+    phoneInput.type='text'
+    phoneInput.name='phone';
+    phoneLabel.textContent='Phone number';
+    //submit
+    const submit = document.createElement('input');
+    submit.type = 'submit';
+    submit.name = 'get-password';
+    submit.addEventListener('click',submitForgotPassword);
+    //append fields
+    form.appendChild(emailLabel);
+    form.appendChild(emailInput);
+    form.appendChild(phoneLabel);
+    form.append(phoneInput);
+    form.appendChild(submit);
+    modal.appendChild(formContainer);
+    displayOverlay(modal);
+}
+function  submitForgotPassword(e){
+    e.preventDefault();
+    const forgotPasswordForm = document.querySelector('.forgot-password-form');
+    console.log(forgotPasswordForm);
+    const formData = new FormData(forgotPasswordForm);
+    fetchCall('get_password.php',responseSubmitForgotPassword,'POST',formData);
+    function responseSubmitForgotPassword(data) {
+        if(data['error']){
+            alert('User info not in system'.toUpperCase());
+        }
+        else{
+            alert(`password is ${data['password']}`);
+        }
+    }
 }

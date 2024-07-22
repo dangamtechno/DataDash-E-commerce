@@ -1,6 +1,5 @@
 function getProducts(){
     const username = document.querySelector('.username').textContent;
-    //console.log(username);
     const adminButtons = document.querySelector('.admin-buttons');
     const products    =   document.createElement('li');
     const editProductsBTN = document.createElement('button');
@@ -9,8 +8,7 @@ function getProducts(){
     products.append(editProductsBTN);
     adminButtons.appendChild(products);
     editProductsBTN.addEventListener('click',requestProducts);
-    //console.log(adminButtons);
-    //alert(adminButtons.textContent);
+    
 }
 function requestProducts(){
    fetchCall('product.php',responseGetProducts);
@@ -18,29 +16,23 @@ function requestProducts(){
     const modal = document.createElement('div');
     modal.className = 'modal-container';
     modal.id = 'product-container'; 
-    console.log(modal);
     var  products = data.products;
     console.log(products);    
     for(const product in products){
             //create card to hold product info
         const card = document.createElement('div');
         card.className = "product-card";
-        //card.id = "product-card";
-        //image for product
+        
         const imgDiv = document.createElement('div');
         imgDiv.className = "card-img";
         //product name price category and product desc
         const descDiv = document.createElement('div');
         descDiv.className = "card-desc";
         //apply it to card
-        //card.appendChild(imgDiv);
         card.appendChild(descDiv);
         //apply event when card click to get product details 
         card.addEventListener('click',getProductDetails.bind(products[product]));
-        //image element for product
-        //const img = document.createElement('img');
-        //img.src = `http://localhost:8081${products[product].image}`;
-        //imgDiv.appendChild(img);
+
         //product name will be the name the for card
         const name = document.createElement("p");
         name.textContent = products[product].name;
@@ -49,14 +41,11 @@ function requestProducts(){
         modal.appendChild(card);
   }
     displayOverlay(modal);
-    //ADD BUTTON FOR ADD NEW ITEM HERE
    }
 }
 function getProductDetails(){
-       console.log(this.product_id);
     fetchCall(`product.php?id=${this.product_id}`,responseProductDetails.bind(this))
     function responseProductDetails(data){
-        console.log(data);
         //grab prod from response
         let product = data.product;
         const modal = document.createElement('div');
@@ -232,9 +221,6 @@ function submitProductUpdate(e){
     form = document.querySelector('.update-products');
     const formData = new FormData(form);
     formData.append('id',this.product_id);
-    for(key of formData.entries()){
-        console.log(key);
-    }
     fetchCall("product.php",responseSubmitProductUpdate,"POST",formData);
     function responseSubmitProductUpdate(data){
         if(data.product){
@@ -261,11 +247,7 @@ function setCategoryName(id){
     function responseCategory(data){
         if(data.category){
             const category = data.category;
-            console.log(category.category_name);
             document.getElementById('category').innerText = `Category: ${category.category_name}`;
         }
     }
 }
-//create
-//update
-//delete

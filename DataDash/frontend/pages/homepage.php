@@ -289,7 +289,7 @@
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
             </ul> <br>
-                2024 DataDash, All Rights Reserved.
+                <strong>2024 DataDash, All Rights Reserved.</strong>
             <ul>
                 <h3>admin login</h3>
                 <li>

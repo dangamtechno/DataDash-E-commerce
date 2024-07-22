@@ -7,7 +7,6 @@ const  backend_url='../backend/';
 //utility function to update view status of item
 function getStatus(i){
     let status = '';
-    console.log(i);
     if(i != 0){
      status = 'viewable'; 
     }
@@ -60,22 +59,20 @@ function categoryDropDown(){
     fetchCall("categories.php",fillDropdownResponse);
     function fillDropdownResponse(data)
     {
-        if(data.categories){
-           const categories = data.categories;
+        if(data['categories']){
+           const categories = data['categories'];
            fillDropDownList(categories);
         }
     }
 }
 
 function fillDropDownList(data){
-    console.log(data);
     list = document.getElementById("drop-down");
     if(list){
     data.forEach((item) =>{
         let option = document.createElement('option');
         option.text = item.category_name;
         option.value = item.category_id;
-        console.log(item.category_id);
         list.add(option);
     });
    }
