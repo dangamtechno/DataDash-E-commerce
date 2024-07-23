@@ -92,7 +92,7 @@ function getBannerDetails(){
         //image section of banner
         const modalImage = document.createElement('div');
         modalImage.className='card-img';
-        const img = document.createElement('img')
+        const img = document.createElement('img');
         img.src = `../../frontend/images/banner/${banner.image}`;
         //name of banner
         const name = document.createElement('p');
