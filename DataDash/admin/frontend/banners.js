@@ -1,12 +1,16 @@
 
 function getBanners(){
+    //get admin button container
     const adminButtons = document.querySelector('.admin-buttons');
+    //create a list item for bannerbutton
     const banners    =   document.createElement('li');
     const bannersButton = document.createElement('button');
     bannersButton.textContent='EDIT BANNERS';
     bannersButton.className='model-button';
+    //append button to list item
     banners.append(bannersButton);
     adminButtons.appendChild(banners);
+    //add click event to open form fetch request occurs on click
     bannersButton.addEventListener('click',requestBanners);
 }
 function requestBanners(){
@@ -120,73 +124,22 @@ function getBannerDetails(){
 }
 
 function createNewBannerForm(modal){
+   //header 
    const formHeader = document.createElement('h2');
-        formHeader.textContent = "Create BANNER"; 
-        const formDiv = document.createElement('div');
-        formDiv.appendChild(formHeader);
-        const form = document.createElement('form');
-        form.className = 'create-banner';
-        formDiv.className = 'form-div';
-        //name
-        const nameField= document.createElement('input');
-        nameField.type = 'text';
-        nameField.placeholder='name';
-        nameField.name='name';
-        //desc
-        const descField = document.createElement('input');
-        descField.type= 'text';
-        descField.placeholder = 'description';
-        descField.name = 'description';
-        //image
-        const imageField= document.createElement('input');
-        imageField.type = 'text';
-        imageField.placeholder='image src';
-        imageField.name='image';
-        imageField.id ='image'
-        //status is either 1 or 0
-        const statusSection = document.createElement('div');
-        const statusSectionHeader = document.createElement('h3');
-        statusSectionHeader.innerHTML = 'Status';
-        statusSection.appendChild(statusSectionHeader);
-        const selectStatus = document.createElement('select');
-        selectStatus.name = 'status';
-        for(let i = 0; i <= 1;i++){
-         let statusField =   document.createElement('option');
-         statusField.type = '';
-         statusField.value = i;
-         statusField.innerText = getStatus(i);
-         selectStatus.appendChild(statusField);
-     }
-     //submit will send info to be used to update value in database where id is the currently viewed object id
-        const submit = document.createElement('input');
-        submit.name='submit';
-        submit.type='submit';
-        //EVENTLISTENER FOR UPDATE TABLE
-        submit.addEventListener('click',submitCreateBanner);
-        //form.appendChild(statusSection);
-        form.appendChild(nameField);
-        form.appendChild(descField);
-        form.appendChild(imageField);
-        statusSection.appendChild(selectStatus);
-        form.appendChild(statusSection);
-        form.appendChild(submit);
-        formDiv.appendChild(form);
-        modal.appendChild(formDiv);
-}
-function updateBannerForm(modal,banner){
-    //header of form
-   const formHeader = document.createElement('h2');
-   formHeader.textContent = "UPDATE BANNER"; 
+   formHeader.textContent = "Create BANNER"; 
+   //the container
    const formDiv = document.createElement('div');
    formDiv.appendChild(formHeader);
+   //create form
    const form = document.createElement('form');
-   form.className = 'update-banner';
+   form.className = 'create-banner';
    formDiv.className = 'form-div';
+   //name
    const nameField= document.createElement('input');
-
    nameField.type = 'text';
    nameField.placeholder='name';
    nameField.name='name';
+   //desc
    const descField = document.createElement('input');
    descField.type= 'text';
    descField.placeholder = 'description';
@@ -197,7 +150,6 @@ function updateBannerForm(modal,banner){
    imageField.placeholder='image src';
    imageField.name='image';
    imageField.id ='image'
-
    //status is either 1 or 0
    const statusSection = document.createElement('div');
    const statusSectionHeader = document.createElement('h3');
@@ -206,13 +158,67 @@ function updateBannerForm(modal,banner){
    const selectStatus = document.createElement('select');
    selectStatus.name = 'status';
    for(let i = 0; i <= 1;i++){
-    let statusField =   document.createElement('option');
-    statusField.type = '';
-    statusField.value = i;
-    statusField.innerText = getStatus(i);
-    selectStatus.appendChild(statusField);
+       let statusField =   document.createElement('option');
+       statusField.type = '';
+       statusField.value = i;
+       statusField.innerText = getStatus(i);
+       selectStatus.appendChild(statusField);
+    }
+   //submit will send info to be used to update value in database where id is the currently viewed object id
+    const submit = document.createElement('input');
+    submit.name='submit';
+    submit.type='submit';
+    //EVENTLISTENER FOR UPDATE TABLE
+    submit.addEventListener('click',submitCreateBanner);
+    //append fields
+    form.appendChild(nameField);
+    form.appendChild(descField);
+    form.appendChild(imageField);
+    statusSection.appendChild(selectStatus);
+    form.appendChild(statusSection);
+    form.appendChild(submit);
+    formDiv.appendChild(form);
+    modal.appendChild(formDiv);
+}
+function updateBannerForm(modal,banner){
+    //header of form
+   const formHeader = document.createElement('h2');
+   formHeader.textContent = "UPDATE BANNER"; 
+   const formDiv = document.createElement('div');
+   formDiv.appendChild(formHeader);
+   const form = document.createElement('form');
+   form.className = 'update-banner';
+   formDiv.className = 'form-div';
+   //name field
+   const nameField= document.createElement('input');
+   nameField.type = 'text';
+   nameField.placeholder='name';
+   nameField.name='name';
+   const descField = document.createElement('input');
+   descField.type= 'text';
+   descField.placeholder = 'description';
+   descField.name = 'description';
+   //image field 
+   const imageField= document.createElement('input');
+   imageField.type = 'text';
+   imageField.placeholder='image src';
+   imageField.name='image';
+   imageField.id ='image'
+   //status is either 1 or 0
+   const statusSection = document.createElement('div');
+   const statusSectionHeader = document.createElement('h3');
+   statusSectionHeader.innerHTML = 'Status';
+   statusSection.appendChild(statusSectionHeader);
+   const selectStatus = document.createElement('select');
+   selectStatus.name = 'status';
+   for(let i = 0; i <= 1; i++){
+       let statusField = document.createElement('option');
+       statusField.type = '';
+       statusField.value = i;
+       statusField.innerText = getStatus(i);
+       selectStatus.appendChild(statusField);
    }
-    //default values will be the current ones in db
+//default values will be the current ones in db
    selectStatus.selectedIndex = banner.status;
    nameField.value = banner.name;
    descField.value = banner.description;
@@ -267,8 +273,4 @@ function submitBannerUpdate(e){
             alert("banner update successful");
         }
     }
-    //console.log(form);
-    //alert(this.id   +  formData );
-
 }
-//delete

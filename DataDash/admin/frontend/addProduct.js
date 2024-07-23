@@ -1,20 +1,22 @@
 function addProductButton(){
-    const username = document.querySelector('.username').textContent;
-    //console.log(username);
+    //get admin button container
     const adminButtons = document.querySelector('.admin-buttons');
+    //create a list item for addproduct
     const product    =   document.createElement('li');
     const addProdButton = document.createElement('button');
     addProdButton.textContent='Add Product';
     addProdButton.className='model-button';
     product.append(addProdButton);
     adminButtons.appendChild(product);
+    //add a click event which will perform a get fetch request for products in db
     addProdButton.addEventListener('click',addProductForm);
-    //console.log(adminButtons);
-    //alert(adminButtons.textContent);
+   
 }
 function  addProductForm(){
     fetchCall("addProduct.php",responseAddProductForm);
     function   responseAddProductForm(data){
+        console.log(data);
+        //form header
         const formHeader = document.createElement('h3');
         formHeader.textContent = "Add Product"; 
         const formDiv = document.createElement('div');
@@ -22,39 +24,37 @@ function  addProductForm(){
         const form = document.createElement('form');
         form.className = 'Add-products';
         formDiv.className = 'form-div';
+        //form input fields
+        //name
         const nameField= document.createElement('input');
-     
         nameField.type = 'text';
         nameField.placeholder='name';
         nameField.name='name';
         nameField.id  = 'product name';
-     
         const nameLabel = document.createElement('label');
         nameLabel.innerText = "Product Name";
         nameLabel.setAttribute('for',nameField.id);
-     
+        //desc
         const descField = document.createElement('input');
         descField.type= 'text';
         descField.placeholder = 'description';
         descField.name = 'description';
         descField.id = 'description';
         const descLabel = document.createElement('label');
-     
         descLabel.innerText = "Product description";
         descLabel.setAttribute('for',descField.id);
-         //price
-         const priceLabel = document.createElement('label');
-         priceLabel.innerText = "Price";
-         const price = document.createElement('input');
-         price.type = "number";
-         price.name = "price";
-         price.id = price.name;
-         price.min = 0;
-         price.value = 0;
-         price.step = .01;
-         priceLabel.setAttribute("for",price.id);
-
-         //category input will be here needs a select field that has options from the category
+        //price
+        const priceLabel = document.createElement('label');
+        priceLabel.innerText = "Price";
+        const price = document.createElement('input');
+        price.type = "number";
+        price.name = "price";
+        price.id = price.name;
+        price.min = 0;
+        price.value = 0;
+        price.step = .01;
+        priceLabel.setAttribute("for",price.id);
+        //category input will be here needs a select field that has options from the category
         //i will need to fetch the name and cat id the option text will be the name but the value will be the id
          const categoryLabel = document.createElement('label');
          categoryLabel.innerText = "Category Name";
@@ -63,33 +63,29 @@ function  addProductForm(){
          categoryList.name = 'category';
          categoryLabel.setAttribute('for',categoryList.id);
          categoryDropDown();
-         
     //image url
-    const imageField= document.createElement('input');
-    imageField.type = 'text';
-    imageField.placeholder='image src';
-    imageField.name='image';
-    imageField.id=imageField.name;
-
-    const imageLabel = document.createElement('label');
-    imageLabel.innerText = "Image src";
-    imageLabel.setAttribute('for',imageField.id);
-
-
-   //status is either 1 or 0
-   const statusSection = document.createElement('div');
-   const statusSectionHeader = document.createElement('h3');
-   statusSectionHeader.innerHTML = 'Status';
-   statusSection.appendChild(statusSectionHeader);
-   const selectStatus = document.createElement('select');
-   selectStatus.name = 'status';
-   for(let i = 0; i <= 1;i++){
-    let statusField =   document.createElement('option');
-    statusField.type = '';
-    statusField.value = i;
-    statusField.innerText = getStatus(i);
-    selectStatus.appendChild(statusField);
-}
+        const imageField= document.createElement('input');
+        imageField.type = 'text';
+        imageField.placeholder='image src';
+        imageField.name='image';
+        imageField.id=imageField.name;
+        const imageLabel = document.createElement('label');
+        imageLabel.innerText = "Image src";
+        imageLabel.setAttribute('for',imageField.id);
+        //status is either 1 or 0
+        const statusSection = document.createElement('div');
+        const statusSectionHeader = document.createElement('h3');
+        statusSectionHeader.innerHTML = 'Status';
+        statusSection.appendChild(statusSectionHeader);
+        const selectStatus = document.createElement('select');
+        selectStatus.name = 'status';
+        for(let i = 0; i <= 1;i++){
+            let statusField =   document.createElement('option');
+            statusField.type = '';
+            statusField.value = i;
+            statusField.innerText = getStatus(i);
+            selectStatus.appendChild(statusField);
+        }
         //submit will send info to be used to update value in database where id is the currently viewed object id
         const submit = document.createElement('input');
         submit.name='submit';
@@ -118,7 +114,7 @@ function  addProductForm(){
         form.appendChild(submit);
         //append to form-containet
         formDiv.appendChild(form);
-         displayOverlay(formDiv);
+        displayOverlay(formDiv);
     }
 }
 
