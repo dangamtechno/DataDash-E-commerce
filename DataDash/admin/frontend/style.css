@@ -180,7 +180,7 @@ input[type="submit"]{
 /*main*/
 main{
     background-color: darkgray;
-    max-height: 60vh;
+    max-height: 70vh;
     min-height: 30vh;
     margin-top: 15vh;
 }
@@ -403,3 +403,20 @@ form input{
 input[type='submit']:hover {
     background-color: #3e8e41; /* added */
   }
+  .delete-button {
+    background-color: #f44336; /* Red background */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding around text */
+    text-align: center; /* Center-align text */
+    text-decoration: none; /* No underline */
+    display: inline-block; /* Inline block display */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Cursor style */
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+.delete-button:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}

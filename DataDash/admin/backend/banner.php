@@ -87,6 +87,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     exit(); // Exit script after handling the request
 }
 
+//delete banner 
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $banner_id = $_GET['id'];
+
+    // Prepare SQL statement
+    $sql = "DELETE FROM banners WHERE id = ?";
+
+    // Prepare and bind parameters
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $banner_id);
+
+    // Attempt to execute the statement
+    if ($stmt->execute()) {
+        echo "Banner deleted successfully.";
+    } else {
+        echo "Error deleting banner: " . $stmt->error;
+    }
+
+    // Close statement
+    $stmt->close();
+}
+
 //post method for inserting a new banner
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Retrieve and sanitize input data
@@ -116,27 +138,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $prep_stmt->bind_param('sssi', $name,$desc,$image,$status);
     
     // Execute the statement
-    $executeResult = $prep_stmt->execute();
-    
-    if ($executeResult === false) {
-        // Handle the error, log it, etc.
-        echo json_encode(['error' => 'Execute statement failed: ' . $prep_stmt->error]);
-        exit();
-    } else {
-       $stmt='SELECT * FROM banner  WHERE  id = ?;';
-       $prep_stmt = $conn->prepare($stmt);
-       $id = $_POST['id'];
-       $prep_stmt->bind_param('i',$id);
-       $prep_stmt->execute();
-       if($res = $prep_stmt->get_result()){
-           echo json_encode(['banner'=>$res->fetch_assoc()]);
-       }
+    if($prep_stmt->execute()){
+        echo json_encode(['add_banner'=>true]);
     }
-    
-    // Close statement
+    else{
+        echo json_encode(['error'=>'something went wrong with insert']);
+    }
     $prep_stmt->close();
     exit(); // Exit script after handling the request
 }
-
 
 ?>

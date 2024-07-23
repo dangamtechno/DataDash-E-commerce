@@ -16,14 +16,20 @@ function addCategoryButton(){
 function requestCategories(){
    fetchCall('categories.php',responseCategories)
    function responseCategories(data){
-    console.log(data);
+    const  categories = data.categories;
     const modal = document.createElement('div');
     modal.className="form-div";
+    if(categories.length == 0){ 
+        const section_header= document.createElement('h2');
+        section_header.innerText="No categories to edit\nCreate Banner Here";
+        modal.appendChild(section_header);
+        createNewBannerForm(modal);
+        //create banner form here
+    }
     const header = document.createElement('h2');
     header.textContent = 'Edit Categories';
-    modal.appendChild(header);  
+    modal.appendChild(header);
     console.log(modal);
-    var  categories = data.categories;
     console.log(categories);    
     for(const category in categories){
     //create card to hold product info
@@ -51,14 +57,25 @@ function requestCategories(){
 
      modal.appendChild(card);
   }
-    displayOverlay(modal);
+  
+        //button to show the create new Category
+        const showCreateCategoryForm = document.createElement('div');
+        showCreateCategoryForm.className='card';
+        showCreateCategoryForm.innerText="Create New Category";
+        modal.appendChild(showCreateCategoryForm);
+        showCreateCategoryForm.addEventListener('click', function() {
+            // Call createNewBannerForm with an argument
+            const formContainer =   document.createElement('div');
+            createNewCategoryForm(formContainer);
+            showCreateCategoryForm.style.display = 'none';
+            modal.appendChild(formContainer);
+        });
+      displayOverlay(modal);
    }    
 }
 
 function updateCategoryDetails(){
     removeOverlay();
-    const id = this.category_id;
-  
     const modal = document.createElement('div');
     updateCategoryForm(modal,this);
     displayOverlay(modal);
@@ -108,6 +125,8 @@ function updateCategoryForm(modal,category){
     form.appendChild(statusSection);
     form.appendChild(submit);
     formDiv.appendChild(form);
+    const id = category.category_id;
+    deleteCategory(form,id);
     modal.appendChild(formDiv);
     createCategoryCard(modal,category);
  }
@@ -153,5 +172,86 @@ function submitCategoryUpdate(e){
 
 
 //create
-//update
+function createNewCategoryForm(modal){
+    //header 
+    const formHeader = document.createElement('h2');
+    formHeader.textContent = "Create Category"; 
+    //the container
+    const formDiv = document.createElement('div');
+    formDiv.appendChild(formHeader);
+    //create form
+    const form = document.createElement('form');
+    form.className = 'create-category';
+    formDiv.className = 'form-div';
+    //name
+    const nameField= document.createElement('input');
+    nameField.type = 'text';
+    nameField.placeholder='name';
+    nameField.name='name';
+    //status is either 1 or 0
+    const statusSection = document.createElement('div');
+    const statusSectionHeader = document.createElement('h3');
+    statusSectionHeader.innerHTML = 'Status';
+    statusSection.appendChild(statusSectionHeader);
+    const selectStatus = document.createElement('select');
+    selectStatus.name = 'status';
+    for(let i = 0; i <= 1;i++){
+        let statusField =   document.createElement('option');
+        statusField.type = '';
+        statusField.value = i;
+        statusField.innerText = getStatus(i);
+        selectStatus.appendChild(statusField);
+     }
+    //submit will send info to be used to update value in database where id is the currently viewed object id
+     const submit = document.createElement('input');
+     submit.name='submit';
+     submit.type='submit';
+     //EVENTLISTENER FOR UPDATE TABLE
+     submit.addEventListener('click',submitCreateCategory);
+     //append fields
+     form.appendChild(nameField);
+     statusSection.appendChild(selectStatus);
+     form.appendChild(statusSection);
+     form.appendChild(submit);
+     formDiv.appendChild(form);
+     modal.appendChild(formDiv);
+ }
+ function submitCreateCategory(e){
+    e.preventDefault();
+    form = document.querySelector('.create-category');
+    const formData = new FormData(form);
+    fetchCall('categories.php',responseCreateCatgeory,'POST',formData);
+    function responseCreateCatgeory(data){
+        if(data['add_category']){
+            alert('Added category to catalog');
+            location.reload();
+        }
+        else{
+            alert(data['error']);
+        }
+    }
+}
 //delete
+function deleteCategory(container,id){
+    //create delete button
+    const deleteButton = document.createElement('button');
+    deleteButton.innerText = "Delete Category";
+    deleteButton.className = 'delete-button';
+    container.appendChild(deleteButton);
+    // Add event listener to delete button
+    deleteButton.addEventListener('click', function() {
+        submitDeleteBanner(id); // Pass id to submitDeleteBanner function
+    });
+}
+function submitDeleteCategory(id){
+    fetchCall(`delete_Category.php?id=${id}`,responseDeleteCategory)
+    function  responseDeleteCategory(data){
+        if(data['deleteSuccess']){
+            alert(data['deleteSuccess']);
+            location.reload();
+        }
+        else{
+            alert(data['error']);
+        }
+    }
+}

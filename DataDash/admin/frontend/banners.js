@@ -75,8 +75,8 @@ function requestBanners(){
 }
 
 function getBannerDetails(){
-    console.log(this.id);
-    fetchCall(`banner.php?id=${this.id}`,responseBannerDetails.bind(this))
+    const id = +(this.id);
+    fetchCall(`banner.php?id=${id}`,responseBannerDetails.bind(this))
     function responseBannerDetails(data){
         //grab banner from response
         let banner = data.banner;
@@ -119,7 +119,7 @@ function getBannerDetails(){
     //display new overlay
         displayOverlay(modal);
     //add update form to modal    
-        updateBannerForm(modal,this);
+        updateBannerForm(modal,banner);
     }
 }
 
@@ -222,6 +222,7 @@ function updateBannerForm(modal,banner){
    selectStatus.selectedIndex = banner.status;
    nameField.value = banner.name;
    descField.value = banner.description;
+   imageField.value= banner.image;
 //submit will send info to be used to update value in database where id is the currently viewed object id
    const submit = document.createElement('input');
    submit.name='submit';
@@ -235,17 +236,20 @@ function updateBannerForm(modal,banner){
    statusSection.appendChild(selectStatus);
    form.appendChild(statusSection);
    form.appendChild(submit);
+   const id = +(banner.id);
+   deleteBanner(formDiv,id);
    formDiv.appendChild(form);
    modal.appendChild(formDiv);
 }
 //create
-function submitCreateBanner(e){
-    e.preventDefault();
+function submitCreateBanner(){
     form = document.querySelector('.create-banner');
     const formData = new FormData(form);
     fetchCall('banner.php',responseCreateBanner,'POST',formData);
     function responseCreateBanner(data){
-       console.log(data);
+       if(data['add_banner']){
+            alert('Added banner sucessfully');
+       }
     }
 }
 //update
@@ -271,6 +275,29 @@ function submitBannerUpdate(e){
             bannerStatus.innerText = `Updated Status: ${getStatus(newStatus)}`;
             bannerDesc.innerText = `Updated Description: ${newDesc}`;
             alert("banner update successful");
+        }
+    }
+}
+function deleteBanner(container,id){
+    //create delete button
+    const deleteButton = document.createElement('button');
+    deleteButton.innerText = "Delete Banner";
+    deleteButton.className = 'delete-button';
+    container.appendChild(deleteButton);
+    // Add event listener to delete button
+    deleteButton.addEventListener('click', function() {
+        submitDeleteBanner(id); // Pass id to submitDeleteBanner function
+    });
+}
+function submitDeleteBanner(id){
+    fetchCall(`delete_banner.php?id=${id}`,responseDeleteBanner)
+    function  responseDeleteBanner(data){
+        if(data['deleteSuccess']){
+            alert(data['deleteSuccess']);
+            location.reload();
+        }
+        else{
+            alert(data['error']);
         }
     }
 }

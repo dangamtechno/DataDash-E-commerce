@@ -88,3 +88,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     $prep_stmt->close();
     exit(); // Exit script after handling the request
 }
+//post method for inserting a new category
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Retrieve and sanitize input data
+    $name = isset($_POST['name']) ? $_POST['name'] : '';
+    $status = isset($_POST['status']) ? intval($_POST['status']) : 0;
+    // Prepare the SQL statement
+    $stmt = "INSERT INTO category (category_name,status)
+    VALUES(?,?)";
+    
+    // Prepare and execute the statement
+    $prep_stmt = $conn->prepare($stmt);
+    if (!$prep_stmt) {
+        // Handle prepare error
+        echo json_encode(['error' => 'Prepare statement failed: ' . $conn->error]);
+        exit();
+    }
+    
+    if (!$prep_stmt) {
+        // Handle prepare error
+        echo json_encode(['error' => 'Prepare statement failed: ' . $conn->error]);
+        exit();
+    }
+    
+    // Bind parameters
+    $prep_stmt->bind_param('si', $name,$status);
+    
+    // Execute the statement
+    if($prep_stmt->execute()){
+        echo json_encode(['add_category'=>true]);
+    }
+    else{
+        echo json_encode(['error'=>'something went wrong with insert']);
+    }
+    $prep_stmt->close();
+    exit(); // Exit script after handling the request
+}
+?>
