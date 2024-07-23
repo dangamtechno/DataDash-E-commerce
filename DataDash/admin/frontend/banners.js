@@ -237,8 +237,8 @@ function updateBannerForm(modal,banner){
    form.appendChild(statusSection);
    form.appendChild(submit);
    const id = +(banner.id);
-   deleteBanner(formDiv,id);
    formDiv.appendChild(form);
+   deleteBanner(formDiv,id);
    modal.appendChild(formDiv);
 }
 //create

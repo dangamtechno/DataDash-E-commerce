@@ -3,8 +3,8 @@ function requestCategories(){
     function responseCategories(data){
         const nav = document.querySelector('.navigation');
         console.log(data);
-        if(data.categories){
-            categories = data.categories;
+        categories = data.categories;
+        if(categories.lenght > 0){
           //  console.log(categories);
           //  fillDropDownList(categories);
             const ul = document.createElement('ul');

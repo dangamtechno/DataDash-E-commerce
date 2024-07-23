@@ -7,8 +7,9 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../css/style.css">
-    <?php require_once '../../backend/utils/session.php'; ?>
 
+    <?php require_once '../../backend/utils/session.php'; ?>
+   
     <title>Home</title>
     <style>
         .featured-products {
@@ -289,7 +290,7 @@
                 <li><a href="cookies_and_privacy.php">Cookies & Privacy</a></li>
                 <li><a href="terms_and_conditions.php">Terms & Conditions</a></li>
             </ul> <br>
-                <strong>2024 DataDash, All Rights Reserved.</strong>
+                <h3><strong>2024 DataDash, All Rights Reserved.</strong></h3>
             <ul>
                 <h3>admin login</h3>
                 <li>
@@ -303,7 +304,6 @@
 </footer>
 <script src = "../js/global.js" defer ></script>
 <script src="../js/navbar.js"></script>
-<script src="../js/slider.js"></script>
 <script src = "../js/menu.js"></script>
 <script src = "../js/banner.js"></script>
 <script src = "../js/featured.js"></script>

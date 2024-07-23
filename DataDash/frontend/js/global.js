@@ -1,27 +1,7 @@
 document.addEventListener('DOMContentLoaded',requestCategories);
 document.addEventListener('DOMContentLoaded',requestBanner);
-document.addEventListener('DOMContentLoaded',checkLoginStatus);
 document.addEventListener('DOMContentLoaded',requestFeaturedProducts);
 document.addEventListener('DOMContentLoaded',requestNewArrivals);
-const searchSubmit = document.querySelector('.search-button');
-
-alert('test');
-searchSubmit.addEventListener('click',submitSearch);
-function submitSearch(e){   
-    e.preventDefault();
-    const form = document.querySelector('.search-form');
-    const formData = new FormData(form);
-    fetchCall('search.php',responseSearch,'POST',formData)
-    function responseSearch(data){
-        let products = data.search; 
-        console.log(products);
-        if(products){
-           const main = document.querySelector('main');
-           main.innerHTML= "";
-           populateCatalog(products,main);
-        }
-    }
-}
 function fillDropDownList(data){
     list = document.getElementById("drop-down");
     if(list){

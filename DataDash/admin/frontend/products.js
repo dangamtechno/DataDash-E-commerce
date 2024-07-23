@@ -191,6 +191,7 @@ function updateProductForm(modal,product){
    //EVENTLISTENER FOR UPDATE TABLE
    submit.addEventListener('click',submitProductUpdate.bind(product));
    //form.appendChild(statusSection);
+   
    //name
    form.appendChild(nameLabel);
    form.appendChild(nameField);
@@ -210,8 +211,12 @@ function updateProductForm(modal,product){
    statusSection.appendChild(selectStatus);
    form.appendChild(statusSection);
    form.appendChild(submit);
+   //add delete button
+   const id = product.product_id;
+   console.log(id);
    //append to form-containet
    formDiv.appendChild(form);
+   deleteProduct(formDiv,id);
    //append to the main view
    modal.appendChild(formDiv);
 }
@@ -241,13 +246,35 @@ function submitProductUpdate(e){
     //perform update then show the change in the product card in the admin update product page.
 
 }
-
 function setCategoryName(id){
     fetchCall(`categories.php?id=${id}`,responseCategory);
     function responseCategory(data){
         if(data.category){
             const category = data.category;
             document.getElementById('category').innerText = `Category: ${category.category_name}`;
+        }
+    }
+}
+function deleteProduct(container,id){
+    //create delete button
+    const deleteButton = document.createElement('button');
+    deleteButton.innerText = "Delete Product";
+    deleteButton.className = 'delete-button';
+    container.appendChild(deleteButton);
+    // Add event listener to delete button
+    deleteButton.addEventListener('click', function() {
+        submitDeleteProduct(id); // Pass id to submitDeleteBanner function
+    });
+}
+function submitDeleteProduct(id){
+    fetchCall(`delete_product.php?id=${id}`,responseDeleteProduct)
+    function  responseDeleteProduct(data){
+        if(data['deleteSuccess']){
+            alert(data['deleteSuccess']);
+            location.reload();
+        }
+        else{
+            alert(data['error']);
         }
     }
 }

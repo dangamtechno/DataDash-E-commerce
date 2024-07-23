@@ -125,8 +125,8 @@ function updateCategoryForm(modal,category){
     form.appendChild(statusSection);
     form.appendChild(submit);
     formDiv.appendChild(form);
-    const id = category.category_id;
-    deleteCategory(form,id);
+    const id = +(category.category_id);
+    deleteCategory(formDiv,id);
     modal.appendChild(formDiv);
     createCategoryCard(modal,category);
  }
@@ -240,11 +240,11 @@ function deleteCategory(container,id){
     container.appendChild(deleteButton);
     // Add event listener to delete button
     deleteButton.addEventListener('click', function() {
-        submitDeleteBanner(id); // Pass id to submitDeleteBanner function
+        submitDeleteCategory(id); // Pass id to submitDeleteBanner function
     });
 }
 function submitDeleteCategory(id){
-    fetchCall(`delete_Category.php?id=${id}`,responseDeleteCategory)
+    fetchCall(`delete_category.php?id=${id}`,responseDeleteCategory)
     function  responseDeleteCategory(data){
         if(data['deleteSuccess']){
             alert(data['deleteSuccess']);
