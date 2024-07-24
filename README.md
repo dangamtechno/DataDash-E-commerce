@@ -1,24 +1,68 @@
 # DataDash: An E-commerce Website
 
-DataDash is an e-commerce website built with PHP, HTML, CSS, and JavaScript, designed to provide a platform for online shopping.
+DataDash is an E-commerce database system and website built with PHP, HTML, CSS, and JavaScript, designed to provide a platform for online shopping.
 
 ## Features
 
 - **User Authentication:** Customers can register, log in, and manage their user profiles.
 - **Product Catalog:** A wide range of products is available for browsing, with details including descriptions, images, and prices.
-- **Shopping Cart:**  Users can add items to their cart, adjust quantities, and proceed to checkout.
-- **Checkout Process:**  The checkout process handles order completion. 
+- **Shopping Cart:** Users can add items to their cart, adjust quantities, and proceed to checkout.
+- **Checkout Process:** The checkout process handles order completion.
 - **Order History:** Customers can view their past orders.
-- **Search and Filtering:**  Products can be found by name, category, or price range. Filtering options are available for easier navigation.
-- **Admin Panel:**  Website administrators have a dedicated panel for management.
+- **Search and Filtering:** Products can be found by name, category, or price range. Filtering options are available for easier navigation.
+- **Admin Panel:** Website administrators have a dedicated panel for management.
 
-## Installation
+## Development Environment Setup
 
-1. Clone the repository: `git clone https://github.com/dangamtechno/DataDash-E-commerce`
-2. Import the `schema.sql` file to set up the database structure in your MySQL database.
-3. Use the `populate_db.sql` file to add sample data to the database.
-4. Update the database connection settings in `backend/config/config.php` to match your environment.
-5. Start a local web server (like Apache or Nginx) and access the website by navigating to the `public` folder. 
+### Required Software:
+- PHP 8.1 or later
+- MySQL 8.0 or later
+- Apache Web Server (or another compatible web server)
+- Composer (dependency manager)
+- Text Editor or IDE (Integrated Development Environment)
+
+### Steps:
+1. Install PHP, MySQL, and Apache.
+2. Configure Apache to serve the project directory.
+3. Create a MySQL database for DataDash.
+4. Import the `schema.sql` file into the database. (Include the actual file path)
+5. Clone the repository: `git clone https://github.com/dangamtechno/DataDash-E-commerce`
+6. Install project dependencies using Composer: `composer install`
+7. Update the database connection settings in `backend/config/config.php`:
+
+```php
+<?php
+define('DB_HOST', 'localhost');
+define('DB_USER', 'your_username');
+define('DB_PASS', 'your_password');
+define('DB_NAME', 'datadash_db');
+?>
+```
+
+8. Use the `populate_db.sql` file to add sample data to the database.
+9. Start your local web server and access the website by navigating to the `public` folder.
+
+## Server Deployment
+
+1. Upload project files to the server.
+2. Configure the web server (Apache or Nginx) to point to the public directory.
+3. Create a MySQL database on the server.
+4. Import the `schema.sql` file.
+5. Update database connection settings in `backend/config/config.php` with server credentials.
+
+## Database Backups and Restores
+
+### Backups:
+Use mysqldump command (or a database backup tool) to regularly create backups of the database:
+```
+mysqldump -u [username] -p[password] [database_name] > backup.sql
+```
+
+### Restores:
+Use mysql command to restore a database from a backup file:
+```
+mysql -u [username] -p[password] [database_name] < backup.sql
+```
 
 ## Usage
 
@@ -26,12 +70,32 @@ DataDash is an e-commerce website built with PHP, HTML, CSS, and JavaScript, des
 2. Sign up for a new account or log in if you already have one.
 3. Explore the available products in the catalog.
 4. Add items you want to purchase to your shopping cart.
-5. Go to the checkout to complete your order. 
-6. Check your order history to review past purchases. 
+5. Go to the checkout to complete your order.
+6. Check your order history to review past purchases.
 
-## Future Development
+## Known Issues and Limitations
 
-- **Enhanced UI/UX:** Continuously improve the website's interface and user experience.
+- URL Rewriting (User Story 38): Not fully implemented due to time constraints.
+- Admin Discount Management (User Story 40): The UI for managing discounts in the admin panel is not yet complete.
+
+## Future Enhancements (Wishlist)
+
+1. Improved User Interface:
+   - Responsive design for mobile devices.
+   - Implement more modern CSS frameworks for a visually appealing and consistent user experience.
+
+2. Enhanced Search Functionality:
+   - Integrate auto-complete suggestions in the search bar.
+   - Implement advanced filtering options (e.g., by product attributes, price ranges).
+
+3. Product Recommendations:
+   - Develop a recommendation system that suggests products based on user browsing history or past purchases.
+
+4. Social Media Integration:
+   - Allow users to share products or their wishlist on social media platforms.
+
+5. Email Marketing:
+   - Integrate with an email marketing service to send promotional emails and newsletters.
 
 ## Contributing
 
