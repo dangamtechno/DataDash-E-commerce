@@ -70,13 +70,14 @@ function addNewRowSection(section){
     h2.innerText="ADD new row";
     const newItemName=document.createElement('input');
     newItemName.name='name';newItemName.type="text";newItemName.id="newItemName"; newItemName.placeholder="Product Name";
-
+    addNewRowSectionContainer.className='form-div';
     const newItemQuantity=document.createElement('input');
     newItemQuantity.name='quantity';
     newItemQuantity.type="number";newItemQuantity.id="newItemQuantity"; newItemQuantity.placeholder="Quantity";
     const button=document.createElement('button');
     button.addEventListener('click',addItem);
     button.innerText="Add Item";
+    button.className='add-button';
     addNewRowSectionContainer.appendChild(h2);
     addNewRowSectionContainer.appendChild(newItemName);
     addNewRowSectionContainer.appendChild(newItemQuantity);
@@ -106,11 +107,12 @@ function displayInventory(data) {
     // Create table rows with inventory data
     data.forEach(item => {
         const row = document.createElement('tr');
+        row.className='inventory-row';
         row.innerHTML = `
     
-            <td>${item.product_name}</td>
+            <td><h2>${item.product_name}<h2></td>
             <td><input type="number" value="${item.quantity}" onchange="updateQuantity(${item.product_id}, this.value)"></td>
-            <td><button onclick="deleteItem(${item.product_id})">Delete</button></td>
+            <td><button class=delete-button onclick="deleteItem(${item.product_id})">Delete</button></td>
         `;
         tbody.appendChild(row);
     });

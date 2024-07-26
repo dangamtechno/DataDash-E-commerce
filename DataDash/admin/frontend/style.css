@@ -362,6 +362,7 @@ footer li:hover{
     overflow: auto;
     background-color: lightgray;
     border: 2px solid black;
+    border-radius: 15px;
     justify-content: center;
     align-items: center;
 }
@@ -400,13 +401,37 @@ form input{
     width: 60%; /* added */
     font-size: 1.2rem; /* added */
   }
+  input[type='number']{
+    margin-top: 10vh;
+    height: 5vh;
+    padding: 10px 20px; /* Padding ar
+  }
 input[type='submit']:hover {
     background-color: #3e8e41; /* added */
+  }
+  .inventory-row{
+    background-color: antiquewhite;
+  }
+  .add-button{
+    margin: 10px;
+    max-width: 60vw;
+    min-width: 10vw;
+    background-color: green; /* Red background */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding around text */
+    text-align: center; /* Center-align text */
+    text-decoration: none; /* No underline */
+    display: inline-block; /* Inline block display */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Cursor style */
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth background color transition */
   }
   .delete-button {
     margin-top: 10vh;
     max-width: 60vw;
-    min-width: 30vw;
+    min-width: 10vw;
     background-color: #f44336; /* Red background */
     color: white; /* White text */
     border: none; /* No border */
