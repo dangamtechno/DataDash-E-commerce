@@ -38,6 +38,7 @@ function requestBrands(){
 
 function addNewBrandSection(section){
     const  addNewBrandSectionContainer =   document.createElement('div');
+    addNewBrandSectionContainer.className= 'form-div';
     const h2 = document.createElement('h2');
     h2.innerText="Add New Brand";
     const newBrandName=document.createElement('input');
@@ -47,6 +48,7 @@ function addNewBrandSection(section){
     const button=document.createElement('button');
     button.addEventListener('click',addBrand);
     button.innerText="Add Brand";
+    button.className='add-button';
     addNewBrandSectionContainer.appendChild(h2);
     addNewBrandSectionContainer.appendChild(newBrandName);
     addNewBrandSectionContainer.appendChild(button);
@@ -76,10 +78,12 @@ function displayBrands(data) {
         const row = document.createElement('tr');
         row.innerHTML = `
     
-            <td>  
-            <input type="text" value="${brand.brand_name}" onchange="updateName(${brand.brand_id}, this.value)">
-           </td>
-            <td><button onclick="deleteBrand(${brand.brand_id})">Delete</button></td>
+            <td class=update-row >
+                <h2>  
+                    <input  type="text" value="${brand.brand_name}" onchange="updateName(${brand.brand_id}, this.value)">
+                </h2>
+            </td>
+            <td><button class=delete-button onclick="deleteBrand(${brand.brand_id})">Delete</button></td>
         `;
         tbody.appendChild(row);
     });

@@ -379,7 +379,9 @@ form input{
     gap: 10px;
     width: inherit;
   }
-  
+  .update-row input[type='text']{
+    margin-top: 11vh;
+  }
   input[type='text'], input[type="email"], input[type="password"] {
     padding: 10px; /* added */
     margin: 10px 0; /* added */
