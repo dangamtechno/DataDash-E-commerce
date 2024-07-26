@@ -93,8 +93,11 @@ mysql -u [username] -p[password] [database_name] < backup.sql
 
 4. Social Media Integration:
    - Allow users to share products or their wishlist on social media platforms.
+  
+5. Mailer:
+   - Get PHPMailer running.
 
-5. Email Marketing:
+6. Email Marketing:
    - Integrate with an email marketing service to send promotional emails and newsletters.
 
 ## Contributing
