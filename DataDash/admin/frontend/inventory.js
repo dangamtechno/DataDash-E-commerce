@@ -20,6 +20,7 @@ function updateQuantity(id, quantity) {
             const data = JSON.parse(xhr.responseText);
             console.log(data.message);
             requestInventory();
+            alert(data.message);
         } else {
             console.error('Error updating quantity:', xhr.statusText);
         }
@@ -38,8 +39,8 @@ function addItem() {
         if (xhr.status >= 200 && xhr.status < 300) {
             const data = JSON.parse(xhr.responseText);
             console.log(data.message);
-            alert(data.message);
             requestInventory();
+            alert(data.message);
         } else {
             console.error('Error adding item:', xhr.statusText);
         }
@@ -54,8 +55,8 @@ function deleteItem(id) {
         if (xhr.status >= 200 && xhr.status < 300) {
             const data = JSON.parse(xhr.responseText);
             console.log(data.message);
-            alert(data.message);
             requestInventory();
+            alert(data.message);
         } else {
             console.error('Error deleting item:', xhr.statusText);
         }
