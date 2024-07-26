@@ -228,8 +228,7 @@ $conn->close();
 <label for="phone">Phone Number</label>
 <input type="text" style="border-radius: 30px;" id="phone" name="phone" value="<?php echo $phone; ?>">
 
-<button style="border-radius: 30px;" type="submit" id="submit-button>Update</button>
-
+<button style="border-radius: 30px;" type="submit" id="submit-button">Update</button>
 <br><br><br>
 <a href="reset_password.php">
     <button type="button" style="background-color: blue; color: white; border-radius: 30px;">Reset Password</button>
