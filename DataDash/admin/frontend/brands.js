@@ -106,7 +106,7 @@ function updateName(id, name) {
     xhr.onload = function() {
         if (xhr.status >= 200 && xhr.status < 300) {
             const data = JSON.parse(xhr.responseText);
-            console.log(data.message);
+            alert(data.message);
             requestBrands();
         } else {
             console.error('Error updating quantity:', xhr.statusText);
